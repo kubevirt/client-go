@@ -39,6 +39,8 @@ import (
 
 	networkclient "github.com/k8snetworkplumbingwg/network-attachment-definition-client/pkg/client/clientset/versioned"
 
+	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
+
 	v1 "kubevirt.io/client-go/api/v1"
 	cdiclient "kubevirt.io/containerized-data-importer/pkg/client/clientset/versioned"
 )
@@ -60,6 +62,13 @@ func Init() {
 	if flag.CommandLine.Lookup("master") == nil {
 		flag.StringVar(&master, "master", "", "master url")
 	}
+}
+
+func FlagSet() *flag.FlagSet {
+	set := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	set.StringVar(&kubeconfig, "kubeconfig", "", "absolute path to the kubeconfig file")
+	set.StringVar(&master, "master", "", "master url")
+	return set
 }
 
 func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (KubevirtClient, error) {
@@ -108,6 +117,11 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		return nil, err
 	}
 
+	prometheusClient, err := promclient.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -118,6 +132,7 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		extensionsClient,
 		secClient,
 		discoveryClient,
+		prometheusClient,
 		coreClient,
 	}, nil
 }
@@ -236,6 +251,11 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		return nil, err
 	}
 
+	prometheusClient, err := promclient.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -246,6 +266,7 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		extensionsClient,
 		secClient,
 		discoveryClient,
+		prometheusClient,
 		coreClient,
 	}, nil
 }
