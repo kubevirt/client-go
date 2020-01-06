@@ -255,6 +255,10 @@ type CPU struct {
 	// with enough dedicated pCPUs and pin the vCPUs to it.
 	// +optional
 	DedicatedCPUPlacement bool `json:"dedicatedCpuPlacement,omitempty"`
+	// IsolateEmulatorThread requests one more dedicated pCPU to be allocated for the VMI to place
+	// the emulator thread on it.
+	// +optional
+	IsolateEmulatorThread bool `json:"isolateEmulatorThread,omitempty"`
 }
 
 // CPUFeature allows specifying a CPU feature.
@@ -341,6 +345,9 @@ type Devices struct {
 	// If specified, virtual network interfaces configured with a virtio bus will also enable the vhost multiqueue feature
 	// +optional
 	NetworkInterfaceMultiQueue *bool `json:"networkInterfaceMultiqueue,omitempty"`
+	//Whether to attach a GPU device to the vmi.
+	// +optional
+	GPUs []GPU `json:"gpus,omitempty"`
 }
 
 // ---
@@ -354,6 +361,14 @@ type Input struct {
 	Type string `json:"type"`
 	// Name is the device name
 	Name string `json:"name"`
+}
+
+// ---
+// +k8s:openapi-gen=true
+type GPU struct {
+	// Name of the GPU device as exposed by a device plugin
+	Name       string `json:"name"`
+	DeviceName string `json:"deviceName"`
 }
 
 // ---
