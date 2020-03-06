@@ -19,6 +19,7 @@ func (VirtualMachineInstanceList) SwaggerDoc() map[string]string {
 func (VirtualMachineInstanceSpec) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                              "VirtualMachineInstanceSpec is a description of a VirtualMachineInstance.",
+		"priorityClassName":             "If specified, indicates the pod's priority.\nIf not specified, the pod priority will be default or zero if there is no\ndefault.\n+optional",
 		"domain":                        "Specification of the desired behavior of the VirtualMachineInstance on the host.",
 		"nodeSelector":                  "NodeSelector is a selector which must be true for the vmi to fit on a node.\nSelector which must match a node's labels for the vmi to be scheduled on that node.\nMore info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/\n+optional",
 		"affinity":                      "If affinity is specifies, obey all the affinity rules",
@@ -44,6 +45,7 @@ func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 		"conditions":      "Conditions are specific points in VirtualMachineInstance's pod runtime.",
 		"phase":           "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
 		"interfaces":      "Interfaces represent the details of available network interfaces.",
+		"guestOSInfo":     "Guest OS Information",
 		"migrationState":  "Represents the status of a live migration",
 		"migrationMethod": "Represents the method using which the vmi can be migrated: live migration or block migration",
 		"qosClass":        "The Quality of Service (QOS) classification assigned to the virtual machine instance based on resource requirements\nSee PodQOSClass type for available QOS classes\nMore info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md\n+optional",
@@ -65,6 +67,19 @@ func (VirtualMachineInstanceNetworkInterface) SwaggerDoc() map[string]string {
 		"name":          "Name of the interface, corresponds to name of the network assigned to the interface",
 		"ipAddresses":   "List of all IP addresses of a Virtual Machine interface",
 		"interfaceName": "The interface name inside the Virtual Machine",
+	}
+}
+
+func (VirtualMachineInstanceGuestOSInfo) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"name":          "Name of the Guest OS",
+		"kernelRelease": "Guest OS Kernel Release",
+		"version":       "Guest OS Version",
+		"prettyName":    "Guest OS Pretty Name",
+		"versionId":     "Version ID of the Guest OS",
+		"kernelVersion": "Kernel version of the Guest OS",
+		"machine":       "Machine type of the Guest OS",
+		"id":            "Guest OS Id",
 	}
 }
 
@@ -186,8 +201,7 @@ func (VirtualMachine) SwaggerDoc() map[string]string {
 
 func (VirtualMachineList) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":      "VirtualMachineList is a list of virtualmachines",
-		"items": "Items is a list of VirtualMachines",
+		"": "VirtualMachineList is a list of virtualmachines",
 	}
 }
 
@@ -257,9 +271,12 @@ func (KubeVirtList) SwaggerDoc() map[string]string {
 
 func (KubeVirtSpec) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"imageTag":        "The image tag to use for the continer images installed.\nDefaults to the same tag as the operator's container image.",
-		"imageRegistry":   "The image registry to pull the container images from\nDefaults to the same registry the operator's container image is pulled from.",
-		"imagePullPolicy": "The ImagePullPolicy to use.",
+		"imageTag":          "The image tag to use for the continer images installed.\nDefaults to the same tag as the operator's container image.",
+		"imageRegistry":     "The image registry to pull the container images from\nDefaults to the same registry the operator's container image is pulled from.",
+		"imagePullPolicy":   "The ImagePullPolicy to use.",
+		"monitorNamespace":  "The namespace Prometheus is deployed in\nDefaults to openshift-monitor",
+		"monitorAccount":    "The name of the Prometheus service account that needs read-access to KubeVirt endpoints\nDefaults to prometheus-k8s",
+		"uninstallStrategy": "Specifies if kubevirt can be deleted if workloads are still present.\nThis is mainly a precaution to avoid accidental data loss",
 	}
 }
 
@@ -272,5 +289,42 @@ func (KubeVirtStatus) SwaggerDoc() map[string]string {
 func (KubeVirtCondition) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"": "KubeVirtCondition represents a condition of a KubeVirt deployment",
+	}
+}
+
+func (RestartOptions) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"":                   "RestartOptions may be provided when deleting an API object.",
+		"gracePeriodSeconds": "The duration in seconds before the object should be force-restared. Value must be non-negative integer.\nThe value zero indicates, restart immediately. If this value is nil, the default grace period for deletion of the corresponding VMI for the\nspecified type will be used to determine on how much time to give the VMI to restart.\nDefaults to a per object value if not specified. zero means restart immediately.\nAllowed Values: nil and 0\n+optional",
+	}
+}
+
+func (VirtualMachineInstanceGuestAgentInfo) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"":                  "VirtualMachineInstanceGuestAgentInfo represents information from the installed guest agent",
+		"guestAgentVersion": "GAVersion is a version of currently installed guest agent",
+		"hostname":          "Hostname represents FQDN of a guest",
+		"os":                "OS contains the guest operating system information",
+		"timezone":          "Timezone is guest os current timezone",
+		"userList":          "UserList is a list of active guest OS users",
+		"fsInfo":            "FSInfo is a guest os filesystem information containing the disk mapping and disk mounts with usage",
+	}
+}
+
+func (VirtualMachineInstanceGuestOSUser) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "VirtualMachineInstanceGuestOSUser is the single user of the guest os",
+	}
+}
+
+func (VirtualMachineInstanceFileSystemInfo) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "VirtualMachineInstanceFileSystemInfo represents information regarding single guest os filesystem",
+	}
+}
+
+func (VirtualMachineInstanceFileSystem) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "VirtualMachineInstanceFileSystem represents guest os disk",
 	}
 }
