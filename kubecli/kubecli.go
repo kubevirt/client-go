@@ -37,10 +37,11 @@ import (
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	networkclient "github.com/k8snetworkplumbingwg/network-attachment-definition-client/pkg/client/clientset/versioned"
+	networkclient "kubevirt.io/client-go/generated/network-attachment-definition-client/clientset/versioned"
 
 	v1 "kubevirt.io/client-go/api/v1"
-	cdiclient "kubevirt.io/containerized-data-importer/pkg/client/clientset/versioned"
+	cdiclient "kubevirt.io/client-go/generated/containerized-data-importer/clientset/versioned"
+	promclient "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned"
 )
 
 var (
@@ -62,6 +63,13 @@ func Init() {
 	}
 }
 
+func FlagSet() *flag.FlagSet {
+	set := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	set.StringVar(&kubeconfig, "kubeconfig", "", "absolute path to the kubeconfig file")
+	set.StringVar(&master, "master", "", "master url")
+	return set
+}
+
 func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (KubevirtClient, error) {
 	config, err := clientcmd.BuildConfigFromFlags(master, kubeconfig)
 	if err != nil {
@@ -69,7 +77,7 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 	}
 
 	config.GroupVersion = &v1.SubresourceStorageGroupVersion
-	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: scheme.Codecs}
+	config.NegotiatedSerializer = serializer.WithoutConversionCodecFactory{CodecFactory: scheme.Codecs}
 	config.APIPath = "/apis"
 	config.ContentType = runtime.ContentTypeJSON
 
@@ -108,6 +116,11 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		return nil, err
 	}
 
+	prometheusClient, err := promclient.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -118,6 +131,7 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		extensionsClient,
 		secClient,
 		discoveryClient,
+		prometheusClient,
 		coreClient,
 	}, nil
 }
@@ -194,7 +208,7 @@ var GetKubevirtClientFromClientConfig = func(cmdConfig clientcmd.ClientConfig) (
 
 func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error) {
 	config.GroupVersion = &v1.StorageGroupVersion
-	config.NegotiatedSerializer = serializer.DirectCodecFactory{CodecFactory: v1.Codecs}
+	config.NegotiatedSerializer = serializer.WithoutConversionCodecFactory{CodecFactory: v1.Codecs}
 	config.APIPath = "/apis"
 	config.ContentType = runtime.ContentTypeJSON
 	if config.UserAgent == "" {
@@ -236,6 +250,11 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		return nil, err
 	}
 
+	prometheusClient, err := promclient.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -246,6 +265,7 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		extensionsClient,
 		secClient,
 		discoveryClient,
+		prometheusClient,
 		coreClient,
 	}, nil
 }
