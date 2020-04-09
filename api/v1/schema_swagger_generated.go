@@ -116,6 +116,7 @@ func (CPU) SwaggerDoc() map[string]string {
 		"model":                 "Model specifies the CPU model inside the VMI.\nList of available models https://github.com/libvirt/libvirt/tree/master/src/cpu_map.\nIt is possible to specify special cases like \"host-passthrough\" to get the same CPU as the node\nand \"host-model\" to get CPU closest to the node one.\nDefaults to host-model.\n+optional",
 		"features":              "Features specifies the CPU features list inside the VMI.\n+optional",
 		"dedicatedCpuPlacement": "DedicatedCPUPlacement requests the scheduler to place the VirtualMachineInstance on a node\nwith enough dedicated pCPUs and pin the vCPUs to it.\n+optional",
+		"isolateEmulatorThread": "IsolateEmulatorThread requests one more dedicated pCPU to be allocated for the VMI to place\nthe emulator thread on it.\n+optional",
 	}
 }
 
@@ -164,9 +165,11 @@ func (Devices) SwaggerDoc() map[string]string {
 		"inputs":                     "Inputs describe input devices",
 		"autoattachPodInterface":     "Whether to attach a pod network interface. Defaults to true.",
 		"autoattachGraphicsDevice":   "Whether to attach the default graphics device or not.\nVNC will not be available if set to false. Defaults to true.",
+		"autoattachSerialConsole":    "Whether to attach the default serial console or not.\nSerial console access will not be available if set to false. Defaults to true.",
 		"rng":                        "Whether to have random number generator from host\n+optional",
 		"blockMultiQueue":            "Whether or not to enable virtio multi-queue for block devices\n+optional",
 		"networkInterfaceMultiqueue": "If specified, virtual network interfaces configured with a virtio bus will also enable the vhost multiqueue feature\n+optional",
+		"gpus":                       "Whether to attach a GPU device to the vmi.\n+optional",
 	}
 }
 
@@ -178,6 +181,12 @@ func (Input) SwaggerDoc() map[string]string {
 	}
 }
 
+func (GPU) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"name": "Name of the GPU device as exposed by a device plugin",
+	}
+}
+
 func (Disk) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"name":              "Name is the device name",
@@ -185,6 +194,7 @@ func (Disk) SwaggerDoc() map[string]string {
 		"serial":            "Serial provides the ability to specify a serial number for the disk device.\n+optional",
 		"dedicatedIOThread": "dedicatedIOThread indicates this disk should have an exclusive IO Thread.\nEnabling this implies useIOThreads = true.\nDefaults to false.\n+optional",
 		"cache":             "Cache specifies which kvm disk cache mode should be used.\n+optional",
+		"tag":               "If specified, disk address and its tag will be provided to the guest via config drive metadata\n+optional",
 	}
 }
 
@@ -435,6 +445,7 @@ func (Interface) SwaggerDoc() map[string]string {
 		"bootOrder":   "BootOrder is an integer value > 0, used to determine ordering of boot devices.\nLower values take precedence.\nEach interface or disk that has a boot order must have a unique value.\nInterfaces without a boot order are not tried.\n+optional",
 		"pciAddress":  "If specified, the virtual network interface will be placed on the guests pci address with the specifed PCI address. For example: 0000:81:01.10\n+optional",
 		"dhcpOptions": "If specified the network interface will pass additional DHCP options to the VMI\n+optional",
+		"tag":         "If specified, the virtual network interface address and its tag will be provided to the guest via config drive\n+optional",
 	}
 }
 
