@@ -32,7 +32,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 
-	virtv1 "kubevirt.io/kubevirt/pkg/api/v1"
+	virtv1 "kubevirt.io/client-go/api/v1"
 )
 
 var _ = Describe("Kubevirt VirtualMachine Client", func() {
@@ -171,6 +171,31 @@ var _ = Describe("Kubevirt VirtualMachine Client", func() {
 			ghttp.RespondWithJSONEncoded(http.StatusOK, nil),
 		))
 		err := client.VirtualMachine(k8sv1.NamespaceDefault).Restart("testvm")
+
+		Expect(server.ReceivedRequests()).To(HaveLen(1))
+		Expect(err).ToNot(HaveOccurred())
+	})
+
+	It("should migrate a VirtualMachine", func() {
+		server.AppendHandlers(ghttp.CombineHandlers(
+			ghttp.VerifyRequest("PUT", subVMIPath+"/migrate"),
+			ghttp.RespondWithJSONEncoded(http.StatusOK, nil),
+		))
+		err := client.VirtualMachine(k8sv1.NamespaceDefault).Migrate("testvm")
+
+		Expect(server.ReceivedRequests()).To(HaveLen(1))
+		Expect(err).ToNot(HaveOccurred())
+	})
+
+	It("should rename a VM", func() {
+		server.AppendHandlers(
+			ghttp.CombineHandlers(
+				ghttp.VerifyRequest("PUT", subVMIPath+"/rename"),
+				ghttp.RespondWith(http.StatusAccepted, nil),
+			),
+		)
+
+		err := client.VirtualMachine(k8sv1.NamespaceDefault).Rename("testvm", &virtv1.RenameOptions{NewName: "testvmnew"})
 
 		Expect(server.ReceivedRequests()).To(HaveLen(1))
 		Expect(err).ToNot(HaveOccurred())
