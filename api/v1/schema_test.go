@@ -141,6 +141,9 @@ var exampleJSON = `{
         },
         "smm": {
           "enabled": true
+        },
+        "kvm": {
+          "hidden": true
         }
       },
       "devices": {
@@ -233,7 +236,9 @@ var exampleJSON = `{
       }
     ]
   },
-  "status": {}
+  "status": {
+    "guestOSInfo": {}
+  }
 }`
 
 var _ = Describe("Schema", func() {
@@ -340,6 +345,7 @@ var _ = Describe("Schema", func() {
 			ACPI: FeatureState{Enabled: _false},
 			SMM:  &FeatureState{Enabled: _true},
 			APIC: &FeatureAPIC{Enabled: _true},
+			KVM:  &FeatureKVM{Hidden: true},
 			Hyperv: &FeatureHyperv{
 				Relaxed:         &FeatureState{Enabled: _true},
 				VAPIC:           &FeatureState{Enabled: _false},
@@ -395,6 +401,7 @@ var _ = Describe("Schema", func() {
 				},
 			},
 		}
+
 		policy := IOThreadsPolicyShared
 		exampleVMI.Spec.Domain.IOThreadsPolicy = &policy
 
