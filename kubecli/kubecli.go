@@ -37,11 +37,10 @@ import (
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
+	networkclient "kubevirt.io/client-go/generated/network-attachment-definition-client/clientset/versioned"
+
 	v1 "kubevirt.io/client-go/api/v1"
 	cdiclient "kubevirt.io/client-go/generated/containerized-data-importer/clientset/versioned"
-	k8ssnapshotclient "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned"
-	generatedclient "kubevirt.io/client-go/generated/kubevirt/clientset/versioned"
-	networkclient "kubevirt.io/client-go/generated/network-attachment-definition-client/clientset/versioned"
 	promclient "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned"
 )
 
@@ -92,11 +91,6 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		return nil, err
 	}
 
-	generatedKubeVirtClient, err := generatedclient.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	cdiClient, err := cdiclient.NewForConfig(config)
 	if err != nil {
 		return nil, err
@@ -127,24 +121,17 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		return nil, err
 	}
 
-	snapshotClient, err := k8ssnapshotclient.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	return &kubevirt{
 		master,
 		kubeconfig,
 		restClient,
 		config,
-		generatedKubeVirtClient,
 		cdiClient,
 		networkClient,
 		extensionsClient,
 		secClient,
 		discoveryClient,
 		prometheusClient,
-		snapshotClient,
 		coreClient,
 	}, nil
 }
@@ -238,11 +225,6 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		return nil, err
 	}
 
-	generatedKubeVirtClient, err := generatedclient.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	cdiClient, err := cdiclient.NewForConfig(config)
 	if err != nil {
 		return nil, err
@@ -273,24 +255,17 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		return nil, err
 	}
 
-	snapshotClient, err := k8ssnapshotclient.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	return &kubevirt{
 		master,
 		kubeconfig,
 		restClient,
 		config,
-		generatedKubeVirtClient,
 		cdiClient,
 		networkClient,
 		extensionsClient,
 		secClient,
 		discoveryClient,
 		prometheusClient,
-		snapshotClient,
 		coreClient,
 	}, nil
 }
