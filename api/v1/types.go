@@ -275,11 +275,6 @@ const (
 	VirtualMachineInstanceReasonInterfaceNotMigratable = "InterfaceNotLiveMigratable"
 )
 
-const (
-	// PodTerminatingReason indicates on the PodReady condition on the VMI if the underlying pod is terminating
-	PodTerminatingReason = "PodTerminating"
-)
-
 // +k8s:openapi-gen=true
 type VirtualMachineInstanceMigrationConditionType string
 
@@ -382,10 +377,8 @@ type VirtualMachineInstanceGuestOSInfo struct {
 // +k8s:openapi-gen=true
 type VirtualMachineInstanceMigrationState struct {
 	// The time the migration action began
-	// +nullable
 	StartTimestamp *metav1.Time `json:"startTimestamp,omitempty"`
 	// The time the migration action ended
-	// +nullable
 	EndTimestamp *metav1.Time `json:"endTimestamp,omitempty"`
 	// The Target Node has seen the Domain Start Event
 	TargetNodeDomainDetected bool `json:"targetNodeDomainDetected,omitempty"`
@@ -769,7 +762,6 @@ type DataVolumeTemplateSpec struct {
 	// this field is not used by our controllers and is a no-op.
 	// +nullable
 	metav1.TypeMeta `json:",inline"`
-	// +kubebuilder:pruning:PreserveUnknownFields
 	// +nullable
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	// DataVolumeSpec contains the DataVolume specification.
@@ -785,7 +777,6 @@ type DataVolumeTemplateSpec struct {
 //
 // +k8s:openapi-gen=true
 type VirtualMachineInstanceTemplateSpec struct {
-	// +kubebuilder:pruning:PreserveUnknownFields
 	// +nullable
 	ObjectMeta metav1.ObjectMeta `json:"metadata,omitempty"`
 	// VirtualMachineInstance Spec contains the VirtualMachineInstance specification.
@@ -1018,19 +1009,6 @@ type VirtualMachineStatus struct {
 	// StateChangeRequests indicates a list of actions that should be taken on a VMI
 	// e.g. stop a specific VMI then start a new one.
 	StateChangeRequests []VirtualMachineStateChangeRequest `json:"stateChangeRequests,omitempty" optional:"true"`
-	// VolumeSnapshotStatuses indicates a list of statuses whether snapshotting is
-	// supported by each volume.
-	VolumeSnapshotStatuses []VolumeSnapshotStatus `json:"volumeSnapshotStatuses,omitempty" optional:"true"`
-}
-
-// +k8s:openapi-gen=true
-type VolumeSnapshotStatus struct {
-	// Volume name
-	Name string `json:"name"`
-	// True if the volume supports snapshotting
-	Enabled bool `json:"enabled"`
-	// Empty if snapshotting is enabled, contains reason otherwise
-	Reason string `json:"reason,omitempty" optional:"true"`
 }
 
 // +k8s:openapi-gen=true
@@ -1462,7 +1440,6 @@ type KubeVirtConfiguration struct {
 	SMBIOSConfig                *SMBiosConfiguration    `json:"smbios,omitempty"`
 	SupportedGuestAgentVersions []string                `json:"supportedGuestAgentVersions,omitempty"`
 	MemBalloonStatsPeriod       *uint32                 `json:"memBalloonStatsPeriod,omitempty"`
-	PermittedHostDevices        *PermittedHostDevices   `json:"permittedHostDevices,omitempty"`
 }
 
 // ---
@@ -1498,31 +1475,6 @@ type DeveloperConfiguration struct {
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
 	CPUAllocationRatio     int               `json:"cpuAllocationRatio,omitempty"`
-}
-
-// PermittedHostDevices holds inforamtion about devices allowed for passthrough
-// +k8s:openapi-gen=true
-type PermittedHostDevices struct {
-	// +listType=set
-	PciHostDevices []PciHostDevice `json:"pciHostDevices,omitempty"`
-	// +listType=set
-	MediatedDevices []MediatedHostDevice `json:"mediatedDevices,omitempty"`
-}
-
-// PciHostDevice represents a host PCI device allowed for passthrough
-// +k8s:openapi-gen=true
-type PciHostDevice struct {
-	PCIVendorSelector        string `json:"pciVendorSelector"`
-	ResourceName             string `json:"resourceName"`
-	ExternalResourceProvider bool   `json:"externalResourceProvider,omitempty"`
-}
-
-// MediatedHostDevice represents a host mediated device allowed for passthrough
-// +k8s:openapi-gen=true
-type MediatedHostDevice struct {
-	MDEVNameSelector         string `json:"mdevNameSelector"`
-	ResourceName             string `json:"resourceName"`
-	ExternalResourceProvider bool   `json:"externalResourceProvider,omitempty"`
 }
 
 // NetworkConfiguration holds network options
