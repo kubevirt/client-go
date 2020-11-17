@@ -29,14 +29,6 @@ func (SecretVolumeSource) SwaggerDoc() map[string]string {
 	}
 }
 
-func (DownwardAPIVolumeSource) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":            "DownwardAPIVolumeSource represents a volume containing downward API info.\n\n+k8s:openapi-gen=true",
-		"fields":      "Fields is a list of downward API volume file\n+optional",
-		"volumeLabel": "The volume label of the resulting disk inside the VMI.\nDifferent bootstrapping mechanisms require different values.\nTypical values are \"cidata\" (cloud-init), \"config-2\" (cloud-init) or \"OEMDRV\" (kickstart).\n+optional",
-	}
-}
-
 func (ServiceAccountVolumeSource) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                   "ServiceAccountVolumeSource adapts a ServiceAccount into a volume.\n\n+k8s:openapi-gen=true",
@@ -187,9 +179,8 @@ func (Devices) SwaggerDoc() map[string]string {
 		"rng":                        "Whether to have random number generator from host\n+optional",
 		"blockMultiQueue":            "Whether or not to enable virtio multi-queue for block devices\n+optional",
 		"networkInterfaceMultiqueue": "If specified, virtual network interfaces configured with a virtio bus will also enable the vhost multiqueue feature for network devices. The number of queues created depends on additional factors of the VirtualMachineInstance, like the number of guest CPUs.\n+optional",
-		"gpus":                       "Whether to attach a GPU device to the vmi.\n+optional\n+listType=atomic",
-		"filesystems":                "Filesystems describes filesystem which is connected to the vmi.\n+optional\n+listType=atomic",
-		"hostDevices":                "Whether to attach a host device to the vmi.\n+optional\n+listType=atomic",
+		"gpus":                       "Whether to attach a GPU device to the vmi.\n+optional",
+		"filesystems":                "Filesystems describes filesystem which is connected to the vmi.\n+optional\n+listType=set",
 	}
 }
 
@@ -204,9 +195,8 @@ func (Input) SwaggerDoc() map[string]string {
 
 func (Filesystem) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":         "+k8s:openapi-gen=true",
-		"name":     "Name is the device name",
-		"virtiofs": "Virtiofs is supported",
+		"":     "+k8s:openapi-gen=true",
+		"name": "Name is the device name",
 	}
 }
 
@@ -220,13 +210,6 @@ func (GPU) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":     "+k8s:openapi-gen=true",
 		"name": "Name of the GPU device as exposed by a device plugin",
-	}
-}
-
-func (HostDevice) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":           "+k8s:openapi-gen=true",
-		"deviceName": "DeviceName is the resource name of the host device exposed by a device plugin",
 	}
 }
 
@@ -307,7 +290,6 @@ func (VolumeSource) SwaggerDoc() map[string]string {
 		"dataVolume":            "DataVolume represents the dynamic creation a PVC for this volume as well as\nthe process of populating that PVC with a disk image.\n+optional",
 		"configMap":             "ConfigMapSource represents a reference to a ConfigMap in the same namespace.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/\n+optional",
 		"secret":                "SecretVolumeSource represents a reference to a secret data in the same namespace.\nMore info: https://kubernetes.io/docs/concepts/configuration/secret/\n+optional",
-		"downwardAPI":           "DownwardAPI represents downward API about the pod that should populate this volume\n+optional",
 		"serviceAccount":        "ServiceAccountVolumeSource represents a reference to a service account.\nThere can only be one volume of this type!\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/\n+optional",
 	}
 }
@@ -360,7 +342,7 @@ func (ClockOffsetUTC) SwaggerDoc() map[string]string {
 
 func (Clock) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":      "Represents the clock and timers of a vmi.\n\n+k8s:openapi-gen=true\n+kubebuilder:pruning:PreserveUnknownFields",
+		"":      "Represents the clock and timers of a vmi.\n\n+k8s:openapi-gen=true",
 		"timer": "Timer specifies whih timers are attached to the vmi.\n+optional",
 	}
 }
@@ -562,12 +544,6 @@ func (InterfaceMasquerade) SwaggerDoc() map[string]string {
 }
 
 func (InterfaceSRIOV) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
-}
-
-func (InterfaceMacvtap) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"": "+k8s:openapi-gen=true",
 	}
