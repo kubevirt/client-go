@@ -16498,7 +16498,7 @@ func schema_kubevirtio_client_go_api_v1_PermittedHostDevices(ref common.Referenc
 					"pciHostDevices": {
 						VendorExtensible: spec.VendorExtensible{
 							Extensions: spec.Extensions{
-								"x-kubernetes-list-type": "atomic",
+								"x-kubernetes-list-type": "set",
 							},
 						},
 						SchemaProps: spec.SchemaProps{
@@ -16515,7 +16515,7 @@ func schema_kubevirtio_client_go_api_v1_PermittedHostDevices(ref common.Referenc
 					"mediatedDevices": {
 						VendorExtensible: spec.VendorExtensible{
 							Extensions: spec.Extensions{
-								"x-kubernetes-list-type": "atomic",
+								"x-kubernetes-list-type": "set",
 							},
 						},
 						SchemaProps: spec.SchemaProps{
