@@ -567,9 +567,6 @@ const (
 	// Machine Instance migration job. Needed because with CRDs we can't use field
 	// selectors. Used on VirtualMachineInstance.
 	MigrationTargetNodeNameLabel string = "kubevirt.io/migrationTargetNodeName"
-	// This annotation indicates that a migration is the result of an
-	// automated evacuation
-	EvacuationMigrationAnnotation string = "kubevirt.io/evacuationMigration"
 	// This label declares whether a particular node is available for
 	// scheduling virtual machine instances on it. Used on Node.
 	NodeSchedulable string = "kubevirt.io/schedulable"
@@ -1278,7 +1275,7 @@ type KubeVirtList struct {
 	Items           []KubeVirt `json:"items"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtSelfSignConfiguration struct {
 	CARotateInterval   *metav1.Duration `json:"caRotateInterval,omitempty"`
@@ -1286,13 +1283,13 @@ type KubeVirtSelfSignConfiguration struct {
 	CAOverlapInterval  *metav1.Duration `json:"caOverlapInterval,omitempty"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtCertificateRotateStrategy struct {
 	SelfSigned *KubeVirtSelfSignConfiguration `json:"selfSigned,omitempty"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtSpec struct {
 	// The image tag to use for the continer images installed.
@@ -1573,7 +1570,7 @@ type KubeVirtConfiguration struct {
 	PermittedHostDevices        *PermittedHostDevices   `json:"permittedHostDevices,omitempty"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type SMBiosConfiguration struct {
 	Manufacturer string `json:"manufacturer,omitempty"`
@@ -1606,27 +1603,14 @@ type DeveloperConfiguration struct {
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
 	CPUAllocationRatio     int               `json:"cpuAllocationRatio,omitempty"`
-	LogVerbosity           *LogVerbosity     `json:"logVerbosity,omitempty"`
-}
-
-// LogVerbosity sets log verbosity level of  various components
-// +k8s:openapi-gen=true
-type LogVerbosity struct {
-	VirtAPI        uint `json:"virtAPI,omitempty"`
-	VirtController uint `json:"virtController,omitempty"`
-	VirtHandler    uint `json:"virtHandler,omitempty"`
-	VirtLauncher   uint `json:"virtLauncher,omitempty"`
-	VirtOperator   uint `json:"virtOperator,omitempty"`
-	// NodeVerbosity represents a map of nodes with a specific verbosity level
-	NodeVerbosity map[string]uint `json:"nodeVerbosity,omitempty"`
 }
 
 // PermittedHostDevices holds inforamtion about devices allowed for passthrough
 // +k8s:openapi-gen=true
 type PermittedHostDevices struct {
-	// +listType=atomic
+	// +listType=set
 	PciHostDevices []PciHostDevice `json:"pciHostDevices,omitempty"`
-	// +listType=atomic
+	// +listType=set
 	MediatedDevices []MediatedHostDevice `json:"mediatedDevices,omitempty"`
 }
 

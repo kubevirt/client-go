@@ -356,20 +356,15 @@ func (KubeVirtList) SwaggerDoc() map[string]string {
 }
 
 func (KubeVirtSelfSignConfiguration) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
+	return map[string]string{}
 }
 
 func (KubeVirtCertificateRotateStrategy) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
+	return map[string]string{}
 }
 
 func (KubeVirtSpec) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":                  "+k8s:openapi-gen=true",
 		"imageTag":          "The image tag to use for the continer images installed.\nDefaults to the same tag as the operator's container image.",
 		"imageRegistry":     "The image registry to pull the container images from\nDefaults to the same registry the operator's container image is pulled from.",
 		"imagePullPolicy":   "The ImagePullPolicy to use.",
@@ -489,9 +484,7 @@ func (KubeVirtConfiguration) SwaggerDoc() map[string]string {
 }
 
 func (SMBiosConfiguration) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
+	return map[string]string{}
 }
 
 func (MigrationConfiguration) SwaggerDoc() map[string]string {
@@ -506,18 +499,11 @@ func (DeveloperConfiguration) SwaggerDoc() map[string]string {
 	}
 }
 
-func (LogVerbosity) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":              "LogVerbosity sets log verbosity level of  various components\n+k8s:openapi-gen=true",
-		"nodeVerbosity": "NodeVerbosity represents a map of nodes with a specific verbosity level",
-	}
-}
-
 func (PermittedHostDevices) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                "PermittedHostDevices holds inforamtion about devices allowed for passthrough\n+k8s:openapi-gen=true",
-		"pciHostDevices":  "+listType=atomic",
-		"mediatedDevices": "+listType=atomic",
+		"pciHostDevices":  "+listType=set",
+		"mediatedDevices": "+listType=set",
 	}
 }
 
