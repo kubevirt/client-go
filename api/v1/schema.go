@@ -903,13 +903,6 @@ type Features struct {
 	Pvspinlock *FeatureState `json:"pvspinlock,omitempty"`
 }
 
-//
-// +k8s:openapi-gen=true
-type SyNICTimer struct {
-	Enabled *bool         `json:"enabled,omitempty"`
-	Direct  *FeatureState `json:"direct,omitempty"`
-}
-
 // Represents if a feature is enabled or disabled.
 //
 // +k8s:openapi-gen=true
@@ -989,7 +982,7 @@ type FeatureHyperv struct {
 	// SyNICTimer enables Synthetic Interrupt Controller Timers, reducing CPU load.
 	// Defaults to the machine type setting.
 	// +optional
-	SyNICTimer *SyNICTimer `json:"synictimer,omitempty"`
+	SyNICTimer *FeatureState `json:"synictimer,omitempty"`
 	// Reset enables Hyperv reboot/reset for the vmi. Requires synic.
 	// Defaults to the machine type setting.
 	// +optional

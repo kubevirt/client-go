@@ -96,10 +96,7 @@ func SetObjectDefaults_VirtualMachine(in *VirtualMachine) {
 					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNIC)
 				}
 				if in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer != nil {
-					SetDefaults_SyNICTimer(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer)
-					if in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer.Direct != nil {
-						SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer.Direct)
-					}
+					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer)
 				}
 				if in.Spec.Template.Spec.Domain.Features.Hyperv.Reset != nil {
 					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.Reset)
@@ -212,10 +209,7 @@ func SetObjectDefaults_VirtualMachineInstance(in *VirtualMachineInstance) {
 				SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNIC)
 			}
 			if in.Spec.Domain.Features.Hyperv.SyNICTimer != nil {
-				SetDefaults_SyNICTimer(in.Spec.Domain.Features.Hyperv.SyNICTimer)
-				if in.Spec.Domain.Features.Hyperv.SyNICTimer.Direct != nil {
-					SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNICTimer.Direct)
-				}
+				SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNICTimer)
 			}
 			if in.Spec.Domain.Features.Hyperv.Reset != nil {
 				SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.Reset)
@@ -320,10 +314,7 @@ func SetObjectDefaults_VirtualMachineInstancePreset(in *VirtualMachineInstancePr
 					SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNIC)
 				}
 				if in.Spec.Domain.Features.Hyperv.SyNICTimer != nil {
-					SetDefaults_SyNICTimer(in.Spec.Domain.Features.Hyperv.SyNICTimer)
-					if in.Spec.Domain.Features.Hyperv.SyNICTimer.Direct != nil {
-						SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNICTimer.Direct)
-					}
+					SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.SyNICTimer)
 				}
 				if in.Spec.Domain.Features.Hyperv.Reset != nil {
 					SetDefaults_FeatureState(in.Spec.Domain.Features.Hyperv.Reset)
@@ -429,10 +420,7 @@ func SetObjectDefaults_VirtualMachineInstanceReplicaSet(in *VirtualMachineInstan
 					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNIC)
 				}
 				if in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer != nil {
-					SetDefaults_SyNICTimer(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer)
-					if in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer.Direct != nil {
-						SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer.Direct)
-					}
+					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.SyNICTimer)
 				}
 				if in.Spec.Template.Spec.Domain.Features.Hyperv.Reset != nil {
 					SetDefaults_FeatureState(in.Spec.Template.Spec.Domain.Features.Hyperv.Reset)
