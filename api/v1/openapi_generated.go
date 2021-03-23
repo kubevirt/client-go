@@ -19802,7 +19802,7 @@ func schema_kubevirtio_client_go_api_v1_Disk(ref common.ReferenceCallback) commo
 					},
 					"cache": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Cache specifies which kvm disk cache mode should be used. Supported values are: CacheNone, CacheWriteThrough.",
+							Description: "Cache specifies which kvm disk cache mode should be used.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
