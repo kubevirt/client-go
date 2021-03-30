@@ -20,11 +20,17 @@
 package v1
 
 import (
+	"io/ioutil"
 	"testing"
 
-	"kubevirt.io/client-go/testutils"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+	"kubevirt.io/client-go/log"
 )
 
 func TestV1(t *testing.T) {
-	testutils.KubeVirtTestSuiteSetup(t, "V1 Suite")
+	log.Log.SetIOWriter(ioutil.Discard)
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "V1 Suite")
 }
