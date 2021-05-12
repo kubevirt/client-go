@@ -1116,8 +1116,9 @@ type StateChangeRequestAction string
 
 // These are the currently defined state change requests
 const (
-	StartRequest StateChangeRequestAction = "Start"
-	StopRequest  StateChangeRequestAction = "Stop"
+	StartRequest  StateChangeRequestAction = "Start"
+	StopRequest   StateChangeRequestAction = "Stop"
+	RenameRequest                          = "Rename"
 )
 
 // VirtualMachineStatus represents the status returned by the
@@ -1206,6 +1207,9 @@ const (
 	// VirtualMachinePaused is added in a virtual machine when its vmi
 	// signals with its own condition that it is paused.
 	VirtualMachinePaused VirtualMachineConditionType = "Paused"
+
+	// This condition indicates that the VM was renamed
+	RenameConditionType VirtualMachineConditionType = "RenameOperation"
 )
 
 //
@@ -1469,21 +1473,6 @@ type KubeVirtSpec struct {
 type CustomizeComponents struct {
 	// +listType=atomic
 	Patches []CustomizeComponentsPatch `json:"patches,omitempty"`
-
-	// Configure the value used for deployment and daemonset resources
-	Flags *Flags `json:"flags,omitempty"`
-}
-
-// Flags will create a patch that will replace all flags for the container's
-// command field. The only flags that will be used are those define. There are no
-// guarantees around forward/backward compatibility.  If set incorrectly this will
-// cause the resource when rolled out to error until flags are updated.
-//
-// +k8s:openapi-gen=true
-type Flags struct {
-	API        map[string]string `json:"api,omitempty"`
-	Controller map[string]string `json:"controller,omitempty"`
-	Handler    map[string]string `json:"handler,omitempty"`
 }
 
 // +k8s:openapi-gen=true
@@ -1696,6 +1685,13 @@ type VirtualMachineInstanceFileSystem struct {
 	FileSystemType string `json:"fileSystemType"`
 	UsedBytes      int    `json:"usedBytes"`
 	TotalBytes     int    `json:"totalBytes"`
+}
+
+// Options for a rename operation
+type RenameOptions struct {
+	metav1.TypeMeta `json:",inline"`
+	NewName         string  `json:"newName"`
+	OldName         *string `json:"oldName,omitempty"`
 }
 
 // AddVolumeOptions is provided when dynamically hot plugging a volume and disk
