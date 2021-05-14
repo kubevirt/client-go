@@ -20,8 +20,6 @@
 package kubecli
 
 import (
-	"context"
-
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -310,12 +308,12 @@ func (v *vmis) asyncSubresourceHelper(name string, resource string) (StreamInter
 
 func (v *vmis) Pause(name string) error {
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "pause")
-	return v.restClient.Put().RequestURI(uri).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Do().Error()
 }
 
 func (v *vmis) Unpause(name string) error {
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "unpause")
-	return v.restClient.Put().RequestURI(uri).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Do().Error()
 }
 
 func (v *vmis) Get(name string, options *k8smetav1.GetOptions) (vmi *v1.VirtualMachineInstance, err error) {
@@ -325,7 +323,7 @@ func (v *vmis) Get(name string, options *k8smetav1.GetOptions) (vmi *v1.VirtualM
 		Namespace(v.namespace).
 		Name(name).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(vmi)
 	vmi.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -337,7 +335,7 @@ func (v *vmis) List(options *k8smetav1.ListOptions) (vmiList *v1.VirtualMachineI
 		Resource(v.resource).
 		Namespace(v.namespace).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(vmiList)
 	for _, vmi := range vmiList.Items {
 		vmi.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
@@ -352,7 +350,7 @@ func (v *vmis) Create(vmi *v1.VirtualMachineInstance) (result *v1.VirtualMachine
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -365,7 +363,7 @@ func (v *vmis) Update(vmi *v1.VirtualMachineInstance) (result *v1.VirtualMachine
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -377,7 +375,7 @@ func (v *vmis) Delete(name string, options *k8smetav1.DeleteOptions) error {
 		Resource(v.resource).
 		Name(name).
 		Body(options).
-		Do(context.Background()).
+		Do().
 		Error()
 }
 
@@ -389,7 +387,7 @@ func (v *vmis) Patch(name string, pt types.PatchType, data []byte, subresources 
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -431,7 +429,7 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "guestosinfo")
 
 	// WORKAROUND:
-	// When doing v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(guestInfo)
+	// When doing v.restClient.Get().RequestURI(uri).Do().Into(guestInfo)
 	// k8s client-go requires the object to have metav1.ObjectMeta inlined and deepcopy generated
 	// without deepcopy the Into does not work.
 	// With metav1.ObjectMeta added the openapi validation fails on pkg/virt-api/api.go:310
@@ -445,7 +443,7 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 	// this issue should be solved.
 	// This workaround can go away once the least supported k8s version is the working one.
 	// The issue has been described in: https://github.com/kubevirt/kubevirt/issues/3059
-	res := v.restClient.Get().RequestURI(uri).Do(context.Background())
+	res := v.restClient.Get().RequestURI(uri).Do()
 	rawInfo, err := res.Raw()
 	if err != nil {
 		log.Log.Errorf("Cannot retrieve GuestOSInfo: %s", err.Error())
@@ -463,14 +461,14 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 func (v *vmis) UserList(name string) (v1.VirtualMachineInstanceGuestOSUserList, error) {
 	userList := v1.VirtualMachineInstanceGuestOSUserList{}
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "userlist")
-	err := v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(&userList)
+	err := v.restClient.Get().RequestURI(uri).Do().Into(&userList)
 	return userList, err
 }
 
 func (v *vmis) FilesystemList(name string) (v1.VirtualMachineInstanceFileSystemList, error) {
 	fsList := v1.VirtualMachineInstanceFileSystemList{}
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "filesystemlist")
-	err := v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(&fsList)
+	err := v.restClient.Get().RequestURI(uri).Do().Into(&fsList)
 	return fsList, err
 }
 
@@ -483,7 +481,7 @@ func (v *vmis) AddVolume(name string, addVolumeOptions *v1.AddVolumeOptions) err
 		return err
 	}
 
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do().Error()
 }
 
 func (v *vmis) RemoveVolume(name string, removeVolumeOptions *v1.RemoveVolumeOptions) error {
@@ -495,5 +493,5 @@ func (v *vmis) RemoveVolume(name string, removeVolumeOptions *v1.RemoveVolumeOpt
 		return err
 	}
 
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do().Error()
 }

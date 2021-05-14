@@ -20,8 +20,6 @@
 package kubecli
 
 import (
-	"context"
-
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -51,7 +49,7 @@ func (o *kv) Create(vm *v1.KubeVirt) (*v1.KubeVirt, error) {
 		Resource(o.resource).
 		Namespace(o.namespace).
 		Body(vm).
-		Do(context.Background()).
+		Do().
 		Into(newKv)
 
 	newKv.SetGroupVersionKind(v1.KubeVirtGroupVersionKind)
@@ -67,7 +65,7 @@ func (o *kv) Get(name string, options *k8smetav1.GetOptions) (*v1.KubeVirt, erro
 		Namespace(o.namespace).
 		Name(name).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(newKv)
 
 	newKv.SetGroupVersionKind(v1.KubeVirtGroupVersionKind)
@@ -83,7 +81,7 @@ func (o *kv) Update(vm *v1.KubeVirt) (*v1.KubeVirt, error) {
 		Namespace(o.namespace).
 		Name(vm.Name).
 		Body(vm).
-		Do(context.Background()).
+		Do().
 		Into(updatedVm)
 
 	updatedVm.SetGroupVersionKind(v1.KubeVirtGroupVersionKind)
@@ -98,7 +96,7 @@ func (o *kv) Delete(name string, options *k8smetav1.DeleteOptions) error {
 		Namespace(o.namespace).
 		Name(name).
 		Body(options).
-		Do(context.Background()).
+		Do().
 		Error()
 
 	return err
@@ -111,7 +109,7 @@ func (o *kv) List(options *k8smetav1.ListOptions) (*v1.KubeVirtList, error) {
 		Resource(o.resource).
 		Namespace(o.namespace).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(newKvList)
 
 	for _, vm := range newKvList.Items {
@@ -129,7 +127,7 @@ func (v *kv) Patch(name string, pt types.PatchType, data []byte, subresources ..
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return result, err
 }
@@ -142,7 +140,7 @@ func (v *kv) PatchStatus(name string, pt types.PatchType, data []byte) (result *
 		SubResource("status").
 		Name(name).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -155,7 +153,7 @@ func (v *kv) UpdateStatus(vmi *v1.KubeVirt) (result *v1.KubeVirt, err error) {
 		Resource(v.resource).
 		SubResource("status").
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.KubeVirtGroupVersionKind)
 	return

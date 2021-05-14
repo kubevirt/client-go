@@ -4,7 +4,7 @@ package v1
 
 func (VirtualMachineInstance) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":       "VirtualMachineInstance is *the* VirtualMachineInstance Definition. It represents a virtual machine in the runtime environment of kubernetes.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"":       "VirtualMachineInstance is *the* VirtualMachineInstance Definition. It represents a virtual machine in the runtime environment of kubernetes.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 		"spec":   "VirtualMachineInstance Spec contains the VirtualMachineInstance specification.",
 		"status": "Status is the high level overview of how the VirtualMachineInstance is doing. It contains information available to controllers and users.",
 	}
@@ -26,7 +26,6 @@ func (VirtualMachineInstanceSpec) SwaggerDoc() map[string]string {
 		"schedulerName":                 "If specified, the VMI will be dispatched by specified scheduler.\nIf not specified, the VMI will be dispatched by default scheduler.\n+optional",
 		"tolerations":                   "If toleration is specified, obey all the toleration rules.",
 		"evictionStrategy":              "EvictionStrategy can be set to \"LiveMigrate\" if the VirtualMachineInstance should be\nmigrated instead of shut-off in case of a node drain.\n\n+optional",
-		"startStrategy":                 "StartStrategy can be set to \"Paused\" if Virtual Machine should be started in paused state.\n\n+optional",
 		"terminationGracePeriodSeconds": "Grace period observed after signalling a VirtualMachineInstance to stop after which the VirtualMachineInstance is force terminated.",
 		"volumes":                       "List of volumes that can be mounted by disks belonging to the vmi.",
 		"livenessProbe":                 "Periodic probe of VirtualMachineInstance liveness.\nVirtualmachineInstances will be stopped if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes\n+optional",
@@ -42,20 +41,19 @@ func (VirtualMachineInstanceSpec) SwaggerDoc() map[string]string {
 
 func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":                              "VirtualMachineInstanceStatus represents information about the status of a VirtualMachineInstance. Status may trail the actual\nstate of a system.\n\n+k8s:openapi-gen=true",
-		"nodeName":                      "NodeName is the name where the VirtualMachineInstance is currently running.",
-		"reason":                        "A brief CamelCase message indicating details about why the VMI is in this state. e.g. 'NodeUnresponsive'\n+optional",
-		"conditions":                    "Conditions are specific points in VirtualMachineInstance's pod runtime.",
-		"phase":                         "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
-		"interfaces":                    "Interfaces represent the details of available network interfaces.",
-		"guestOSInfo":                   "Guest OS Information",
-		"migrationState":                "Represents the status of a live migration",
-		"migrationMethod":               "Represents the method using which the vmi can be migrated: live migration or block migration",
-		"qosClass":                      "The Quality of Service (QOS) classification assigned to the virtual machine instance based on resource requirements\nSee PodQOSClass type for available QOS classes\nMore info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md\n+optional",
-		"launcherContainerImageVersion": "LauncherContainerImageVersion indicates what container image is currently active for the vmi.",
-		"evacuationNodeName":            "EvacuationNodeName is used to track the eviction process of a VMI. It stores the name of the node that we want\nto evacuate. It is meant to be used by KubeVirt core components only and can't be set or modified by users.\n+optional",
-		"activePods":                    "ActivePods is a mapping of pod UID to node name.\nIt is possible for multiple pods to be running for a single VMI during migration.",
-		"volumeStatus":                  "VolumeStatus contains the statuses of all the volumes\n+optional\n+listType=atomic",
+		"":                   "VirtualMachineInstanceStatus represents information about the status of a VirtualMachineInstance. Status may trail the actual\nstate of a system.\n\n+k8s:openapi-gen=true",
+		"nodeName":           "NodeName is the name where the VirtualMachineInstance is currently running.",
+		"reason":             "A brief CamelCase message indicating details about why the VMI is in this state. e.g. 'NodeUnresponsive'\n+optional",
+		"conditions":         "Conditions are specific points in VirtualMachineInstance's pod runtime.",
+		"phase":              "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
+		"interfaces":         "Interfaces represent the details of available network interfaces.",
+		"guestOSInfo":        "Guest OS Information",
+		"migrationState":     "Represents the status of a live migration",
+		"migrationMethod":    "Represents the method using which the vmi can be migrated: live migration or block migration",
+		"qosClass":           "The Quality of Service (QOS) classification assigned to the virtual machine instance based on resource requirements\nSee PodQOSClass type for available QOS classes\nMore info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md\n+optional",
+		"evacuationNodeName": "EvacuationNodeName is used to track the eviction process of a VMI. It stores the name of the node that we want\nto evacuate. It is meant to be used by KubeVirt core components only and can't be set or modified by users.\n+optional",
+		"activePods":         "ActivePods is a mapping of pod UID to node name.\nIt is possible for multiple pods to be running for a single VMI during migration.",
+		"volumeStatus":       "VolumeStatus contains the statuses of all the volumes\n+optional\n+listType=atomic",
 	}
 }
 
@@ -148,7 +146,7 @@ func (VMISelector) SwaggerDoc() map[string]string {
 
 func (VirtualMachineInstanceReplicaSet) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":       "VirtualMachineInstance is *the* VirtualMachineInstance Definition. It represents a virtual machine in the runtime environment of kubernetes.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"":       "VirtualMachineInstance is *the* VirtualMachineInstance Definition. It represents a virtual machine in the runtime environment of kubernetes.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 		"spec":   "VirtualMachineInstance Spec contains the VirtualMachineInstance specification.",
 		"status": "Status is the high level overview of how the VirtualMachineInstance is doing. It contains information available to controllers and users.\n+nullable",
 	}
@@ -211,7 +209,7 @@ func (VirtualMachineInstanceTemplateSpec) SwaggerDoc() map[string]string {
 
 func (VirtualMachineInstanceMigration) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"": "VirtualMachineInstanceMigration represents the object tracking a VMI's migration\nto another host in the cluster\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"": "VirtualMachineInstanceMigration represents the object tracking a VMI's migration\nto another host in the cluster\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 	}
 }
 
@@ -236,7 +234,7 @@ func (VirtualMachineInstanceMigrationStatus) SwaggerDoc() map[string]string {
 
 func (VirtualMachineInstancePreset) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":     "VirtualMachineInstancePreset defines a VMI spec.domain to be applied to all VMIs that match the provided label selector\nMore info: https://kubevirt.io/user-guide/virtual_machines/presets/#overrides\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"":     "+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 		"spec": "VirtualMachineInstance Spec contains the VirtualMachineInstance specification.",
 	}
 }
@@ -257,7 +255,7 @@ func (VirtualMachineInstancePresetSpec) SwaggerDoc() map[string]string {
 
 func (VirtualMachine) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":       "VirtualMachine handles the VirtualMachines that are not running\nor are in a stopped state\nThe VirtualMachine contains the template to create the\nVirtualMachineInstance. It also mirrors the running state of the created\nVirtualMachineInstance in its status.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"":       "VirtualMachine handles the VirtualMachines that are not running\nor are in a stopped state\nThe VirtualMachine contains the template to create the\nVirtualMachineInstance. It also mirrors the running state of the created\nVirtualMachineInstance in its status.\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 		"spec":   "Spec contains the specification of VirtualMachineInstance created",
 		"status": "Status holds the current state of the controller and brief information\nabout its associated VirtualMachineInstance",
 	}
@@ -347,7 +345,7 @@ func (Probe) SwaggerDoc() map[string]string {
 
 func (KubeVirt) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"": "KubeVirt represents the object deploying all KubeVirt resources\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true\n+genclient",
+		"": "KubeVirt represents the object deploying all KubeVirt resources\n\n+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object\n+k8s:openapi-gen=true",
 	}
 }
 
@@ -358,54 +356,26 @@ func (KubeVirtList) SwaggerDoc() map[string]string {
 }
 
 func (KubeVirtSelfSignConfiguration) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":                   "+k8s:openapi-gen=true",
-		"caRotateInterval":   "Deprecated. Use CA.Duration instead",
-		"certRotateInterval": "Deprecated. Use Server.Duration instead",
-		"caOverlapInterval":  "Deprecated. Use CA.Duration and CA.RenewBefore instead",
-		"ca":                 "CA configuration\nCA certs are kept in the CA bundle as long as they are valid",
-		"server":             "Server configuration\nCerts are rotated and discarded",
-	}
-}
-
-func (CertConfig) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":            "CertConfig contains the tunables for TLS certificates\n+k8s:openapi-gen=true",
-		"duration":    "The requested 'duration' (i.e. lifetime) of the Certificate.",
-		"renewBefore": "The amount of time before the currently issued certificate's \"notAfter\"\ntime that we will begin to attempt to renew the certificate.",
-	}
+	return map[string]string{}
 }
 
 func (KubeVirtCertificateRotateStrategy) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
-}
-
-func (KubeVirtWorkloadUpdateStrategy) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":                      "KubeVirtWorkloadUpdateStrategy defines options related to updating a KubeVirt install\n\n+k8s:openapi-gen=true",
-		"workloadUpdateMethods": "WorkloadUpdateMethods defines the methods that can be used to disrupt workloads\nduring automated workload updates.\nWhen multiple methods are present, the least disruptive method takes\nprecedence over more disruptive methods. For example if both LiveMigrate and Shutdown\nmethods are listed, only VMs which are not live migratable will be restarted/shutdown\n\nAn empty list defaults to no automated workload updating\n\n+listType=atomic\n+optional",
-		"batchEvictionSize":     "BatchEvictionSize Represents the number of VMIs that can be forced updated per\nthe BatchShutdownInteral interval\n\nDefaults to 10\n\n+optional",
-		"batchEvictionInterval": "BatchEvictionInterval Represents the interval to wait before issuing the next\nbatch of shutdowns\n\nDefaults to 1 minute\n\n+optional",
-	}
+	return map[string]string{}
 }
 
 func (KubeVirtSpec) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":                       "+k8s:openapi-gen=true",
-		"imageTag":               "The image tag to use for the continer images installed.\nDefaults to the same tag as the operator's container image.",
-		"imageRegistry":          "The image registry to pull the container images from\nDefaults to the same registry the operator's container image is pulled from.",
-		"imagePullPolicy":        "The ImagePullPolicy to use.",
-		"monitorNamespace":       "The namespace Prometheus is deployed in\nDefaults to openshift-monitor",
-		"monitorAccount":         "The name of the Prometheus service account that needs read-access to KubeVirt endpoints\nDefaults to prometheus-k8s",
-		"workloadUpdateStrategy": "WorkloadUpdateStrategy defines at the cluster level how to handle\nautomated workload updates",
-		"uninstallStrategy":      "Specifies if kubevirt can be deleted if workloads are still present.\nThis is mainly a precaution to avoid accidental data loss",
-		"productVersion":         "Designate the apps.kubevirt.io/version label for KubeVirt components.\nUseful if KubeVirt is included as part of a product.\nIf ProductVersion is not specified, KubeVirt's version will be used.",
-		"productName":            "Designate the apps.kubevirt.io/part-of label for KubeVirt components.\nUseful if KubeVirt is included as part of a product.\nIf ProductName is not specified, the part-of label will be omitted.",
-		"configuration":          "holds kubevirt configurations.\nsame as the virt-configMap",
-		"infra":                  "selectors and tolerations that should apply to KubeVirt infrastructure components\n+optional",
-		"workloads":              "selectors and tolerations that should apply to KubeVirt workloads\n+optional",
+		"imageTag":          "The image tag to use for the continer images installed.\nDefaults to the same tag as the operator's container image.",
+		"imageRegistry":     "The image registry to pull the container images from\nDefaults to the same registry the operator's container image is pulled from.",
+		"imagePullPolicy":   "The ImagePullPolicy to use.",
+		"monitorNamespace":  "The namespace Prometheus is deployed in\nDefaults to openshift-monitor",
+		"monitorAccount":    "The name of the Prometheus service account that needs read-access to KubeVirt endpoints\nDefaults to prometheus-k8s",
+		"uninstallStrategy": "Specifies if kubevirt can be deleted if workloads are still present.\nThis is mainly a precaution to avoid accidental data loss",
+		"productVersion":    "Designate the apps.kubevirt.io/version label for KubeVirt components.\nUseful if KubeVirt is included as part of a product.\nIf ProductVersion is not specified, KubeVirt's version will be used.",
+		"productName":       "Designate the apps.kubevirt.io/part-of label for KubeVirt components.\nUseful if KubeVirt is included as part of a product.\nIf ProductName is not specified, the part-of label will be omitted.",
+		"configuration":     "holds kubevirt configurations.\nsame as the virt-configMap",
+		"infra":             "selectors and tolerations that should apply to KubeVirt infrastructure components\n+optional",
+		"workloads":         "selectors and tolerations that should apply to KubeVirt workloads\n+optional",
 	}
 }
 
@@ -413,40 +383,18 @@ func (CustomizeComponents) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":        "+k8s:openapi-gen=true",
 		"patches": "+listType=atomic",
-		"flags":   "Configure the value used for deployment and daemonset resources",
-	}
-}
-
-func (Flags) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "Flags will create a patch that will replace all flags for the container's\ncommand field. The only flags that will be used are those define. There are no\nguarantees around forward/backward compatibility.  If set incorrectly this will\ncause the resource when rolled out to error until flags are updated.\n\n+k8s:openapi-gen=true",
 	}
 }
 
 func (CustomizeComponentsPatch) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":             "+k8s:openapi-gen=true",
-		"resourceName": "+kubebuilder:validation:MinLength=1",
-		"resourceType": "+kubebuilder:validation:MinLength=1",
-	}
-}
-
-func (GenerationStatus) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":               "GenerationStatus keeps track of the generation for a given resource so that decisions about forced updates can be made.\n\n+k8s:openapi-gen=true",
-		"group":          "group is the group of the thing you're tracking",
-		"resource":       "resource is the resource type of the thing you're tracking",
-		"namespace":      "namespace is where the thing you're tracking is\n+optional",
-		"name":           "name is the name of the thing you're tracking",
-		"lastGeneration": "lastGeneration is the last generation of the workload controller involved",
-		"hash":           "hash is an optional field set for resources without generation that are content sensitive like secrets and configmaps\n+optional",
+		"": "+k8s:openapi-gen=true",
 	}
 }
 
 func (KubeVirtStatus) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":            "KubeVirtStatus represents information pertaining to a KubeVirt deployment.\n\n+k8s:openapi-gen=true",
-		"generations": "+listType=atomic",
+		"": "KubeVirtStatus represents information pertaining to a KubeVirt deployment.\n\n+k8s:openapi-gen=true",
 	}
 }
 
@@ -514,6 +462,12 @@ func (VirtualMachineInstanceFileSystem) SwaggerDoc() map[string]string {
 	}
 }
 
+func (RenameOptions) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "Options for a rename operation",
+	}
+}
+
 func (AddVolumeOptions) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":             "AddVolumeOptions is provided when dynamically hot plugging a volume and disk\n+k8s:openapi-gen=true",
@@ -532,15 +486,12 @@ func (RemoveVolumeOptions) SwaggerDoc() map[string]string {
 
 func (KubeVirtConfiguration) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"":                            "KubeVirtConfiguration holds all kubevirt configurations\n+k8s:openapi-gen=true",
-		"supportedGuestAgentVersions": "deprecated",
+		"": "KubeVirtConfiguration holds all kubevirt configurations\n+k8s:openapi-gen=true",
 	}
 }
 
 func (SMBiosConfiguration) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "+k8s:openapi-gen=true",
-	}
+	return map[string]string{}
 }
 
 func (MigrationConfiguration) SwaggerDoc() map[string]string {
@@ -555,18 +506,11 @@ func (DeveloperConfiguration) SwaggerDoc() map[string]string {
 	}
 }
 
-func (LogVerbosity) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":              "LogVerbosity sets log verbosity level of  various components\n+k8s:openapi-gen=true",
-		"nodeVerbosity": "NodeVerbosity represents a map of nodes with a specific verbosity level",
-	}
-}
-
 func (PermittedHostDevices) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                "PermittedHostDevices holds inforamtion about devices allowed for passthrough\n+k8s:openapi-gen=true",
-		"pciHostDevices":  "+listType=atomic",
-		"mediatedDevices": "+listType=atomic",
+		"pciHostDevices":  "+listType=set",
+		"mediatedDevices": "+listType=set",
 	}
 }
 

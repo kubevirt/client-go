@@ -22,7 +22,7 @@ package v1
 //go:generate swagger-doc
 //go:generate deepcopy-gen -i . --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
 //go:generate defaulter-gen -i . --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
-//go:generate openapi-gen -i kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/api/core/v1,kubevirt.io/client-go/api/v1,github.com/openshift/api/operator/v1 --output-package=kubevirt.io/kubevirt/staging/src/kubevirt.io/client-go/api/v1  --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
+//go:generate openapi-gen -i kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/api/core/v1,kubevirt.io/client-go/api/v1 --output-package=kubevirt.io/kubevirt/staging/src/kubevirt.io/client-go/api/v1  --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
 
 /*
  ATTENTION: Rerun code generators when comments on structs or fields are modified.
@@ -47,7 +47,6 @@ const DefaultGracePeriodSeconds int64 = 30
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type VirtualMachineInstance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -77,13 +76,6 @@ type VirtualMachineInstanceList struct {
 
 // +k8s:openapi-gen=true
 type EvictionStrategy string
-
-// +k8s:openapi-gen=true
-type StartStrategy string
-
-const (
-	StartStrategyPaused StartStrategy = "Paused"
-)
 
 // VirtualMachineInstanceSpec is a description of a VirtualMachineInstance.
 //
@@ -117,10 +109,7 @@ type VirtualMachineInstanceSpec struct {
 	//
 	// +optional
 	EvictionStrategy *EvictionStrategy `json:"evictionStrategy,omitempty"`
-	// StartStrategy can be set to "Paused" if Virtual Machine should be started in paused state.
-	//
-	// +optional
-	StartStrategy *StartStrategy `json:"startStrategy,omitempty"`
+
 	// Grace period observed after signalling a VirtualMachineInstance to stop after which the VirtualMachineInstance is force terminated.
 	TerminationGracePeriodSeconds *int64 `json:"terminationGracePeriodSeconds,omitempty"`
 	// List of volumes that can be mounted by disks belonging to the vmi.
@@ -194,9 +183,6 @@ type VirtualMachineInstanceStatus struct {
 	// More info: https://git.k8s.io/community/contributors/design-proposals/node/resource-qos.md
 	// +optional
 	QOSClass *k8sv1.PodQOSClass `json:"qosClass,omitempty"`
-
-	// LauncherContainerImageVersion indicates what container image is currently active for the vmi.
-	LauncherContainerImageVersion string `json:"launcherContainerImageVersion,omitempty"`
 
 	// EvacuationNodeName is used to track the eviction process of a VMI. It stores the name of the node that we want
 	// to evacuate. It is meant to be used by KubeVirt core components only and can't be set or modified by users.
@@ -312,11 +298,6 @@ func (v *VirtualMachineInstance) WantsToHaveQOSGuaranteed() bool {
 	resources := v.Spec.Domain.Resources
 	return !resources.Requests.Memory().IsZero() && resources.Requests.Memory().Cmp(*resources.Limits.Memory()) == 0 &&
 		!resources.Requests.Cpu().IsZero() && resources.Requests.Cpu().Cmp(*resources.Limits.Cpu()) == 0
-}
-
-// ShouldStartPaused returns true if VMI should be started in paused state
-func (v *VirtualMachineInstance) ShouldStartPaused() bool {
-	return v.Spec.StartStrategy != nil && *v.Spec.StartStrategy == StartStrategyPaused
 }
 
 //
@@ -590,12 +571,6 @@ const (
 	// Machine Instance migration job. Needed because with CRDs we can't use field
 	// selectors. Used on VirtualMachineInstance.
 	MigrationTargetNodeNameLabel string = "kubevirt.io/migrationTargetNodeName"
-	// This annotation indicates that a migration is the result of an
-	// automated evacuation
-	EvacuationMigrationAnnotation string = "kubevirt.io/evacuationMigration"
-	// This annotation indicates that a migration is the result of an
-	// automated workload update
-	WorkloadUpdateMigrationAnnotation string = "kubevirt.io/workloadUpdateMigration"
 	// This label declares whether a particular node is available for
 	// scheduling virtual machine instances on it. Used on Node.
 	NodeSchedulable string = "kubevirt.io/schedulable"
@@ -603,8 +578,6 @@ const (
 	// if a particular node is alive and hence should be available for new
 	// virtual machine instance scheduling. Used on Node.
 	VirtHandlerHeartbeat string = "kubevirt.io/heartbeat"
-	// This label indicates what launcher image a VMI is currently running with.
-	OutdatedLauncherImageLabel string = "kubevirt.io/outdatedLauncherImage"
 	// Namespace recommended by Kubernetes for commonly recognized labels
 	AppLabelPrefix = "app.kubernetes.io"
 	// This label is commonly used by 3rd party management tools to identify
@@ -630,8 +603,6 @@ const (
 	InstallStrategyRegistryAnnotation = "kubevirt.io/install-strategy-registry"
 	// This annotation represents the kubevirt deployment identifier used for an install strategy configmap.
 	InstallStrategyIdentifierAnnotation = "kubevirt.io/install-strategy-identifier"
-	// This annotation shows the enconding used for the manifests in the Install Strategy ConfigMap.
-	InstallStrategyConfigMapEncoding = "kubevirt.io/install-strategy-cm-encoding"
 	// This annotation is a hash of all customizations that live under spec.CustomizeComponents
 	KubeVirtCustomizeComponentAnnotationHash = "kubevirt.io/customizer-identifier"
 	// This annotation represents the kubevirt generation that was used to create a resource
@@ -651,15 +622,6 @@ const (
 	// Used on VirtualMachineInstance.
 	IgnitionAnnotation           string = "kubevirt.io/ignitiondata"
 	PlacePCIDevicesOnRootComplex string = "kubevirt.io/placePCIDevicesOnRootComplex"
-
-	// This label represents supported cpu features on the node
-	CPUFeatureLabel = "cpu-feature.node.kubevirt.io/"
-	// This laberepresents supported cpu models on the node
-	CPUModelLabel = "cpu-model.node.kubevirt.io/"
-	// This label represents supported HyperV features on the node
-	HypervLabel = "hyperv.node.kubevirt.io/"
-	// This label represents vendor of cpu model on the node
-	CPUModelVendorLabel = "cpu-vendor.node.kubevirt.io/"
 
 	VirtualMachineLabel        = AppLabel + "/vm"
 	MemfdMemoryBackend  string = "kubevirt.io/memfd"
@@ -786,7 +748,6 @@ func PrepareVMINodeAntiAffinitySelectorRequirement(vmi *VirtualMachineInstance) 
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type VirtualMachineInstanceReplicaSet struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -911,7 +872,6 @@ type VirtualMachineInstanceTemplateSpec struct {
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type VirtualMachineInstanceMigration struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -970,12 +930,9 @@ const (
 	MigrationFailed VirtualMachineInstanceMigrationPhase = "Failed"
 )
 
-// VirtualMachineInstancePreset defines a VMI spec.domain to be applied to all VMIs that match the provided label selector
-// More info: https://kubevirt.io/user-guide/virtual_machines/presets/#overrides
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type VirtualMachineInstancePreset struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -1028,7 +985,6 @@ func NewVirtualMachinePreset(name string, selector metav1.LabelSelector) *Virtua
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type VirtualMachine struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -1116,8 +1072,9 @@ type StateChangeRequestAction string
 
 // These are the currently defined state change requests
 const (
-	StartRequest StateChangeRequestAction = "Start"
-	StopRequest  StateChangeRequestAction = "Stop"
+	StartRequest  StateChangeRequestAction = "Start"
+	StopRequest   StateChangeRequestAction = "Stop"
+	RenameRequest                          = "Rename"
 )
 
 // VirtualMachineStatus represents the status returned by the
@@ -1206,6 +1163,9 @@ const (
 	// VirtualMachinePaused is added in a virtual machine when its vmi
 	// signals with its own condition that it is paused.
 	VirtualMachinePaused VirtualMachineConditionType = "Paused"
+
+	// This condition indicates that the VM was renamed
+	RenameConditionType VirtualMachineConditionType = "RenameOperation"
 )
 
 //
@@ -1304,7 +1264,6 @@ type Probe struct {
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +k8s:openapi-gen=true
-// +genclient
 type KubeVirt struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -1322,94 +1281,21 @@ type KubeVirtList struct {
 	Items           []KubeVirt `json:"items"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtSelfSignConfiguration struct {
-	// Deprecated. Use CA.Duration instead
-	CARotateInterval *metav1.Duration `json:"caRotateInterval,omitempty"`
-	// Deprecated. Use Server.Duration instead
+	CARotateInterval   *metav1.Duration `json:"caRotateInterval,omitempty"`
 	CertRotateInterval *metav1.Duration `json:"certRotateInterval,omitempty"`
-	// Deprecated. Use CA.Duration and CA.RenewBefore instead
-	CAOverlapInterval *metav1.Duration `json:"caOverlapInterval,omitempty"`
-
-	// CA configuration
-	// CA certs are kept in the CA bundle as long as they are valid
-	CA *CertConfig `json:"ca,omitempty"`
-
-	// Server configuration
-	// Certs are rotated and discarded
-	Server *CertConfig `json:"server,omitempty"`
+	CAOverlapInterval  *metav1.Duration `json:"caOverlapInterval,omitempty"`
 }
 
-// CertConfig contains the tunables for TLS certificates
-// +k8s:openapi-gen=true
-type CertConfig struct {
-	// The requested 'duration' (i.e. lifetime) of the Certificate.
-	Duration *metav1.Duration `json:"duration,omitempty"`
-
-	// The amount of time before the currently issued certificate's "notAfter"
-	// time that we will begin to attempt to renew the certificate.
-	RenewBefore *metav1.Duration `json:"renewBefore,omitempty"`
-}
-
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtCertificateRotateStrategy struct {
 	SelfSigned *KubeVirtSelfSignConfiguration `json:"selfSigned,omitempty"`
 }
 
-//
-// +k8s:openapi-gen=true
-type WorkloadUpdateMethod string
-
-const (
-	// WorkloadUpdateMethodLiveMigrate allows VMIs which are capable of being
-	// migrated to automatically migrate during automated workload updates.
-	WorkloadUpdateMethodLiveMigrate WorkloadUpdateMethod = "LiveMigrate"
-	// WorkloadUpdateMethodEvict results in a VMI's pod being evicted. Unless the
-	// pod has a pod disruption budget allocated, the eviction will usually result in
-	// the VMI being shutdown.
-	// Depending on whether a VMI is backed by a VM or not, this will either result
-	// in a restart of the VM by rescheduling a new VMI, or the shutdown via eviction
-	// of a standalone VMI object.
-	WorkloadUpdateMethodEvict WorkloadUpdateMethod = "Evict"
-)
-
-//
-// KubeVirtWorkloadUpdateStrategy defines options related to updating a KubeVirt install
-//
-// +k8s:openapi-gen=true
-type KubeVirtWorkloadUpdateStrategy struct {
-	// WorkloadUpdateMethods defines the methods that can be used to disrupt workloads
-	// during automated workload updates.
-	// When multiple methods are present, the least disruptive method takes
-	// precedence over more disruptive methods. For example if both LiveMigrate and Shutdown
-	// methods are listed, only VMs which are not live migratable will be restarted/shutdown
-	//
-	// An empty list defaults to no automated workload updating
-	//
-	// +listType=atomic
-	// +optional
-	WorkloadUpdateMethods []WorkloadUpdateMethod `json:"workloadUpdateMethods,omitempty"`
-
-	// BatchEvictionSize Represents the number of VMIs that can be forced updated per
-	// the BatchShutdownInteral interval
-	//
-	// Defaults to 10
-	//
-	// +optional
-	BatchEvictionSize *int `json:"batchEvictionSize,omitempty"`
-
-	// BatchEvictionInterval Represents the interval to wait before issuing the next
-	// batch of shutdowns
-	//
-	// Defaults to 1 minute
-	//
-	// +optional
-	BatchEvictionInterval *metav1.Duration `json:"batchEvictionInterval,omitempty"`
-}
-
-//
+// ---
 // +k8s:openapi-gen=true
 type KubeVirtSpec struct {
 	// The image tag to use for the continer images installed.
@@ -1429,10 +1315,6 @@ type KubeVirtSpec struct {
 	// The name of the Prometheus service account that needs read-access to KubeVirt endpoints
 	// Defaults to prometheus-k8s
 	MonitorAccount string `json:"monitorAccount,omitempty"`
-
-	// WorkloadUpdateStrategy defines at the cluster level how to handle
-	// automated workload updates
-	WorkloadUpdateStrategy KubeVirtWorkloadUpdateStrategy `json:"workloadUpdateStrategy,omitempty"`
 
 	// Specifies if kubevirt can be deleted if workloads are still present.
 	// This is mainly a precaution to avoid accidental data loss
@@ -1469,31 +1351,14 @@ type KubeVirtSpec struct {
 type CustomizeComponents struct {
 	// +listType=atomic
 	Patches []CustomizeComponentsPatch `json:"patches,omitempty"`
-
-	// Configure the value used for deployment and daemonset resources
-	Flags *Flags `json:"flags,omitempty"`
-}
-
-// Flags will create a patch that will replace all flags for the container's
-// command field. The only flags that will be used are those define. There are no
-// guarantees around forward/backward compatibility.  If set incorrectly this will
-// cause the resource when rolled out to error until flags are updated.
-//
-// +k8s:openapi-gen=true
-type Flags struct {
-	API        map[string]string `json:"api,omitempty"`
-	Controller map[string]string `json:"controller,omitempty"`
-	Handler    map[string]string `json:"handler,omitempty"`
 }
 
 // +k8s:openapi-gen=true
 type CustomizeComponentsPatch struct {
-	// +kubebuilder:validation:MinLength=1
-	ResourceName string `json:"resourceName"`
-	// +kubebuilder:validation:MinLength=1
-	ResourceType string    `json:"resourceType"`
-	Patch        string    `json:"patch"`
-	Type         PatchType `json:"type"`
+	ResourceName string    `json:"resourceName,omitempty"`
+	ResourceType string    `json:"resourceType,omitempty"`
+	Patch        string    `json:"patch,omitempty"`
+	Type         PatchType `json:"type,omitempty"`
 }
 
 type PatchType string
@@ -1511,44 +1376,21 @@ const (
 	KubeVirtUninstallStrategyBlockUninstallIfWorkloadsExist KubeVirtUninstallStrategy = "BlockUninstallIfWorkloadsExist"
 )
 
-// GenerationStatus keeps track of the generation for a given resource so that decisions about forced updates can be made.
-//
-// +k8s:openapi-gen=true
-type GenerationStatus struct {
-	// group is the group of the thing you're tracking
-	Group string `json:"group"`
-	// resource is the resource type of the thing you're tracking
-	Resource string `json:"resource"`
-	// namespace is where the thing you're tracking is
-	// +optional
-	Namespace string `json:"namespace,omitempty" optional:"true"`
-	// name is the name of the thing you're tracking
-	Name string `json:"name"`
-	// lastGeneration is the last generation of the workload controller involved
-	LastGeneration int64 `json:"lastGeneration"`
-	// hash is an optional field set for resources without generation that are content sensitive like secrets and configmaps
-	// +optional
-	Hash string `json:"hash,omitempty" optional:"true"`
-}
-
 // KubeVirtStatus represents information pertaining to a KubeVirt deployment.
 //
 // +k8s:openapi-gen=true
 type KubeVirtStatus struct {
-	Phase                                   KubeVirtPhase       `json:"phase,omitempty"`
-	Conditions                              []KubeVirtCondition `json:"conditions,omitempty" optional:"true"`
-	OperatorVersion                         string              `json:"operatorVersion,omitempty" optional:"true"`
-	TargetKubeVirtRegistry                  string              `json:"targetKubeVirtRegistry,omitempty" optional:"true"`
-	TargetKubeVirtVersion                   string              `json:"targetKubeVirtVersion,omitempty" optional:"true"`
-	TargetDeploymentConfig                  string              `json:"targetDeploymentConfig,omitempty" optional:"true"`
-	TargetDeploymentID                      string              `json:"targetDeploymentID,omitempty" optional:"true"`
-	ObservedKubeVirtRegistry                string              `json:"observedKubeVirtRegistry,omitempty" optional:"true"`
-	ObservedKubeVirtVersion                 string              `json:"observedKubeVirtVersion,omitempty" optional:"true"`
-	ObservedDeploymentConfig                string              `json:"observedDeploymentConfig,omitempty" optional:"true"`
-	ObservedDeploymentID                    string              `json:"observedDeploymentID,omitempty" optional:"true"`
-	OutdatedVirtualMachineInstanceWorkloads *int                `json:"outdatedVirtualMachineInstanceWorkloads,omitempty" optional:"true"`
-	// +listType=atomic
-	Generations []GenerationStatus `json:"generations,omitempty" optional:"true"`
+	Phase                    KubeVirtPhase       `json:"phase,omitempty"`
+	Conditions               []KubeVirtCondition `json:"conditions,omitempty" optional:"true"`
+	OperatorVersion          string              `json:"operatorVersion,omitempty" optional:"true"`
+	TargetKubeVirtRegistry   string              `json:"targetKubeVirtRegistry,omitempty" optional:"true"`
+	TargetKubeVirtVersion    string              `json:"targetKubeVirtVersion,omitempty" optional:"true"`
+	TargetDeploymentConfig   string              `json:"targetDeploymentConfig,omitempty" optional:"true"`
+	TargetDeploymentID       string              `json:"targetDeploymentID,omitempty" optional:"true"`
+	ObservedKubeVirtRegistry string              `json:"observedKubeVirtRegistry,omitempty" optional:"true"`
+	ObservedKubeVirtVersion  string              `json:"observedKubeVirtVersion,omitempty" optional:"true"`
+	ObservedDeploymentConfig string              `json:"observedDeploymentConfig,omitempty" optional:"true"`
+	ObservedDeploymentID     string              `json:"observedDeploymentID,omitempty" optional:"true"`
 }
 
 // KubeVirtPhase is a label for the phase of a KubeVirt deployment at the current time.
@@ -1698,6 +1540,13 @@ type VirtualMachineInstanceFileSystem struct {
 	TotalBytes     int    `json:"totalBytes"`
 }
 
+// Options for a rename operation
+type RenameOptions struct {
+	metav1.TypeMeta `json:",inline"`
+	NewName         string  `json:"newName"`
+	OldName         *string `json:"oldName,omitempty"`
+}
+
 // AddVolumeOptions is provided when dynamically hot plugging a volume and disk
 // +k8s:openapi-gen=true
 type AddVolumeOptions struct {
@@ -1722,26 +1571,23 @@ type RemoveVolumeOptions struct {
 // KubeVirtConfiguration holds all kubevirt configurations
 // +k8s:openapi-gen=true
 type KubeVirtConfiguration struct {
-	CPUModel               string                  `json:"cpuModel,omitempty"`
-	CPURequest             *resource.Quantity      `json:"cpuRequest,omitempty"`
-	DeveloperConfiguration *DeveloperConfiguration `json:"developerConfiguration,omitempty"`
-	EmulatedMachines       []string                `json:"emulatedMachines,omitempty"`
-	ImagePullPolicy        k8sv1.PullPolicy        `json:"imagePullPolicy,omitempty"`
-	MigrationConfiguration *MigrationConfiguration `json:"migrations,omitempty"`
-	MachineType            string                  `json:"machineType,omitempty"`
-	NetworkConfiguration   *NetworkConfiguration   `json:"network,omitempty"`
-	OVMFPath               string                  `json:"ovmfPath,omitempty"`
-	SELinuxLauncherType    string                  `json:"selinuxLauncherType,omitempty"`
-	SMBIOSConfig           *SMBiosConfiguration    `json:"smbios,omitempty"`
-	// deprecated
-	SupportedGuestAgentVersions []string              `json:"supportedGuestAgentVersions,omitempty"`
-	MemBalloonStatsPeriod       *uint32               `json:"memBalloonStatsPeriod,omitempty"`
-	PermittedHostDevices        *PermittedHostDevices `json:"permittedHostDevices,omitempty"`
-	MinCPUModel                 string                `json:"minCPUModel,omitempty"`
-	ObsoleteCPUModels           map[string]bool       `json:"obsoleteCPUModels,omitempty"`
+	CPUModel                    string                  `json:"cpuModel,omitempty"`
+	CPURequest                  *resource.Quantity      `json:"cpuRequest,omitempty"`
+	DeveloperConfiguration      *DeveloperConfiguration `json:"developerConfiguration,omitempty"`
+	EmulatedMachines            []string                `json:"emulatedMachines,omitempty"`
+	ImagePullPolicy             k8sv1.PullPolicy        `json:"imagePullPolicy,omitempty"`
+	MigrationConfiguration      *MigrationConfiguration `json:"migrations,omitempty"`
+	MachineType                 string                  `json:"machineType,omitempty"`
+	NetworkConfiguration        *NetworkConfiguration   `json:"network,omitempty"`
+	OVMFPath                    string                  `json:"ovmfPath,omitempty"`
+	SELinuxLauncherType         string                  `json:"selinuxLauncherType,omitempty"`
+	SMBIOSConfig                *SMBiosConfiguration    `json:"smbios,omitempty"`
+	SupportedGuestAgentVersions []string                `json:"supportedGuestAgentVersions,omitempty"`
+	MemBalloonStatsPeriod       *uint32                 `json:"memBalloonStatsPeriod,omitempty"`
+	PermittedHostDevices        *PermittedHostDevices   `json:"permittedHostDevices,omitempty"`
 }
 
-//
+// ---
 // +k8s:openapi-gen=true
 type SMBiosConfiguration struct {
 	Manufacturer string `json:"manufacturer,omitempty"`
@@ -1774,27 +1620,14 @@ type DeveloperConfiguration struct {
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
 	CPUAllocationRatio     int               `json:"cpuAllocationRatio,omitempty"`
-	LogVerbosity           *LogVerbosity     `json:"logVerbosity,omitempty"`
-}
-
-// LogVerbosity sets log verbosity level of  various components
-// +k8s:openapi-gen=true
-type LogVerbosity struct {
-	VirtAPI        uint `json:"virtAPI,omitempty"`
-	VirtController uint `json:"virtController,omitempty"`
-	VirtHandler    uint `json:"virtHandler,omitempty"`
-	VirtLauncher   uint `json:"virtLauncher,omitempty"`
-	VirtOperator   uint `json:"virtOperator,omitempty"`
-	// NodeVerbosity represents a map of nodes with a specific verbosity level
-	NodeVerbosity map[string]uint `json:"nodeVerbosity,omitempty"`
 }
 
 // PermittedHostDevices holds inforamtion about devices allowed for passthrough
 // +k8s:openapi-gen=true
 type PermittedHostDevices struct {
-	// +listType=atomic
+	// +listType=set
 	PciHostDevices []PciHostDevice `json:"pciHostDevices,omitempty"`
-	// +listType=atomic
+	// +listType=set
 	MediatedDevices []MediatedHostDevice `json:"mediatedDevices,omitempty"`
 }
 

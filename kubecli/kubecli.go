@@ -31,7 +31,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/discovery"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
@@ -133,11 +132,6 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		return nil, err
 	}
 
-	dynamicClient, err := dynamic.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -151,7 +145,6 @@ func GetKubevirtSubresourceClientFromFlags(master string, kubeconfig string) (Ku
 		discoveryClient,
 		prometheusClient,
 		snapshotClient,
-		dynamicClient,
 		coreClient,
 	}, nil
 }
@@ -285,11 +278,6 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		return nil, err
 	}
 
-	dynamicClient, err := dynamic.NewForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
 	return &kubevirt{
 		master,
 		kubeconfig,
@@ -303,7 +291,6 @@ func GetKubevirtClientFromRESTConfig(config *rest.Config) (KubevirtClient, error
 		discoveryClient,
 		prometheusClient,
 		snapshotClient,
-		dynamicClient,
 		coreClient,
 	}, nil
 }

@@ -22,7 +22,6 @@ package v1
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"text/template"
 
 	. "github.com/onsi/ginkgo"
@@ -34,13 +33,13 @@ type NetworkTemplateConfig struct {
 	InterfaceConfig string
 }
 
-var exampleJSONFmt = `{
+var exampleJSON = `{
   "kind": "VirtualMachineInstance",
-  "apiVersion": "kubevirt.io/%s",
+  "apiVersion": "kubevirt.io/v1alpha3",
   "metadata": {
     "name": "testvmi",
     "namespace": "default",
-    "selfLink": "/apis/kubevirt.io/%s/namespaces/default/virtualmachineinstances/testvmi",
+    "selfLink": "/apis/kubevirt.io/v1alpha3/namespaces/default/virtualmachineinstances/testvmi",
     "creationTimestamp": null
   },
   "spec": {
@@ -121,10 +120,7 @@ var exampleJSONFmt = `{
             "enabled": false
           },
           "synictimer": {
-            "enabled": true,
-            "direct": {
-              "enabled": true
-            }
+            "enabled": true
           },
           "reset": {
             "enabled": false
@@ -248,8 +244,6 @@ var exampleJSONFmt = `{
   }
 }`
 
-var exampleJSON = fmt.Sprintf(exampleJSONFmt, ApiLatestVersion, ApiLatestVersion)
-
 var _ = Describe("Schema", func() {
 	//The example domain should stay in sync to the json above
 	var exampleVMI *VirtualMachineInstance
@@ -363,7 +357,7 @@ var _ = Describe("Schema", func() {
 				VPIndex:         &FeatureState{Enabled: _false},
 				Runtime:         &FeatureState{Enabled: _true},
 				SyNIC:           &FeatureState{Enabled: _false},
-				SyNICTimer:      &SyNICTimer{Enabled: _true, Direct: &FeatureState{Enabled: _true}},
+				SyNICTimer:      &FeatureState{Enabled: _true},
 				Reset:           &FeatureState{Enabled: _false},
 				VendorID:        &FeatureVendorID{Enabled: _true, VendorID: "vendor"},
 				Frequencies:     &FeatureState{Enabled: _false},

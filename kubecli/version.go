@@ -20,8 +20,6 @@
 package kubecli
 
 import (
-	"context"
-
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -54,7 +52,7 @@ func (v *ServerVersion) Get() (*version.Info, error) {
 	var group metav1.APIGroup
 	// First, find out which version to query
 	uri := ApiGroupName
-	result := v.restClient.Get().RequestURI(uri).Do(context.Background())
+	result := v.restClient.Get().RequestURI(uri).Do()
 	if data, err := result.Raw(); err != nil {
 		connErr, isConnectionErr := err.(*url.Error)
 
@@ -71,7 +69,7 @@ func (v *ServerVersion) Get() (*version.Info, error) {
 	uri = fmt.Sprintf("/apis/%s/version", group.PreferredVersion.GroupVersion)
 	var serverInfo version.Info
 
-	result = v.restClient.Get().RequestURI(uri).Do(context.Background())
+	result = v.restClient.Get().RequestURI(uri).Do()
 	if data, err := result.Raw(); err != nil {
 		connErr, isConnectionErr := err.(*url.Error)
 

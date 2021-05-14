@@ -114,18 +114,6 @@ type ServiceAccountVolumeSource struct {
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 }
 
-// Represents a Sysprep volume source.
-//
-// +k8s:openapi-gen=true
-type SysprepSource struct {
-	// Secret references a k8s Secret that contains Sysprep answer file named autounattend.xml that should be attached as disk of CDROM type.
-	// + optional
-	Secret *v1.LocalObjectReference `json:"secret,omitempty"`
-	// ConfigMap references a ConfigMap that contains Sysprep answer file named autounattend.xml that should be attached as disk of CDROM type.
-	// + optional
-	ConfigMap *v1.LocalObjectReference `json:"configMap,omitempty"`
-}
-
 // Represents a cloud-init nocloud user data source.
 // More info: http://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html
 //
@@ -398,8 +386,7 @@ type Devices struct {
 	// Whether to have random number generator from host
 	// +optional
 	Rng *Rng `json:"rng,omitempty"`
-	// Whether or not to enable virtio multi-queue for block devices.
-	// Defaults to false.
+	// Whether or not to enable virtio multi-queue for block devices
 	// +optional
 	BlockMultiQueue *bool `json:"blockMultiQueue,omitempty"`
 	// If specified, virtual network interfaces configured with a virtio bus will also enable the vhost multiqueue feature for network devices. The number of queues created depends on additional factors of the VirtualMachineInstance, like the number of guest CPUs.
@@ -484,7 +471,6 @@ type Disk struct {
 	// +optional
 	DedicatedIOThread *bool `json:"dedicatedIOThread,omitempty"`
 	// Cache specifies which kvm disk cache mode should be used.
-	// Supported values are: CacheNone, CacheWriteThrough.
 	// +optional
 	Cache DriverCache `json:"cache,omitempty"`
 	// IO specifies which QEMU disk IO mode should be used.
@@ -494,26 +480,6 @@ type Disk struct {
 	// If specified, disk address and its tag will be provided to the guest via config drive metadata
 	// +optional
 	Tag string `json:"tag,omitempty"`
-	// If specified, the virtual disk will be presented with the given block sizes.
-	// +optional
-	BlockSize *BlockSize `json:"blockSize,omitempty"`
-}
-
-// CustomBlockSize represents the desired logical and physical block size for a VM disk.
-//
-// +k8s:openapi-gen=true
-type CustomBlockSize struct {
-	Logical  uint `json:"logical"`
-	Physical uint `json:"physical"`
-}
-
-// BlockSize provides the option to change the block size presented to the VM for a disk.
-// Only one of its members may be specified.
-//
-// +k8s:openapi-gen=true
-type BlockSize struct {
-	Custom      *CustomBlockSize `json:"custom,omitempty"`
-	MatchVolume *FeatureState    `json:"matchVolume,omitempty"`
 }
 
 // Represents the target of a volume to mount.
@@ -633,9 +599,6 @@ type VolumeSource struct {
 	// More info: https://cloudinit.readthedocs.io/en/latest/topics/datasources/configdrive.html
 	// +optional
 	CloudInitConfigDrive *CloudInitConfigDriveSource `json:"cloudInitConfigDrive,omitempty"`
-	// Represents a Sysprep volume source.
-	// +optional
-	Sysprep *SysprepSource `json:"sysprep,omitempty"`
 	// ContainerDisk references a docker image, embedding a qcow or raw disk.
 	// More info: https://kubevirt.gitbooks.io/user-guide/registry-disk.html
 	// +optional
@@ -925,13 +888,6 @@ type Features struct {
 	Pvspinlock *FeatureState `json:"pvspinlock,omitempty"`
 }
 
-//
-// +k8s:openapi-gen=true
-type SyNICTimer struct {
-	Enabled *bool         `json:"enabled,omitempty"`
-	Direct  *FeatureState `json:"direct,omitempty"`
-}
-
 // Represents if a feature is enabled or disabled.
 //
 // +k8s:openapi-gen=true
@@ -1011,7 +967,7 @@ type FeatureHyperv struct {
 	// SyNICTimer enables Synthetic Interrupt Controller Timers, reducing CPU load.
 	// Defaults to the machine type setting.
 	// +optional
-	SyNICTimer *SyNICTimer `json:"synictimer,omitempty"`
+	SyNICTimer *FeatureState `json:"synictimer,omitempty"`
 	// Reset enables Hyperv reboot/reset for the vmi. Requires synic.
 	// Defaults to the machine type setting.
 	// +optional
@@ -1368,10 +1324,6 @@ type PodNetwork struct {
 	// CIDR for vm network.
 	// Default 10.0.2.0/24 if not specified.
 	VMNetworkCIDR string `json:"vmNetworkCIDR,omitempty"`
-
-	// IPv6 CIDR for the vm network.
-	// Defaults to fd10:0:2::/120 if not specified.
-	VMIPv6NetworkCIDR string `json:"vmIPv6NetworkCIDR,omitempty"`
 }
 
 // Rng represents the random device passed from host

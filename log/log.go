@@ -206,6 +206,14 @@ func (l FilteredLogger) log(skipFrames int, params ...interface{}) error {
 	return nil
 }
 
+func (l FilteredLogger) CustomField(key string, value string) *FilteredLogger {
+
+	logParams := make([]interface{}, 0)
+	logParams = append(logParams, key, value)
+	l.With(logParams...)
+	return &l
+}
+
 func (l FilteredLogger) Key(key string, kind string) *FilteredLogger {
 	if key == "" {
 		return &l
@@ -221,7 +229,7 @@ func (l FilteredLogger) Key(key string, kind string) *FilteredLogger {
 	}
 	logParams = append(logParams, "name", name)
 	logParams = append(logParams, "kind", kind)
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
@@ -240,7 +248,7 @@ func (l FilteredLogger) Object(obj LoggableObject) *FilteredLogger {
 	logParams = append(logParams, "kind", kind)
 	logParams = append(logParams, "uid", uid)
 
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
@@ -258,17 +266,17 @@ func (l FilteredLogger) ObjectRef(obj *v1.ObjectReference) *FilteredLogger {
 	logParams = append(logParams, "kind", obj.Kind)
 	logParams = append(logParams, "uid", obj.UID)
 
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
-func (l FilteredLogger) With(obj ...interface{}) *FilteredLogger {
+func (l *FilteredLogger) With(obj ...interface{}) *FilteredLogger {
 	l.logContext = l.logContext.With(obj...)
-	return &l
+	return l
 }
 
-func (l *FilteredLogger) with(obj ...interface{}) *FilteredLogger {
-	l.logContext = l.logContext.With(obj...)
+func (l *FilteredLogger) WithPrefix(obj ...interface{}) *FilteredLogger {
+	l.logContext = l.logContext.WithPrefix(obj...)
 	return l
 }
 

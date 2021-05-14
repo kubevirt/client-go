@@ -1,7 +1,6 @@
 package kubecli
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
@@ -108,7 +107,7 @@ func (v *virtHandler) getVirtHandler(nodeName string, namespace string) (*v1.Pod
 		return nil, false, err
 	}
 
-	pods, err := v.client.CoreV1().Pods(namespace).List(context.Background(),
+	pods, err := v.client.CoreV1().Pods(namespace).List(
 		k8smetav1.ListOptions{
 			FieldSelector: handlerNodeSelector.String(),
 			LabelSelector: labelSelector.String()})

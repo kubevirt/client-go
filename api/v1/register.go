@@ -21,7 +21,7 @@ package v1
 import (
 	"os"
 
-	extv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	extv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -35,15 +35,10 @@ const SubresourceGroupName = "subresources.kubevirt.io"
 const KubeVirtClientGoSchemeRegistrationVersionEnvVar = "KUBEVIRT_CLIENT_GO_SCHEME_REGISTRATION_VERSION"
 
 var (
-	ApiLatestVersion            = "v1"
-	ApiSupportedWebhookVersions = []string{"v1alpha3", "v1"}
+	ApiLatestVersion            = "v1alpha3"
+	ApiSupportedWebhookVersions = []string{"v1alpha3"}
 	ApiStorageVersion           = "v1alpha3"
-	ApiSupportedVersions        = []extv1.CustomResourceDefinitionVersion{
-		{
-			Name:    "v1",
-			Served:  true,
-			Storage: false,
-		},
+	ApiSupportedVersions        = []extv1beta1.CustomResourceDefinitionVersion{
 		{
 			Name:    "v1alpha3",
 			Served:  true,
@@ -54,19 +49,18 @@ var (
 
 var (
 	// GroupVersion is the latest group version for the KubeVirt api
-	GroupVersion       = schema.GroupVersion{Group: GroupName, Version: ApiLatestVersion}
-	SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: ApiLatestVersion}
+	GroupVersion = schema.GroupVersion{Group: GroupName, Version: ApiLatestVersion}
 
 	// StorageGroupVersion is the group version our api is persistented internally as
 	StorageGroupVersion = schema.GroupVersion{Group: GroupName, Version: ApiStorageVersion}
 
 	// GroupVersions is group version list used to register these objects
 	// The preferred group version is the first item in the list.
-	GroupVersions = []schema.GroupVersion{{Group: GroupName, Version: "v1"}, {Group: GroupName, Version: "v1alpha3"}}
+	GroupVersions = []schema.GroupVersion{GroupVersion}
 
 	// SubresourceGroupVersions is group version list used to register these objects
 	// The preferred group version is the first item in the list.
-	SubresourceGroupVersions = []schema.GroupVersion{{Group: SubresourceGroupName, Version: ApiLatestVersion}, {Group: SubresourceGroupName, Version: ApiStorageVersion}}
+	SubresourceGroupVersions = []schema.GroupVersion{{Group: SubresourceGroupName, Version: "v1alpha3"}}
 
 	// SubresourceStorageGroupVersion is the group version our api is persistented internally as
 	SubresourceStorageGroupVersion = schema.GroupVersion{Group: SubresourceGroupName, Version: ApiStorageVersion}

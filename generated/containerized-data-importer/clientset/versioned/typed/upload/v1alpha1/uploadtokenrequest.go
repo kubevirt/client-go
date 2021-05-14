@@ -19,7 +19,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	"time"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -39,15 +38,15 @@ type UploadTokenRequestsGetter interface {
 
 // UploadTokenRequestInterface has methods to work with UploadTokenRequest resources.
 type UploadTokenRequestInterface interface {
-	Create(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.CreateOptions) (*v1alpha1.UploadTokenRequest, error)
-	Update(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.UpdateOptions) (*v1alpha1.UploadTokenRequest, error)
-	UpdateStatus(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.UpdateOptions) (*v1alpha1.UploadTokenRequest, error)
-	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
-	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.UploadTokenRequest, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.UploadTokenRequestList, error)
-	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.UploadTokenRequest, err error)
+	Create(*v1alpha1.UploadTokenRequest) (*v1alpha1.UploadTokenRequest, error)
+	Update(*v1alpha1.UploadTokenRequest) (*v1alpha1.UploadTokenRequest, error)
+	UpdateStatus(*v1alpha1.UploadTokenRequest) (*v1alpha1.UploadTokenRequest, error)
+	Delete(name string, options *v1.DeleteOptions) error
+	DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error
+	Get(name string, options v1.GetOptions) (*v1alpha1.UploadTokenRequest, error)
+	List(opts v1.ListOptions) (*v1alpha1.UploadTokenRequestList, error)
+	Watch(opts v1.ListOptions) (watch.Interface, error)
+	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.UploadTokenRequest, err error)
 	UploadTokenRequestExpansion
 }
 
@@ -66,20 +65,20 @@ func newUploadTokenRequests(c *UploadV1alpha1Client, namespace string) *uploadTo
 }
 
 // Get takes name of the uploadTokenRequest, and returns the corresponding uploadTokenRequest object, and an error if there is any.
-func (c *uploadTokenRequests) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.UploadTokenRequest, err error) {
+func (c *uploadTokenRequests) Get(name string, options v1.GetOptions) (result *v1alpha1.UploadTokenRequest, err error) {
 	result = &v1alpha1.UploadTokenRequest{}
 	err = c.client.Get().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // List takes label and field selectors, and returns the list of UploadTokenRequests that match those selectors.
-func (c *uploadTokenRequests) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.UploadTokenRequestList, err error) {
+func (c *uploadTokenRequests) List(opts v1.ListOptions) (result *v1alpha1.UploadTokenRequestList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -90,13 +89,13 @@ func (c *uploadTokenRequests) List(ctx context.Context, opts v1.ListOptions) (re
 		Resource("uploadtokenrequests").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Watch returns a watch.Interface that watches the requested uploadTokenRequests.
-func (c *uploadTokenRequests) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *uploadTokenRequests) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -107,90 +106,87 @@ func (c *uploadTokenRequests) Watch(ctx context.Context, opts v1.ListOptions) (w
 		Resource("uploadtokenrequests").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Watch(ctx)
+		Watch()
 }
 
 // Create takes the representation of a uploadTokenRequest and creates it.  Returns the server's representation of the uploadTokenRequest, and an error, if there is any.
-func (c *uploadTokenRequests) Create(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.CreateOptions) (result *v1alpha1.UploadTokenRequest, err error) {
+func (c *uploadTokenRequests) Create(uploadTokenRequest *v1alpha1.UploadTokenRequest) (result *v1alpha1.UploadTokenRequest, err error) {
 	result = &v1alpha1.UploadTokenRequest{}
 	err = c.client.Post().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(uploadTokenRequest).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Update takes the representation of a uploadTokenRequest and updates it. Returns the server's representation of the uploadTokenRequest, and an error, if there is any.
-func (c *uploadTokenRequests) Update(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.UpdateOptions) (result *v1alpha1.UploadTokenRequest, err error) {
+func (c *uploadTokenRequests) Update(uploadTokenRequest *v1alpha1.UploadTokenRequest) (result *v1alpha1.UploadTokenRequest, err error) {
 	result = &v1alpha1.UploadTokenRequest{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
 		Name(uploadTokenRequest.Name).
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(uploadTokenRequest).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *uploadTokenRequests) UpdateStatus(ctx context.Context, uploadTokenRequest *v1alpha1.UploadTokenRequest, opts v1.UpdateOptions) (result *v1alpha1.UploadTokenRequest, err error) {
+
+func (c *uploadTokenRequests) UpdateStatus(uploadTokenRequest *v1alpha1.UploadTokenRequest) (result *v1alpha1.UploadTokenRequest, err error) {
 	result = &v1alpha1.UploadTokenRequest{}
 	err = c.client.Put().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
 		Name(uploadTokenRequest.Name).
 		SubResource("status").
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(uploadTokenRequest).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Delete takes name of the uploadTokenRequest and deletes it. Returns an error if one occurs.
-func (c *uploadTokenRequests) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *uploadTokenRequests) Delete(name string, options *v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
 		Name(name).
-		Body(&opts).
-		Do(ctx).
+		Body(options).
+		Do().
 		Error()
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *uploadTokenRequests) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *uploadTokenRequests) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
 	var timeout time.Duration
-	if listOpts.TimeoutSeconds != nil {
-		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
+	if listOptions.TimeoutSeconds != nil {
+		timeout = time.Duration(*listOptions.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
-		VersionedParams(&listOpts, scheme.ParameterCodec).
+		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Timeout(timeout).
-		Body(&opts).
-		Do(ctx).
+		Body(options).
+		Do().
 		Error()
 }
 
 // Patch applies the patch and returns the patched uploadTokenRequest.
-func (c *uploadTokenRequests) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.UploadTokenRequest, err error) {
+func (c *uploadTokenRequests) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.UploadTokenRequest, err error) {
 	result = &v1alpha1.UploadTokenRequest{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
 		Resource("uploadtokenrequests").
-		Name(name).
 		SubResource(subresources...).
-		VersionedParams(&opts, scheme.ParameterCodec).
+		Name(name).
 		Body(data).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
