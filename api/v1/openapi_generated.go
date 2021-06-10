@@ -500,7 +500,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.SSHPublicKeyAccessCredentialSource":                         schema_kubevirtio_client_go_api_v1_SSHPublicKeyAccessCredentialSource(ref),
 		"kubevirt.io/client-go/api/v1.SecretVolumeSource":                                         schema_kubevirtio_client_go_api_v1_SecretVolumeSource(ref),
 		"kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource":                                 schema_kubevirtio_client_go_api_v1_ServiceAccountVolumeSource(ref),
-		"kubevirt.io/client-go/api/v1.StartOptions":                                               schema_kubevirtio_client_go_api_v1_StartOptions(ref),
 		"kubevirt.io/client-go/api/v1.SyNICTimer":                                                 schema_kubevirtio_client_go_api_v1_SyNICTimer(ref),
 		"kubevirt.io/client-go/api/v1.SysprepSource":                                              schema_kubevirtio_client_go_api_v1_SysprepSource(ref),
 		"kubevirt.io/client-go/api/v1.Timer":                                                      schema_kubevirtio_client_go_api_v1_Timer(ref),
@@ -22415,12 +22414,6 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 				Description: "Probe describes a health check to be performed against a VirtualMachineInstance to determine whether it is alive or ready to receive traffic.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"exec": {
-						SchemaProps: spec.SchemaProps{
-							Description: "One and only one of the following should be specified. Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent. If the guest agent is not available, this probe will fail.",
-							Ref:         ref("k8s.io/api/core/v1.ExecAction"),
-						},
-					},
 					"httpGet": {
 						SchemaProps: spec.SchemaProps{
 							Description: "HTTPGet specifies the http request to perform.",
@@ -22442,7 +22435,7 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 					},
 					"timeoutSeconds": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Number of seconds after which the probe times out. For exec probes the timeout fails the probe but does not terminate the command running on the guest. This means a blocking command can result in an increasing load on the guest. A small buffer will be added to the resulting workload exec probe to compensate for delays caused by the qemu guest exec mechanism. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
+							Description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
 							Type:        []string{"integer"},
 							Format:      "int32",
 						},
@@ -22472,7 +22465,7 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.ExecAction", "k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.TCPSocketAction"},
+			"k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.TCPSocketAction"},
 	}
 }
 
@@ -22829,40 +22822,6 @@ func schema_kubevirtio_client_go_api_v1_ServiceAccountVolumeSource(ref common.Re
 						SchemaProps: spec.SchemaProps{
 							Description: "Name of the service account in the pod's namespace to use. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/",
 							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_client_go_api_v1_StartOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "StartOptions may be provided on start request.",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"paused": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Indicates that VM will be started in paused state.",
-							Type:        []string{"boolean"},
 							Format:      "",
 						},
 					},

@@ -1302,11 +1302,6 @@ const (
 // Handler defines a specific action that should be taken
 // TODO: pass structured data to these actions, and document that data here.
 type Handler struct {
-	// One and only one of the following should be specified.
-	// Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.
-	// If the guest agent is not available, this probe will fail.
-	// +optional
-	Exec *k8sv1.ExecAction `json:"exec,omitempty" protobuf:"bytes,1,opt,name=exec"`
 	// HTTPGet specifies the http request to perform.
 	// +optional
 	HTTPGet *k8sv1.HTTPGetAction `json:"httpGet,omitempty"`
@@ -1328,10 +1323,6 @@ type Probe struct {
 	// +optional
 	InitialDelaySeconds int32 `json:"initialDelaySeconds,omitempty"`
 	// Number of seconds after which the probe times out.
-	// For exec probes the timeout fails the probe but does not terminate the command running on the guest.
-	// This means a blocking command can result in an increasing load on the guest.
-	// A small buffer will be added to the resulting workload exec probe to compensate for delays
-	// caused by the qemu guest exec mechanism.
 	// Defaults to 1 second. Minimum value is 1.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
@@ -1672,22 +1663,6 @@ type RestartOptions struct {
 	// +optional
 	GracePeriodSeconds *int64 `json:"gracePeriodSeconds,omitempty" protobuf:"varint,1,opt,name=gracePeriodSeconds"`
 }
-
-// StartOptions may be provided on start request.
-//
-// +k8s:openapi-gen=true
-type StartOptions struct {
-	metav1.TypeMeta `json:",inline"`
-
-	// Indicates that VM will be started in paused state.
-	// +optional
-	Paused bool `json:"paused,omitempty" protobuf:"varint,7,opt,name=paused"`
-}
-
-const (
-	StartRequestDataPausedKey  string = "paused"
-	StartRequestDataPausedTrue string = "true"
-)
 
 // VirtualMachineInstanceGuestAgentInfo represents information from the installed guest agent
 //
