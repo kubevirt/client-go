@@ -22,7 +22,7 @@ package v1
 //go:generate swagger-doc
 //go:generate deepcopy-gen -i . --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
 //go:generate defaulter-gen -i . --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
-//go:generate openapi-gen -i kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/api/core/v1,kubevirt.io/client-go/api/v1,github.com/openshift/api/operator/v1 --output-package=kubevirt.io/kubevirt/staging/src/kubevirt.io/client-go/api/v1  --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
+//go:generate openapi-gen -i kubevirt.io/containerized-data-importer/pkg/apis/core/v1beta1,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/api/core/v1,kubevirt.io/client-go/api/v1,github.com/openshift/api/operator/v1 --output-package=kubevirt.io/kubevirt/staging/src/kubevirt.io/client-go/api/v1  --go-header-file ../../../../../../hack/boilerplate/boilerplate.go.txt
 
 /*
  ATTENTION: Rerun code generators when comments on structs or fields are modified.
@@ -38,7 +38,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 
-	cdiv1 "kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1"
+	cdiv1 "kubevirt.io/containerized-data-importer/pkg/apis/core/v1beta1"
 )
 
 const DefaultGracePeriodSeconds int64 = 30
@@ -167,6 +167,21 @@ type VirtualMachineInstanceSpec struct {
 	AccessCredentials []AccessCredential `json:"accessCredentials,omitempty"`
 }
 
+// VirtualMachineInstancePhaseTransitionTimestamp gives a timestamp in relation to when a phase is set on a vmi
+//
+// +k8s:openapi-gen=true
+type VirtualMachineInstancePhaseTransitionTimestamp struct {
+	// Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.
+	Phase VirtualMachineInstancePhase `json:"phase,omitempty"`
+	// PhaseTransitionTimestamp is the timestamp of when the phase change occurred
+	PhaseTransitionTimestamp metav1.Time `json:"phaseTransitionTimestamp,omitempty"`
+}
+
+// +k8s:openapi-gen=true
+type TopologyHints struct {
+	TSCFrequency *int64 `json:"tscFrequency,omitempty"`
+}
+
 // VirtualMachineInstanceStatus represents information about the status of a VirtualMachineInstance. Status may trail the actual
 // state of a system.
 //
@@ -181,6 +196,10 @@ type VirtualMachineInstanceStatus struct {
 	Conditions []VirtualMachineInstanceCondition `json:"conditions,omitempty"`
 	// Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.
 	Phase VirtualMachineInstancePhase `json:"phase,omitempty"`
+	// PhaseTransitionTimestamp is the timestamp of when the last phase change occurred
+	// +listType=atomic
+	// +optional
+	PhaseTransitionTimestamps []VirtualMachineInstancePhaseTransitionTimestamp `json:"phaseTransitionTimestamps,omitempty"`
 	// Interfaces represent the details of available network interfaces.
 	Interfaces []VirtualMachineInstanceNetworkInterface `json:"interfaces,omitempty"`
 	// Guest OS Information
@@ -216,6 +235,9 @@ type VirtualMachineInstanceStatus struct {
 	// it can be either frozen or thawed
 	// +optional
 	FSFreezeStatus string `json:"fsFreezeStatus,omitempty"`
+
+	// +optional
+	TopologyHints *TopologyHints `json:"topologyHints,omitempty"`
 }
 
 // VolumeStatus represents information about the status of volumes attached to the VirtualMachineInstance.
@@ -364,10 +386,12 @@ const (
 	VirtualMachineInstanceReasonDisksNotMigratable = "DisksNotLiveMigratable"
 	// Reason means that VMI is not live migratioable because of it's network interfaces collection
 	VirtualMachineInstanceReasonInterfaceNotMigratable = "InterfaceNotLiveMigratable"
-	// Reason means that VMI is not live migratioable because of it's network interfaces collection
+	// Reason means that VMI is not live migratioable because it uses hotplug
 	VirtualMachineInstanceReasonHotplugNotMigratable = "HotplugNotLiveMigratable"
 	// Reason means that VMI is not live migratioable because of it's CPU mode
 	VirtualMachineInstanceReasonCPUModeNotMigratable = "CPUModeLiveMigratable"
+	// Reason means that VMI is not live migratable because it uses virtiofs
+	VirtualMachineInstanceReasonVirtIOFSNotMigratable = "VirtIOFSNotLiveMigratable"
 )
 
 const (
@@ -1855,6 +1879,7 @@ type MigrationConfiguration struct {
 	ProgressTimeout                   *int64             `json:"progressTimeout,omitempty"`
 	UnsafeMigrationOverride           *bool              `json:"unsafeMigrationOverride,omitempty"`
 	AllowPostCopy                     *bool              `json:"allowPostCopy,omitempty"`
+	DisableTLS                        *bool              `json:"disableTLS,omitempty"`
 }
 
 // DeveloperConfiguration holds developer options
@@ -1867,7 +1892,10 @@ type DeveloperConfiguration struct {
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
 	CPUAllocationRatio     int               `json:"cpuAllocationRatio,omitempty"`
-	LogVerbosity           *LogVerbosity     `json:"logVerbosity,omitempty"`
+	// Allow overriding the automatically determined minimum TSC frequency of the cluster
+	// and fixate the minimum to this frequency.
+	MinimumClusterTSCFrequency *int64        `json:"minimumClusterTSCFrequency,omitempty"`
+	LogVerbosity               *LogVerbosity `json:"logVerbosity,omitempty"`
 }
 
 // LogVerbosity sets log verbosity level of  various components
@@ -1894,9 +1922,17 @@ type PermittedHostDevices struct {
 // PciHostDevice represents a host PCI device allowed for passthrough
 // +k8s:openapi-gen=true
 type PciHostDevice struct {
-	PCIVendorSelector        string `json:"pciVendorSelector"`
-	ResourceName             string `json:"resourceName"`
-	ExternalResourceProvider bool   `json:"externalResourceProvider,omitempty"`
+	// The vendor_id:product_id tupple of the PCI device
+	PCIVendorSelector string `json:"pciVendorSelector"`
+	// The name of the resource that is representing the device. Exposed by
+	// a device plugin and requested by VMs. Typically of the form
+	// vendor.com/product_nameThe name of the resource that is representing
+	// the device. Exposed by a device plugin and requested by VMs.
+	// Typically of the form vendor.com/product_name
+	ResourceName string `json:"resourceName"`
+	// If true, KubeVirt will leave the allocation and monitoring to an
+	// external device plugin
+	ExternalResourceProvider bool `json:"externalResourceProvider,omitempty"`
 }
 
 // MediatedHostDevice represents a host mediated device allowed for passthrough
