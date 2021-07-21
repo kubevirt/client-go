@@ -319,6 +319,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.Disk":                                                  schema_kubevirtio_client_go_api_v1_Disk(ref),
 		"kubevirt.io/client-go/api/v1.DiskDevice":                                            schema_kubevirtio_client_go_api_v1_DiskDevice(ref),
 		"kubevirt.io/client-go/api/v1.DiskTarget":                                            schema_kubevirtio_client_go_api_v1_DiskTarget(ref),
+		"kubevirt.io/client-go/api/v1.DiskVerification":                                      schema_kubevirtio_client_go_api_v1_DiskVerification(ref),
 		"kubevirt.io/client-go/api/v1.DomainSpec":                                            schema_kubevirtio_client_go_api_v1_DomainSpec(ref),
 		"kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource":                               schema_kubevirtio_client_go_api_v1_DownwardAPIVolumeSource(ref),
 		"kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource":                           schema_kubevirtio_client_go_api_v1_DownwardMetricsVolumeSource(ref),
@@ -375,6 +376,8 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.Memory":                                                schema_kubevirtio_client_go_api_v1_Memory(ref),
 		"kubevirt.io/client-go/api/v1.MigrationConfiguration":                                schema_kubevirtio_client_go_api_v1_MigrationConfiguration(ref),
 		"kubevirt.io/client-go/api/v1.MultusNetwork":                                         schema_kubevirtio_client_go_api_v1_MultusNetwork(ref),
+		"kubevirt.io/client-go/api/v1.NUMA":                                                  schema_kubevirtio_client_go_api_v1_NUMA(ref),
+		"kubevirt.io/client-go/api/v1.NUMAGuestMappingPassthrough":                           schema_kubevirtio_client_go_api_v1_NUMAGuestMappingPassthrough(ref),
 		"kubevirt.io/client-go/api/v1.Network":                                               schema_kubevirtio_client_go_api_v1_Network(ref),
 		"kubevirt.io/client-go/api/v1.NetworkConfiguration":                                  schema_kubevirtio_client_go_api_v1_NetworkConfiguration(ref),
 		"kubevirt.io/client-go/api/v1.NetworkSource":                                         schema_kubevirtio_client_go_api_v1_NetworkSource(ref),
@@ -403,6 +406,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.SyNICTimer":                                            schema_kubevirtio_client_go_api_v1_SyNICTimer(ref),
 		"kubevirt.io/client-go/api/v1.SysprepSource":                                         schema_kubevirtio_client_go_api_v1_SysprepSource(ref),
 		"kubevirt.io/client-go/api/v1.Timer":                                                 schema_kubevirtio_client_go_api_v1_Timer(ref),
+		"kubevirt.io/client-go/api/v1.TopologyHints":                                         schema_kubevirtio_client_go_api_v1_TopologyHints(ref),
 		"kubevirt.io/client-go/api/v1.UserPasswordAccessCredential":                          schema_kubevirtio_client_go_api_v1_UserPasswordAccessCredential(ref),
 		"kubevirt.io/client-go/api/v1.UserPasswordAccessCredentialPropagationMethod":         schema_kubevirtio_client_go_api_v1_UserPasswordAccessCredentialPropagationMethod(ref),
 		"kubevirt.io/client-go/api/v1.UserPasswordAccessCredentialSource":                    schema_kubevirtio_client_go_api_v1_UserPasswordAccessCredentialSource(ref),
@@ -425,6 +429,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstanceMigrationState":                  schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceMigrationState(ref),
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstanceMigrationStatus":                 schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceMigrationStatus(ref),
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstanceNetworkInterface":                schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceNetworkInterface(ref),
+		"kubevirt.io/client-go/api/v1.VirtualMachineInstancePhaseTransitionTimestamp":        schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePhaseTransitionTimestamp(ref),
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstancePreset":                          schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePreset(ref),
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstancePresetList":                      schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePresetList(ref),
 		"kubevirt.io/client-go/api/v1.VirtualMachineInstancePresetSpec":                      schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePresetSpec(ref),
@@ -14004,6 +14009,12 @@ func schema_kubevirtio_client_go_api_v1_CPU(ref common.ReferenceCallback) common
 							Format:      "",
 						},
 					},
+					"numa": {
+						SchemaProps: spec.SchemaProps{
+							Description: "NUMA allows specifying settings for the guest NUMA topology",
+							Ref:         ref("kubevirt.io/client-go/api/v1.NUMA"),
+						},
+					},
 					"isolateEmulatorThread": {
 						SchemaProps: spec.SchemaProps{
 							Description: "IsolateEmulatorThread requests one more dedicated pCPU to be allocated for the VMI to place the emulator thread on it.",
@@ -14015,7 +14026,7 @@ func schema_kubevirtio_client_go_api_v1_CPU(ref common.ReferenceCallback) common
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.CPUFeature"},
+			"kubevirt.io/client-go/api/v1.CPUFeature", "kubevirt.io/client-go/api/v1.NUMA"},
 	}
 }
 
@@ -14657,7 +14668,7 @@ func schema_kubevirtio_client_go_api_v1_DataVolumeTemplateSpec(ref common.Refere
 					"spec": {
 						SchemaProps: spec.SchemaProps{
 							Description: "DataVolumeSpec contains the DataVolume specification.",
-							Ref:         ref("kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1.DataVolumeSpec"),
+							Ref:         ref("kubevirt.io/containerized-data-importer/pkg/apis/core/v1beta1.DataVolumeSpec"),
 						},
 					},
 					"status": {
@@ -14671,7 +14682,7 @@ func schema_kubevirtio_client_go_api_v1_DataVolumeTemplateSpec(ref common.Refere
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/client-go/api/v1.DataVolumeTemplateDummyStatus", "kubevirt.io/containerized-data-importer/pkg/apis/core/v1alpha1.DataVolumeSpec"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/client-go/api/v1.DataVolumeTemplateDummyStatus", "kubevirt.io/containerized-data-importer/pkg/apis/core/v1beta1.DataVolumeSpec"},
 	}
 }
 
@@ -14739,6 +14750,18 @@ func schema_kubevirtio_client_go_api_v1_DeveloperConfiguration(ref common.Refere
 							Format: "int32",
 						},
 					},
+					"minimumClusterTSCFrequency": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Allow overriding the automatically determined minimum TSC frequency of the cluster and fixate the minimum to this frequency.",
+							Type:        []string{"integer"},
+							Format:      "int64",
+						},
+					},
+					"diskVerification": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("kubevirt.io/client-go/api/v1.DiskVerification"),
+						},
+					},
 					"logVerbosity": {
 						SchemaProps: spec.SchemaProps{
 							Ref: ref("kubevirt.io/client-go/api/v1.LogVerbosity"),
@@ -14748,7 +14771,7 @@ func schema_kubevirtio_client_go_api_v1_DeveloperConfiguration(ref common.Refere
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.LogVerbosity"},
+			"kubevirt.io/client-go/api/v1.DiskVerification", "kubevirt.io/client-go/api/v1.LogVerbosity"},
 	}
 }
 
@@ -15090,6 +15113,27 @@ func schema_kubevirtio_client_go_api_v1_DiskTarget(ref common.ReferenceCallback)
 				},
 			},
 		},
+	}
+}
+
+func schema_kubevirtio_client_go_api_v1_DiskVerification(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "DiskVerification holds container disks verification limits",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"memoryLimit": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("k8s.io/apimachinery/pkg/api/resource.Quantity"),
+						},
+					},
+				},
+				Required: []string{"memoryLimit"},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/api/resource.Quantity"},
 	}
 }
 
@@ -17155,6 +17199,12 @@ func schema_kubevirtio_client_go_api_v1_MigrationConfiguration(ref common.Refere
 							Format: "",
 						},
 					},
+					"disableTLS": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"boolean"},
+							Format: "",
+						},
+					},
 				},
 			},
 		},
@@ -17186,6 +17236,37 @@ func schema_kubevirtio_client_go_api_v1_MultusNetwork(ref common.ReferenceCallba
 					},
 				},
 				Required: []string{"networkName"},
+			},
+		},
+	}
+}
+
+func schema_kubevirtio_client_go_api_v1_NUMA(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"guestMappingPassthrough": {
+						SchemaProps: spec.SchemaProps{
+							Description: "GuestMappingPassthrough will create an efficient guest topology based on host CPUs exclusively assigned to a pod. The created topology ensures that memory and CPUs on the virtual numa nodes never cross boundaries of host numa nodes.",
+							Ref:         ref("kubevirt.io/client-go/api/v1.NUMAGuestMappingPassthrough"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"kubevirt.io/client-go/api/v1.NUMAGuestMappingPassthrough"},
+	}
+}
+
+func schema_kubevirtio_client_go_api_v1_NUMAGuestMappingPassthrough(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "NUMAGuestMappingPassthrough instructs kubevirt to model numa topology which is compatible with the CPU pinning on the guest. This will result in a subset of the node numa topology being passed through, ensuring that virtual numa nodes and their memory never cross boundaries coming from the node numa mapping.",
+				Type:        []string{"object"},
 			},
 		},
 	}
@@ -17364,20 +17445,23 @@ func schema_kubevirtio_client_go_api_v1_PciHostDevice(ref common.ReferenceCallba
 				Properties: map[string]spec.Schema{
 					"pciVendorSelector": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "The vendor_id:product_id tupple of the PCI device",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"resourceName": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
+							Description: "The name of the resource that is representing the device. Exposed by a device plugin and requested by VMs. Typically of the form vendor.com/product_nameThe name of the resource that is representing the device. Exposed by a device plugin and requested by VMs. Typically of the form vendor.com/product_name",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"externalResourceProvider": {
 						SchemaProps: spec.SchemaProps{
-							Type:   []string{"boolean"},
-							Format: "",
+							Description: "If true, KubeVirt will leave the allocation and monitoring to an external device plugin",
+							Type:        []string{"boolean"},
+							Format:      "",
 						},
 					},
 				},
@@ -18090,6 +18174,24 @@ func schema_kubevirtio_client_go_api_v1_Timer(ref common.ReferenceCallback) comm
 		},
 		Dependencies: []string{
 			"kubevirt.io/client-go/api/v1.HPETTimer", "kubevirt.io/client-go/api/v1.HypervTimer", "kubevirt.io/client-go/api/v1.KVMTimer", "kubevirt.io/client-go/api/v1.PITTimer", "kubevirt.io/client-go/api/v1.RTCTimer"},
+	}
+}
+
+func schema_kubevirtio_client_go_api_v1_TopologyHints(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"tscFrequency": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"integer"},
+							Format: "int64",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -19134,6 +19236,34 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceNetworkInterface(r
 	}
 }
 
+func schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePhaseTransitionTimestamp(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "VirtualMachineInstancePhaseTransitionTimestamp gives a timestamp in relation to when a phase is set on a vmi",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"phase": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"phaseTransitionTimestamp": {
+						SchemaProps: spec.SchemaProps{
+							Description: "PhaseTransitionTimestamp is the timestamp of when the phase change occurred",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.Time"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+	}
+}
+
 func schema_kubevirtio_client_go_api_v1_VirtualMachineInstancePreset(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -19694,6 +19824,24 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceStatus(ref common.
 							Format:      "",
 						},
 					},
+					"phaseTransitionTimestamps": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "atomic",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Description: "PhaseTransitionTimestamp is the timestamp of when the last phase change occurred",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Ref: ref("kubevirt.io/client-go/api/v1.VirtualMachineInstancePhaseTransitionTimestamp"),
+									},
+								},
+							},
+						},
+					},
 					"interfaces": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Interfaces represent the details of available network interfaces.",
@@ -19787,11 +19935,16 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceStatus(ref common.
 							Format:      "",
 						},
 					},
+					"topologyHints": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("kubevirt.io/client-go/api/v1.TopologyHints"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.VirtualMachineInstanceCondition", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceMigrationState", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceNetworkInterface", "kubevirt.io/client-go/api/v1.VolumeStatus"},
+			"kubevirt.io/client-go/api/v1.TopologyHints", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceCondition", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceMigrationState", "kubevirt.io/client-go/api/v1.VirtualMachineInstanceNetworkInterface", "kubevirt.io/client-go/api/v1.VirtualMachineInstancePhaseTransitionTimestamp", "kubevirt.io/client-go/api/v1.VolumeStatus"},
 	}
 }
 
