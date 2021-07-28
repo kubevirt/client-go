@@ -67,6 +67,9 @@ var exampleJSONFmt = `{
         ],
         "dedicatedCpuPlacement": true
       },
+      "machine": {
+        "type": ""
+      },
       "firmware": {
         "uuid": "28a42a60-44ef-4428-9c10-1a6aee94627f"
       },

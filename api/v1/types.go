@@ -211,11 +211,6 @@ type VirtualMachineInstanceStatus struct {
 	// +optional
 	// +listType=atomic
 	VolumeStatus []VolumeStatus `json:"volumeStatus,omitempty"`
-
-	// FSFreezeStatus is the state of the fs of the guest
-	// it can be either frozen or thawed
-	// +optional
-	FSFreezeStatus string `json:"fsFreezeStatus,omitempty"`
 }
 
 // VolumeStatus represents information about the status of volumes attached to the VirtualMachineInstance.
@@ -298,10 +293,6 @@ func (v *VirtualMachineInstance) IsFinal() bool {
 	return v.Status.Phase == Failed || v.Status.Phase == Succeeded
 }
 
-func (v *VirtualMachineInstance) IsMarkedForDeletion() bool {
-	return v.ObjectMeta.DeletionTimestamp != nil
-}
-
 func (v *VirtualMachineInstance) IsUnknown() bool {
 	return v.Status.Phase == Unknown
 }
@@ -366,8 +357,6 @@ const (
 	VirtualMachineInstanceReasonInterfaceNotMigratable = "InterfaceNotLiveMigratable"
 	// Reason means that VMI is not live migratioable because of it's network interfaces collection
 	VirtualMachineInstanceReasonHotplugNotMigratable = "HotplugNotLiveMigratable"
-	// Reason means that VMI is not live migratioable because of it's CPU mode
-	VirtualMachineInstanceReasonCPUModeNotMigratable = "CPUModeLiveMigratable"
 )
 
 const (
@@ -667,19 +656,13 @@ const (
 
 	// This label represents supported cpu features on the node
 	CPUFeatureLabel = "cpu-feature.node.kubevirt.io/"
-	// This label represents supported cpu models on the node
+	// This laberepresents supported cpu models on the node
 	CPUModelLabel = "cpu-model.node.kubevirt.io/"
-	CPUTimerLabel = "cpu-timer.node.kubevirt.io/"
 	// This label represents supported HyperV features on the node
 	HypervLabel = "hyperv.node.kubevirt.io/"
 	// This label represents vendor of cpu model on the node
 	CPUModelVendorLabel = "cpu-vendor.node.kubevirt.io/"
-
-	// This label represents the host model CPU name
-	HostModelCPULabel = "host-model-cpu.node.kubevirt.io/"
-	// This label represents the host model required features
-	HostModelRequiredFeaturesLabel = "host-model-required-features.node.kubevirt.io/"
-
+	//
 	LabellerSkipNodeAnnotation        = "node-labeller.kubevirt.io/skip-node"
 	VirtualMachineLabel               = AppLabel + "/vm"
 	MemfdMemoryBackend         string = "kubevirt.io/memfd"
@@ -1140,37 +1123,6 @@ const (
 	StopRequest  StateChangeRequestAction = "Stop"
 )
 
-// VirtualMachinePrintableStatus is a human readable, high-level representation of the status of the virtual machine.
-//
-// +k8s:openapi-gen=true
-type VirtualMachinePrintableStatus string
-
-// A list of statuses defined for virtual machines
-const (
-	// VirtualMachineStatusStopped indicates that the virtual machine is currently stopped and isn't expected to start.
-	VirtualMachineStatusStopped VirtualMachinePrintableStatus = "Stopped"
-	// VirtualMachineStatusProvisioning indicates that cluster resources associated with the virtual machine
-	// (e.g., DataVolumes) are being provisioned and prepared.
-	VirtualMachineStatusProvisioning VirtualMachinePrintableStatus = "Provisioning"
-	// VirtualMachineStatusStarting indicates that the virtual machine is being prepared for running.
-	VirtualMachineStatusStarting VirtualMachinePrintableStatus = "Starting"
-	// VirtualMachineStatusRunning indicates that the virtual machine is running.
-	VirtualMachineStatusRunning VirtualMachinePrintableStatus = "Running"
-	// VirtualMachineStatusPaused indicates that the virtual machine is paused.
-	VirtualMachineStatusPaused VirtualMachinePrintableStatus = "Paused"
-	// VirtualMachineStatusStopping indicates that the virtual machine is in the process of being stopped.
-	VirtualMachineStatusStopping VirtualMachinePrintableStatus = "Stopping"
-	// VirtualMachineStatusTerminating indicates that the virtual machine is in the process of deletion,
-	// as well as its associated resources (VirtualMachineInstance, DataVolumes, …).
-	VirtualMachineStatusTerminating VirtualMachinePrintableStatus = "Terminating"
-	// VirtualMachineStatusMigrating indicates that the virtual machine is in the process of being migrated
-	// to another host.
-	VirtualMachineStatusMigrating VirtualMachinePrintableStatus = "Migrating"
-	// VirtualMachineStatusUnknown indicates that the state of the virtual machine could not be obtained,
-	// typically due to an error in communicating with the host on which it's running.
-	VirtualMachineStatusUnknown VirtualMachinePrintableStatus = "Unknown"
-)
-
 // VirtualMachineStatus represents the status returned by the
 // controller to describe how the VirtualMachine is doing
 //
@@ -1182,8 +1134,6 @@ type VirtualMachineStatus struct {
 	Created bool `json:"created,omitempty"`
 	// Ready indicates if the virtual machine is running and ready
 	Ready bool `json:"ready,omitempty"`
-	// PrintableStatus is a human readable, high-level representation of the status of the virtual machine
-	PrintableStatus VirtualMachinePrintableStatus `json:"printableStatus,omitempty"`
 	// Hold the state information of the VirtualMachine and its VirtualMachineInstance
 	Conditions []VirtualMachineCondition `json:"conditions,omitempty" optional:"true"`
 	// StateChangeRequests indicates a list of actions that should be taken on a VMI
@@ -1314,11 +1264,6 @@ const (
 // Handler defines a specific action that should be taken
 // TODO: pass structured data to these actions, and document that data here.
 type Handler struct {
-	// One and only one of the following should be specified.
-	// Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.
-	// If the guest agent is not available, this probe will fail.
-	// +optional
-	Exec *k8sv1.ExecAction `json:"exec,omitempty" protobuf:"bytes,1,opt,name=exec"`
 	// HTTPGet specifies the http request to perform.
 	// +optional
 	HTTPGet *k8sv1.HTTPGetAction `json:"httpGet,omitempty"`
@@ -1340,10 +1285,6 @@ type Probe struct {
 	// +optional
 	InitialDelaySeconds int32 `json:"initialDelaySeconds,omitempty"`
 	// Number of seconds after which the probe times out.
-	// For exec probes the timeout fails the probe but does not terminate the command running on the guest.
-	// This means a blocking command can result in an increasing load on the guest.
-	// A small buffer will be added to the resulting workload exec probe to compensate for delays
-	// caused by the qemu guest exec mechanism.
 	// Defaults to 1 second. Minimum value is 1.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
@@ -1531,21 +1472,6 @@ type KubeVirtSpec struct {
 type CustomizeComponents struct {
 	// +listType=atomic
 	Patches []CustomizeComponentsPatch `json:"patches,omitempty"`
-
-	// Configure the value used for deployment and daemonset resources
-	Flags *Flags `json:"flags,omitempty"`
-}
-
-// Flags will create a patch that will replace all flags for the container's
-// command field. The only flags that will be used are those define. There are no
-// guarantees around forward/backward compatibility.  If set incorrectly this will
-// cause the resource when rolled out to error until flags are updated.
-//
-// +k8s:openapi-gen=true
-type Flags struct {
-	API        map[string]string `json:"api,omitempty"`
-	Controller map[string]string `json:"controller,omitempty"`
-	Handler    map[string]string `json:"handler,omitempty"`
 }
 
 // +k8s:openapi-gen=true
@@ -1685,22 +1611,6 @@ type RestartOptions struct {
 	GracePeriodSeconds *int64 `json:"gracePeriodSeconds,omitempty" protobuf:"varint,1,opt,name=gracePeriodSeconds"`
 }
 
-// StartOptions may be provided on start request.
-//
-// +k8s:openapi-gen=true
-type StartOptions struct {
-	metav1.TypeMeta `json:",inline"`
-
-	// Indicates that VM will be started in paused state.
-	// +optional
-	Paused bool `json:"paused,omitempty" protobuf:"varint,7,opt,name=paused"`
-}
-
-const (
-	StartRequestDataPausedKey  string = "paused"
-	StartRequestDataPausedTrue string = "true"
-)
-
 // StopOptions may be provided when deleting an API object.
 //
 // +k8s:openapi-gen=true
@@ -1733,9 +1643,6 @@ type VirtualMachineInstanceGuestAgentInfo struct {
 	UserList []VirtualMachineInstanceGuestOSUser `json:"userList,omitempty"`
 	// FSInfo is a guest os filesystem information containing the disk mapping and disk mounts with usage
 	FSInfo VirtualMachineInstanceFileSystemInfo `json:"fsInfo,omitempty"`
-	// FSFreezeStatus is the state of the fs of the guest
-	// it can be either frozen or thawed
-	FSFreezeStatus string `json:"fsFreezeStatus,omitempty"`
 }
 
 // List of commands that QEMU guest agent supports
@@ -1862,7 +1769,6 @@ type MigrationConfiguration struct {
 type DeveloperConfiguration struct {
 	FeatureGates           []string          `json:"featureGates,omitempty"`
 	LessPVCSpaceToleration int               `json:"pvcTolerateLessSpaceUpToPercent,omitempty"`
-	MinimumReservePVCBytes uint64            `json:"minimumReservePVCBytes,omitempty"`
 	MemoryOvercommit       int               `json:"memoryOvercommit,omitempty"`
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
