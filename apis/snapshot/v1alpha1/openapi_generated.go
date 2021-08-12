@@ -321,7 +321,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.DiskTarget":                                            schema_kubevirtio_client_go_api_v1_DiskTarget(ref),
 		"kubevirt.io/client-go/api/v1.DomainSpec":                                            schema_kubevirtio_client_go_api_v1_DomainSpec(ref),
 		"kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource":                               schema_kubevirtio_client_go_api_v1_DownwardAPIVolumeSource(ref),
-		"kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource":                           schema_kubevirtio_client_go_api_v1_DownwardMetricsVolumeSource(ref),
 		"kubevirt.io/client-go/api/v1.EFI":                                                   schema_kubevirtio_client_go_api_v1_EFI(ref),
 		"kubevirt.io/client-go/api/v1.EmptyDiskSource":                                       schema_kubevirtio_client_go_api_v1_EmptyDiskSource(ref),
 		"kubevirt.io/client-go/api/v1.EphemeralVolumeSource":                                 schema_kubevirtio_client_go_api_v1_EphemeralVolumeSource(ref),
@@ -335,7 +334,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.Filesystem":                                            schema_kubevirtio_client_go_api_v1_Filesystem(ref),
 		"kubevirt.io/client-go/api/v1.FilesystemVirtiofs":                                    schema_kubevirtio_client_go_api_v1_FilesystemVirtiofs(ref),
 		"kubevirt.io/client-go/api/v1.Firmware":                                              schema_kubevirtio_client_go_api_v1_Firmware(ref),
-		"kubevirt.io/client-go/api/v1.Flags":                                                 schema_kubevirtio_client_go_api_v1_Flags(ref),
 		"kubevirt.io/client-go/api/v1.FloppyTarget":                                          schema_kubevirtio_client_go_api_v1_FloppyTarget(ref),
 		"kubevirt.io/client-go/api/v1.GPU":                                                   schema_kubevirtio_client_go_api_v1_GPU(ref),
 		"kubevirt.io/client-go/api/v1.GenerationStatus":                                      schema_kubevirtio_client_go_api_v1_GenerationStatus(ref),
@@ -357,8 +355,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.InterfaceSRIOV":                                        schema_kubevirtio_client_go_api_v1_InterfaceSRIOV(ref),
 		"kubevirt.io/client-go/api/v1.InterfaceSlirp":                                        schema_kubevirtio_client_go_api_v1_InterfaceSlirp(ref),
 		"kubevirt.io/client-go/api/v1.KVMTimer":                                              schema_kubevirtio_client_go_api_v1_KVMTimer(ref),
-		"kubevirt.io/client-go/api/v1.KernelBoot":                                            schema_kubevirtio_client_go_api_v1_KernelBoot(ref),
-		"kubevirt.io/client-go/api/v1.KernelBootContainer":                                   schema_kubevirtio_client_go_api_v1_KernelBootContainer(ref),
 		"kubevirt.io/client-go/api/v1.KubeVirt":                                              schema_kubevirtio_client_go_api_v1_KubeVirt(ref),
 		"kubevirt.io/client-go/api/v1.KubeVirtCertificateRotateStrategy":                     schema_kubevirtio_client_go_api_v1_KubeVirtCertificateRotateStrategy(ref),
 		"kubevirt.io/client-go/api/v1.KubeVirtCondition":                                     schema_kubevirtio_client_go_api_v1_KubeVirtCondition(ref),
@@ -398,7 +394,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/client-go/api/v1.SSHPublicKeyAccessCredentialSource":                    schema_kubevirtio_client_go_api_v1_SSHPublicKeyAccessCredentialSource(ref),
 		"kubevirt.io/client-go/api/v1.SecretVolumeSource":                                    schema_kubevirtio_client_go_api_v1_SecretVolumeSource(ref),
 		"kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource":                            schema_kubevirtio_client_go_api_v1_ServiceAccountVolumeSource(ref),
-		"kubevirt.io/client-go/api/v1.StartOptions":                                          schema_kubevirtio_client_go_api_v1_StartOptions(ref),
 		"kubevirt.io/client-go/api/v1.StopOptions":                                           schema_kubevirtio_client_go_api_v1_StopOptions(ref),
 		"kubevirt.io/client-go/api/v1.SyNICTimer":                                            schema_kubevirtio_client_go_api_v1_SyNICTimer(ref),
 		"kubevirt.io/client-go/api/v1.SysprepSource":                                         schema_kubevirtio_client_go_api_v1_SysprepSource(ref),
@@ -14464,17 +14459,11 @@ func schema_kubevirtio_client_go_api_v1_CustomizeComponents(ref common.Reference
 							},
 						},
 					},
-					"flags": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Configure the value used for deployment and daemonset resources",
-							Ref:         ref("kubevirt.io/client-go/api/v1.Flags"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.CustomizeComponentsPatch", "kubevirt.io/client-go/api/v1.Flags"},
+			"kubevirt.io/client-go/api/v1.CustomizeComponentsPatch"},
 	}
 }
 
@@ -14699,12 +14688,6 @@ func schema_kubevirtio_client_go_api_v1_DeveloperConfiguration(ref common.Refere
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"integer"},
 							Format: "int32",
-						},
-					},
-					"minimumReservePVCBytes": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"integer"},
-							Format: "int64",
 						},
 					},
 					"memoryOvercommit": {
@@ -15204,17 +15187,6 @@ func schema_kubevirtio_client_go_api_v1_DownwardAPIVolumeSource(ref common.Refer
 	}
 }
 
-func schema_kubevirtio_client_go_api_v1_DownwardMetricsVolumeSource(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "DownwardMetricsVolumeSource adds a very small disk to VMIs which contains a limited view of host and guest metrics. The disk content is compatible with vhostmd (https://github.com/vhostmd/vhostmd) and vm-dump-metrics.",
-				Type:        []string{"object"},
-			},
-		},
-	}
-}
-
 func schema_kubevirtio_client_go_api_v1_EFI(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -15607,72 +15579,11 @@ func schema_kubevirtio_client_go_api_v1_Firmware(ref common.ReferenceCallback) c
 							Format:      "",
 						},
 					},
-					"kernelBoot": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Settings to set the kernel for booting.",
-							Ref:         ref("kubevirt.io/client-go/api/v1.KernelBoot"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.Bootloader", "kubevirt.io/client-go/api/v1.KernelBoot"},
-	}
-}
-
-func schema_kubevirtio_client_go_api_v1_Flags(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "Flags will create a patch that will replace all flags for the container's command field. The only flags that will be used are those define. There are no guarantees around forward/backward compatibility.  If set incorrectly this will cause the resource when rolled out to error until flags are updated.",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"api": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type:   []string{"string"},
-										Format: "",
-									},
-								},
-							},
-						},
-					},
-					"controller": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type:   []string{"string"},
-										Format: "",
-									},
-								},
-							},
-						},
-					},
-					"handler": {
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type:   []string{"string"},
-										Format: "",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+			"kubevirt.io/client-go/api/v1.Bootloader"},
 	}
 }
 
@@ -16257,83 +16168,6 @@ func schema_kubevirtio_client_go_api_v1_KVMTimer(ref common.ReferenceCallback) c
 						},
 					},
 				},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_client_go_api_v1_KernelBoot(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "Represents the firmware blob used to assist in the kernel boot process. Used for setting the kernel, initrd and command line arguments",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kernelArgs": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Arguments to be passed to the kernel at boot time",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"container": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Container defines the container that containes kernel artifacts",
-							Ref:         ref("kubevirt.io/client-go/api/v1.KernelBootContainer"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"kubevirt.io/client-go/api/v1.KernelBootContainer"},
-	}
-}
-
-func schema_kubevirtio_client_go_api_v1_KernelBootContainer(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "If set, the VM will be booted from the defined kernel / initrd.",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"image": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Image that container initrd / kernel files.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"imagePullSecret": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ImagePullSecret is the name of the Docker registry secret required to pull the image. The secret must already exist.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"imagePullPolicy": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"kernelPath": {
-						SchemaProps: spec.SchemaProps{
-							Description: "The fully-qualified path to the kernel image in the host OS",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"initrdPath": {
-						SchemaProps: spec.SchemaProps{
-							Description: "the fully-qualified path to the ramdisk image in the host OS",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"image"},
 			},
 		},
 	}
@@ -17031,6 +16865,7 @@ func schema_kubevirtio_client_go_api_v1_Machine(ref common.ReferenceCallback) co
 						},
 					},
 				},
+				Required: []string{"type"},
 			},
 		},
 	}
@@ -17505,12 +17340,6 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 				Description: "Probe describes a health check to be performed against a VirtualMachineInstance to determine whether it is alive or ready to receive traffic.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
-					"exec": {
-						SchemaProps: spec.SchemaProps{
-							Description: "One and only one of the following should be specified. Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent. If the guest agent is not available, this probe will fail.",
-							Ref:         ref("k8s.io/api/core/v1.ExecAction"),
-						},
-					},
 					"httpGet": {
 						SchemaProps: spec.SchemaProps{
 							Description: "HTTPGet specifies the http request to perform.",
@@ -17532,7 +17361,7 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 					},
 					"timeoutSeconds": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Number of seconds after which the probe times out. For exec probes the timeout fails the probe but does not terminate the command running on the guest. This means a blocking command can result in an increasing load on the guest. A small buffer will be added to the resulting workload exec probe to compensate for delays caused by the qemu guest exec mechanism. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
+							Description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
 							Type:        []string{"integer"},
 							Format:      "int32",
 						},
@@ -17562,7 +17391,7 @@ func schema_kubevirtio_client_go_api_v1_Probe(ref common.ReferenceCallback) comm
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.ExecAction", "k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.TCPSocketAction"},
+			"k8s.io/api/core/v1.HTTPGetAction", "k8s.io/api/core/v1.TCPSocketAction"},
 	}
 }
 
@@ -17919,40 +17748,6 @@ func schema_kubevirtio_client_go_api_v1_ServiceAccountVolumeSource(ref common.Re
 						SchemaProps: spec.SchemaProps{
 							Description: "Name of the service account in the pod's namespace to use. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/",
 							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_client_go_api_v1_StartOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "StartOptions may be provided on start request.",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"apiVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"paused": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Indicates that VM will be started in paused state.",
-							Type:        []string{"boolean"},
 							Format:      "",
 						},
 					},
@@ -18558,13 +18353,6 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceGuestAgentInfo(ref
 						SchemaProps: spec.SchemaProps{
 							Description: "FSInfo is a guest os filesystem information containing the disk mapping and disk mounts with usage",
 							Ref:         ref("kubevirt.io/client-go/api/v1.VirtualMachineInstanceFileSystemInfo"),
-						},
-					},
-					"fsFreezeStatus": {
-						SchemaProps: spec.SchemaProps{
-							Description: "FSFreezeStatus is the state of the fs of the guest it can be either frozen or thawed",
-							Type:        []string{"string"},
-							Format:      "",
 						},
 					},
 				},
@@ -19780,13 +19568,6 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineInstanceStatus(ref common.
 							},
 						},
 					},
-					"fsFreezeStatus": {
-						SchemaProps: spec.SchemaProps{
-							Description: "FSFreezeStatus is the state of the fs of the guest it can be either frozen or thawed",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 				},
 			},
 		},
@@ -19986,13 +19767,6 @@ func schema_kubevirtio_client_go_api_v1_VirtualMachineStatus(ref common.Referenc
 							Format:      "",
 						},
 					},
-					"printableStatus": {
-						SchemaProps: spec.SchemaProps{
-							Description: "PrintableStatus is a human readable, high-level representation of the status of the virtual machine",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"conditions": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Hold the state information of the VirtualMachine and its VirtualMachineInstance",
@@ -20176,18 +19950,12 @@ func schema_kubevirtio_client_go_api_v1_Volume(ref common.ReferenceCallback) com
 							Ref:         ref("kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource"),
 						},
 					},
-					"downwardMetrics": {
-						SchemaProps: spec.SchemaProps{
-							Description: "DownwardMetrics adds a very small disk to VMIs which contains a limited view of host and guest metrics. The disk content is compatible with vhostmd (https://github.com/vhostmd/vhostmd) and vm-dump-metrics.",
-							Ref:         ref("kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource"),
-						},
-					},
 				},
 				Required: []string{"name"},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.PersistentVolumeClaimVolumeSource", "kubevirt.io/client-go/api/v1.CloudInitConfigDriveSource", "kubevirt.io/client-go/api/v1.CloudInitNoCloudSource", "kubevirt.io/client-go/api/v1.ConfigMapVolumeSource", "kubevirt.io/client-go/api/v1.ContainerDiskSource", "kubevirt.io/client-go/api/v1.DataVolumeSource", "kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource", "kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource", "kubevirt.io/client-go/api/v1.EmptyDiskSource", "kubevirt.io/client-go/api/v1.EphemeralVolumeSource", "kubevirt.io/client-go/api/v1.HostDisk", "kubevirt.io/client-go/api/v1.SecretVolumeSource", "kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource", "kubevirt.io/client-go/api/v1.SysprepSource"},
+			"k8s.io/api/core/v1.PersistentVolumeClaimVolumeSource", "kubevirt.io/client-go/api/v1.CloudInitConfigDriveSource", "kubevirt.io/client-go/api/v1.CloudInitNoCloudSource", "kubevirt.io/client-go/api/v1.ConfigMapVolumeSource", "kubevirt.io/client-go/api/v1.ContainerDiskSource", "kubevirt.io/client-go/api/v1.DataVolumeSource", "kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource", "kubevirt.io/client-go/api/v1.EmptyDiskSource", "kubevirt.io/client-go/api/v1.EphemeralVolumeSource", "kubevirt.io/client-go/api/v1.HostDisk", "kubevirt.io/client-go/api/v1.SecretVolumeSource", "kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource", "kubevirt.io/client-go/api/v1.SysprepSource"},
 	}
 }
 
@@ -20310,17 +20078,11 @@ func schema_kubevirtio_client_go_api_v1_VolumeSource(ref common.ReferenceCallbac
 							Ref:         ref("kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource"),
 						},
 					},
-					"downwardMetrics": {
-						SchemaProps: spec.SchemaProps{
-							Description: "DownwardMetrics adds a very small disk to VMIs which contains a limited view of host and guest metrics. The disk content is compatible with vhostmd (https://github.com/vhostmd/vhostmd) and vm-dump-metrics.",
-							Ref:         ref("kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.PersistentVolumeClaimVolumeSource", "kubevirt.io/client-go/api/v1.CloudInitConfigDriveSource", "kubevirt.io/client-go/api/v1.CloudInitNoCloudSource", "kubevirt.io/client-go/api/v1.ConfigMapVolumeSource", "kubevirt.io/client-go/api/v1.ContainerDiskSource", "kubevirt.io/client-go/api/v1.DataVolumeSource", "kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource", "kubevirt.io/client-go/api/v1.DownwardMetricsVolumeSource", "kubevirt.io/client-go/api/v1.EmptyDiskSource", "kubevirt.io/client-go/api/v1.EphemeralVolumeSource", "kubevirt.io/client-go/api/v1.HostDisk", "kubevirt.io/client-go/api/v1.SecretVolumeSource", "kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource", "kubevirt.io/client-go/api/v1.SysprepSource"},
+			"k8s.io/api/core/v1.PersistentVolumeClaimVolumeSource", "kubevirt.io/client-go/api/v1.CloudInitConfigDriveSource", "kubevirt.io/client-go/api/v1.CloudInitNoCloudSource", "kubevirt.io/client-go/api/v1.ConfigMapVolumeSource", "kubevirt.io/client-go/api/v1.ContainerDiskSource", "kubevirt.io/client-go/api/v1.DataVolumeSource", "kubevirt.io/client-go/api/v1.DownwardAPIVolumeSource", "kubevirt.io/client-go/api/v1.EmptyDiskSource", "kubevirt.io/client-go/api/v1.EphemeralVolumeSource", "kubevirt.io/client-go/api/v1.HostDisk", "kubevirt.io/client-go/api/v1.SecretVolumeSource", "kubevirt.io/client-go/api/v1.ServiceAccountVolumeSource", "kubevirt.io/client-go/api/v1.SysprepSource"},
 	}
 }
 

@@ -210,7 +210,7 @@ type VirtualMachineInterface interface {
 	PatchStatus(name string, pt types.PatchType, data []byte) (result *v1.VirtualMachine, err error)
 	Restart(name string) error
 	ForceRestart(name string, graceperiod int) error
-	Start(name string, startOptions *v1.StartOptions) error
+	Start(name string) error
 	Stop(name string) error
 	ForceStop(name string, graceperiod int) error
 	Migrate(name string) error
