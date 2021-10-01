@@ -342,10 +342,30 @@ type CPU struct {
 	// with enough dedicated pCPUs and pin the vCPUs to it.
 	// +optional
 	DedicatedCPUPlacement bool `json:"dedicatedCpuPlacement,omitempty"`
+
+	// NUMA allows specifying settings for the guest NUMA topology
+	// +optional
+	NUMA *NUMA `json:"numa,omitempty"`
+
 	// IsolateEmulatorThread requests one more dedicated pCPU to be allocated for the VMI to place
 	// the emulator thread on it.
 	// +optional
 	IsolateEmulatorThread bool `json:"isolateEmulatorThread,omitempty"`
+}
+
+// NUMAGuestMappingPassthrough instructs kubevirt to model numa topology which is compatible with the CPU pinning on the guest.
+// This will result in a subset of the node numa topology being passed through, ensuring that virtual numa nodes and their memory
+// never cross boundaries coming from the node numa mapping.
+// +k8s:openapi-gen=true
+type NUMAGuestMappingPassthrough struct {
+}
+
+// +k8s:openapi-gen=true
+type NUMA struct {
+	// GuestMappingPassthrough will create an efficient guest topology based on host CPUs exclusively assigned to a pod.
+	// The created topology ensures that memory and CPUs on the virtual numa nodes never cross boundaries of host numa nodes.
+	// +opitonal
+	GuestMappingPassthrough *NUMAGuestMappingPassthrough `json:"guestMappingPassthrough,omitempty"`
 }
 
 // CPUFeature allows specifying a CPU feature.
@@ -463,7 +483,27 @@ type Devices struct {
 	// +optional
 	// +listType=atomic
 	HostDevices []HostDevice `json:"hostDevices,omitempty"`
+	// To configure and access client devices such as redirecting USB
+	// +optional
+	ClientPassthrough *ClientPassthroughDevices `json:"clientPassthrough,omitempty"`
 }
+
+// Represent a subset of client devices that can be accessed by VMI. At the
+// moment only, USB devices using Usbredir's library and tooling. Another fit
+// would be a smartcard with libcacard.
+//
+// The struct is currently empty as there is no imediate request for
+// user-facing APIs. This structure simply turns on USB redirection of
+// UsbClientPassthroughMaxNumberOf devices.
+//
+// +k8s:openapi-gen=true
+type ClientPassthroughDevices struct {
+}
+
+// Represents the upper limit allowed by QEMU + KubeVirt.
+const (
+	UsbClientPassthroughMaxNumberOf = 4
+)
 
 //
 // +k8s:openapi-gen=true
@@ -668,7 +708,7 @@ type VolumeSource struct {
 	// Directly attached to the vmi via qemu.
 	// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 	// +optional
-	PersistentVolumeClaim *v1.PersistentVolumeClaimVolumeSource `json:"persistentVolumeClaim,omitempty"`
+	PersistentVolumeClaim *PersistentVolumeClaimVolumeSource `json:"persistentVolumeClaim,omitempty"`
 	// CloudInitNoCloud represents a cloud-init NoCloud user-data source.
 	// The NoCloud data will be added as a disk to the vmi. A proper cloud-init installation is required inside the guest.
 	// More info: http://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html
@@ -728,7 +768,7 @@ type HotplugVolumeSource struct {
 	// Directly attached to the vmi via qemu.
 	// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 	// +optional
-	PersistentVolumeClaim *v1.PersistentVolumeClaimVolumeSource `json:"persistentVolumeClaim,omitempty"`
+	PersistentVolumeClaim *PersistentVolumeClaimVolumeSource `json:"persistentVolumeClaim,omitempty"`
 	// DataVolume represents the dynamic creation a PVC for this volume as well as
 	// the process of populating that PVC with a disk image.
 	// +optional
@@ -740,6 +780,21 @@ type HotplugVolumeSource struct {
 type DataVolumeSource struct {
 	// Name represents the name of the DataVolume in the same namespace
 	Name string `json:"name"`
+	// Hotpluggable indicates whether the volume can be hotplugged and hotunplugged.
+	// +optional
+	Hotpluggable bool `json:"hotpluggable,omitempty"`
+}
+
+// PersistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace.
+// Directly attached to the vmi via qemu.
+// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+//
+// +k8s:openapi-gen=true
+type PersistentVolumeClaimVolumeSource struct {
+	v1.PersistentVolumeClaimVolumeSource `json:",inline"`
+	// Hotpluggable indicates whether the volume can be hotplugged and hotunplugged.
+	// +optional
+	Hotpluggable bool `json:"hotpluggable,omitempty"`
 }
 
 //
