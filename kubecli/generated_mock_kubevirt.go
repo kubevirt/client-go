@@ -4,6 +4,8 @@
 package kubecli
 
 import (
+	net "net"
+
 	gomock "github.com/golang/mock/gomock"
 	v1 "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	v10 "k8s.io/api/autoscaling/v1"
@@ -186,6 +188,16 @@ func (_m *MockKubevirtClient) ServerVersion() *ServerVersion {
 
 func (_mr *_MockKubevirtClientRecorder) ServerVersion() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "ServerVersion")
+}
+
+func (_m *MockKubevirtClient) GuestfsVersion() *GuestfsVersion {
+	ret := _m.ctrl.Call(_m, "GuestfsVersion")
+	ret0, _ := ret[0].(*GuestfsVersion)
+	return ret0
+}
+
+func (_mr *_MockKubevirtClientRecorder) GuestfsVersion() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "GuestfsVersion")
 }
 
 func (_m *MockKubevirtClient) RestClient() *rest.RESTClient {
@@ -769,6 +781,16 @@ func (_mr *_MockStreamInterfaceRecorder) Stream(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Stream", arg0)
 }
 
+func (_m *MockStreamInterface) AsConn() net.Conn {
+	ret := _m.ctrl.Call(_m, "AsConn")
+	ret0, _ := ret[0].(net.Conn)
+	return ret0
+}
+
+func (_mr *_MockStreamInterfaceRecorder) AsConn() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "AsConn")
+}
+
 // Mock of VirtualMachineInstanceInterface interface
 type MockVirtualMachineInstanceInterface struct {
 	ctrl     *gomock.Controller
@@ -882,6 +904,17 @@ func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) SerialConsole(arg0, arg
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "SerialConsole", arg0, arg1)
 }
 
+func (_m *MockVirtualMachineInstanceInterface) USBRedir(vmiName string) (StreamInterface, error) {
+	ret := _m.ctrl.Call(_m, "USBRedir", vmiName)
+	ret0, _ := ret[0].(StreamInterface)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) USBRedir(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "USBRedir", arg0)
+}
+
 func (_m *MockVirtualMachineInstanceInterface) VNC(name string) (StreamInterface, error) {
 	ret := _m.ctrl.Call(_m, "VNC", name)
 	ret0, _ := ret[0].(StreamInterface)
@@ -891,6 +924,17 @@ func (_m *MockVirtualMachineInstanceInterface) VNC(name string) (StreamInterface
 
 func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) VNC(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "VNC", arg0)
+}
+
+func (_m *MockVirtualMachineInstanceInterface) PortForward(name string, port int, protocol string) (StreamInterface, error) {
+	ret := _m.ctrl.Call(_m, "PortForward", name, port, protocol)
+	ret0, _ := ret[0].(StreamInterface)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) PortForward(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PortForward", arg0, arg1, arg2)
 }
 
 func (_m *MockVirtualMachineInstanceInterface) Pause(name string) error {
@@ -911,6 +955,26 @@ func (_m *MockVirtualMachineInstanceInterface) Unpause(name string) error {
 
 func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) Unpause(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Unpause", arg0)
+}
+
+func (_m *MockVirtualMachineInstanceInterface) Freeze(name string) error {
+	ret := _m.ctrl.Call(_m, "Freeze", name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) Freeze(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Freeze", arg0)
+}
+
+func (_m *MockVirtualMachineInstanceInterface) Unfreeze(name string) error {
+	ret := _m.ctrl.Call(_m, "Unfreeze", name)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (_mr *_MockVirtualMachineInstanceInterfaceRecorder) Unfreeze(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Unfreeze", arg0)
 }
 
 func (_m *MockVirtualMachineInstanceInterface) GuestOsInfo(name string) (v117.VirtualMachineInstanceGuestAgentInfo, error) {
@@ -1383,6 +1447,17 @@ func (_m *MockVirtualMachineInterface) RemoveVolume(name string, removeVolumeOpt
 
 func (_mr *_MockVirtualMachineInterfaceRecorder) RemoveVolume(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RemoveVolume", arg0, arg1)
+}
+
+func (_m *MockVirtualMachineInterface) PortForward(name string, port int, protocol string) (StreamInterface, error) {
+	ret := _m.ctrl.Call(_m, "PortForward", name, port, protocol)
+	ret0, _ := ret[0].(StreamInterface)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockVirtualMachineInterfaceRecorder) PortForward(arg0, arg1, arg2 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "PortForward", arg0, arg1, arg2)
 }
 
 // Mock of VirtualMachineInstanceMigrationInterface interface
