@@ -40,6 +40,20 @@ func (VirtualMachineInstanceSpec) SwaggerDoc() map[string]string {
 	}
 }
 
+func (VirtualMachineInstancePhaseTransitionTimestamp) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"":                         "VirtualMachineInstancePhaseTransitionTimestamp gives a timestamp in relation to when a phase is set on a vmi\n\n+k8s:openapi-gen=true",
+		"phase":                    "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
+		"phaseTransitionTimestamp": "PhaseTransitionTimestamp is the timestamp of when the phase change occurred",
+	}
+}
+
+func (TopologyHints) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "+k8s:openapi-gen=true",
+	}
+}
+
 func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                              "VirtualMachineInstanceStatus represents information about the status of a VirtualMachineInstance. Status may trail the actual\nstate of a system.\n\n+k8s:openapi-gen=true",
@@ -47,6 +61,7 @@ func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 		"reason":                        "A brief CamelCase message indicating details about why the VMI is in this state. e.g. 'NodeUnresponsive'\n+optional",
 		"conditions":                    "Conditions are specific points in VirtualMachineInstance's pod runtime.",
 		"phase":                         "Phase is the status of the VirtualMachineInstance in kubernetes world. It is not the VirtualMachineInstance status, but partially correlates to it.",
+		"phaseTransitionTimestamps":     "PhaseTransitionTimestamp is the timestamp of when the last phase change occurred\n+listType=atomic\n+optional",
 		"interfaces":                    "Interfaces represent the details of available network interfaces.",
 		"guestOSInfo":                   "Guest OS Information",
 		"migrationState":                "Represents the status of a live migration",
@@ -57,6 +72,7 @@ func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 		"activePods":                    "ActivePods is a mapping of pod UID to node name.\nIt is possible for multiple pods to be running for a single VMI during migration.",
 		"volumeStatus":                  "VolumeStatus contains the statuses of all the volumes\n+optional\n+listType=atomic",
 		"fsFreezeStatus":                "FSFreezeStatus is the state of the fs of the guest\nit can be either frozen or thawed\n+optional",
+		"topologyHints":                 "+optional",
 	}
 }
 
@@ -69,6 +85,7 @@ func (VolumeStatus) SwaggerDoc() map[string]string {
 		"reason":        "Reason is a brief description of why we are in the current hotplug volume phase",
 		"message":       "Message is a detailed message about the current hotplug volume phase",
 		"hotplugVolume": "If the volume is hotplug, this will contain the hotplug status.",
+		"size":          "Represents the size of the volume",
 	}
 }
 
@@ -567,9 +584,16 @@ func (MigrationConfiguration) SwaggerDoc() map[string]string {
 	}
 }
 
+func (DiskVerification) SwaggerDoc() map[string]string {
+	return map[string]string{
+		"": "DiskVerification holds container disks verification limits\n+k8s:openapi-gen=true",
+	}
+}
+
 func (DeveloperConfiguration) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"": "DeveloperConfiguration holds developer options\n+k8s:openapi-gen=true",
+		"":                           "DeveloperConfiguration holds developer options\n+k8s:openapi-gen=true",
+		"minimumClusterTSCFrequency": "Allow overriding the automatically determined minimum TSC frequency of the cluster\nand fixate the minimum to this frequency.",
 	}
 }
 
@@ -590,7 +614,10 @@ func (PermittedHostDevices) SwaggerDoc() map[string]string {
 
 func (PciHostDevice) SwaggerDoc() map[string]string {
 	return map[string]string{
-		"": "PciHostDevice represents a host PCI device allowed for passthrough\n+k8s:openapi-gen=true",
+		"":                         "PciHostDevice represents a host PCI device allowed for passthrough\n+k8s:openapi-gen=true",
+		"pciVendorSelector":        "The vendor_id:product_id tupple of the PCI device",
+		"resourceName":             "The name of the resource that is representing the device. Exposed by\na device plugin and requested by VMs. Typically of the form\nvendor.com/product_nameThe name of the resource that is representing\nthe device. Exposed by a device plugin and requested by VMs.\nTypically of the form vendor.com/product_name",
+		"externalResourceProvider": "If true, KubeVirt will leave the allocation and monitoring to an\nexternal device plugin",
 	}
 }
 
