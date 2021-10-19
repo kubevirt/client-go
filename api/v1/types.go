@@ -211,11 +211,6 @@ type VirtualMachineInstanceStatus struct {
 	// +optional
 	// +listType=atomic
 	VolumeStatus []VolumeStatus `json:"volumeStatus,omitempty"`
-
-	// FSFreezeStatus is the state of the fs of the guest
-	// it can be either frozen or thawed
-	// +optional
-	FSFreezeStatus string `json:"fsFreezeStatus,omitempty"`
 }
 
 // VolumeStatus represents information about the status of volumes attached to the VirtualMachineInstance.
@@ -233,6 +228,8 @@ type VolumeStatus struct {
 	Message string `json:"message,omitempty"`
 	// If the volume is hotplug, this will contain the hotplug status.
 	HotplugVolume *HotplugVolumeStatus `json:"hotplugVolume,omitempty"`
+	// Represents the size of the volume
+	Size int64 `json:"size,omitempty"`
 }
 
 // HotplugVolumeStatus represents the hotplug status of the volume
@@ -366,8 +363,6 @@ const (
 	VirtualMachineInstanceReasonInterfaceNotMigratable = "InterfaceNotLiveMigratable"
 	// Reason means that VMI is not live migratioable because of it's network interfaces collection
 	VirtualMachineInstanceReasonHotplugNotMigratable = "HotplugNotLiveMigratable"
-	// Reason means that VMI is not live migratioable because of it's CPU mode
-	VirtualMachineInstanceReasonCPUModeNotMigratable = "CPUModeLiveMigratable"
 )
 
 const (
@@ -667,19 +662,14 @@ const (
 
 	// This label represents supported cpu features on the node
 	CPUFeatureLabel = "cpu-feature.node.kubevirt.io/"
-	// This label represents supported cpu models on the node
+	// This laberepresents supported cpu models on the node
 	CPUModelLabel = "cpu-model.node.kubevirt.io/"
 	CPUTimerLabel = "cpu-timer.node.kubevirt.io/"
 	// This label represents supported HyperV features on the node
 	HypervLabel = "hyperv.node.kubevirt.io/"
 	// This label represents vendor of cpu model on the node
 	CPUModelVendorLabel = "cpu-vendor.node.kubevirt.io/"
-
-	// This label represents the host model CPU name
-	HostModelCPULabel = "host-model-cpu.node.kubevirt.io/"
-	// This label represents the host model required features
-	HostModelRequiredFeaturesLabel = "host-model-required-features.node.kubevirt.io/"
-
+	//
 	LabellerSkipNodeAnnotation        = "node-labeller.kubevirt.io/skip-node"
 	VirtualMachineLabel               = AppLabel + "/vm"
 	MemfdMemoryBackend         string = "kubevirt.io/memfd"
@@ -1314,11 +1304,6 @@ const (
 // Handler defines a specific action that should be taken
 // TODO: pass structured data to these actions, and document that data here.
 type Handler struct {
-	// One and only one of the following should be specified.
-	// Exec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.
-	// If the guest agent is not available, this probe will fail.
-	// +optional
-	Exec *k8sv1.ExecAction `json:"exec,omitempty" protobuf:"bytes,1,opt,name=exec"`
 	// HTTPGet specifies the http request to perform.
 	// +optional
 	HTTPGet *k8sv1.HTTPGetAction `json:"httpGet,omitempty"`
@@ -1340,10 +1325,6 @@ type Probe struct {
 	// +optional
 	InitialDelaySeconds int32 `json:"initialDelaySeconds,omitempty"`
 	// Number of seconds after which the probe times out.
-	// For exec probes the timeout fails the probe but does not terminate the command running on the guest.
-	// This means a blocking command can result in an increasing load on the guest.
-	// A small buffer will be added to the resulting workload exec probe to compensate for delays
-	// caused by the qemu guest exec mechanism.
 	// Defaults to 1 second. Minimum value is 1.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
@@ -1685,22 +1666,6 @@ type RestartOptions struct {
 	GracePeriodSeconds *int64 `json:"gracePeriodSeconds,omitempty" protobuf:"varint,1,opt,name=gracePeriodSeconds"`
 }
 
-// StartOptions may be provided on start request.
-//
-// +k8s:openapi-gen=true
-type StartOptions struct {
-	metav1.TypeMeta `json:",inline"`
-
-	// Indicates that VM will be started in paused state.
-	// +optional
-	Paused bool `json:"paused,omitempty" protobuf:"varint,7,opt,name=paused"`
-}
-
-const (
-	StartRequestDataPausedKey  string = "paused"
-	StartRequestDataPausedTrue string = "true"
-)
-
 // StopOptions may be provided when deleting an API object.
 //
 // +k8s:openapi-gen=true
@@ -1733,9 +1698,6 @@ type VirtualMachineInstanceGuestAgentInfo struct {
 	UserList []VirtualMachineInstanceGuestOSUser `json:"userList,omitempty"`
 	// FSInfo is a guest os filesystem information containing the disk mapping and disk mounts with usage
 	FSInfo VirtualMachineInstanceFileSystemInfo `json:"fsInfo,omitempty"`
-	// FSFreezeStatus is the state of the fs of the guest
-	// it can be either frozen or thawed
-	FSFreezeStatus string `json:"fsFreezeStatus,omitempty"`
 }
 
 // List of commands that QEMU guest agent supports
@@ -1862,7 +1824,6 @@ type MigrationConfiguration struct {
 type DeveloperConfiguration struct {
 	FeatureGates           []string          `json:"featureGates,omitempty"`
 	LessPVCSpaceToleration int               `json:"pvcTolerateLessSpaceUpToPercent,omitempty"`
-	MinimumReservePVCBytes uint64            `json:"minimumReservePVCBytes,omitempty"`
 	MemoryOvercommit       int               `json:"memoryOvercommit,omitempty"`
 	NodeSelectors          map[string]string `json:"nodeSelectors,omitempty"`
 	UseEmulation           bool              `json:"useEmulation,omitempty"`
