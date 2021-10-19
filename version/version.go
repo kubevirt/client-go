@@ -22,9 +22,6 @@ package version
 import (
 	"fmt"
 	"runtime"
-
-	"bytes"
-	"encoding/json"
 )
 
 func Get() Info {
@@ -37,17 +34,4 @@ func Get() Info {
 		Compiler:     runtime.Compiler,
 		Platform:     fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH),
 	}
-}
-
-func GetCompactJSON() (string, error) {
-	v, err := json.Marshal(Get())
-	if err != nil {
-		return "", err
-	}
-	compactedBuffer := new(bytes.Buffer)
-	err = json.Compact(compactedBuffer, []byte(v))
-	if err != nil {
-		return "", err
-	}
-	return compactedBuffer.String(), nil
 }

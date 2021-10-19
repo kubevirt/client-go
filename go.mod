@@ -14,6 +14,7 @@ require (
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.1.1
 	github.com/onsi/ginkgo v1.12.1
 	github.com/onsi/gomega v1.10.1
+	github.com/openshift/api v0.0.0
 	github.com/openshift/client-go v0.0.0
 	github.com/pborman/uuid v1.2.0
 	github.com/spf13/pflag v1.0.5
@@ -23,7 +24,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
-	kubevirt.io/containerized-data-importer v1.34.1
+	kubevirt.io/containerized-data-importer v1.31.0
 )
 
 replace (
@@ -61,7 +62,7 @@ replace (
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.20.2
 	k8s.io/sample-controller => k8s.io/sample-controller v0.20.2
 
-	kubevirt.io/containerized-data-importer => kubevirt.io/containerized-data-importer v1.34.1
+	kubevirt.io/containerized-data-importer => kubevirt.io/containerized-data-importer v1.31.0
 	sigs.k8s.io/structured-merge-diff => sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2
 
 )
