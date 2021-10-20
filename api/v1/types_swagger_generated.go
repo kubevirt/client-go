@@ -56,7 +56,6 @@ func (VirtualMachineInstanceStatus) SwaggerDoc() map[string]string {
 		"evacuationNodeName":            "EvacuationNodeName is used to track the eviction process of a VMI. It stores the name of the node that we want\nto evacuate. It is meant to be used by KubeVirt core components only and can't be set or modified by users.\n+optional",
 		"activePods":                    "ActivePods is a mapping of pod UID to node name.\nIt is possible for multiple pods to be running for a single VMI during migration.",
 		"volumeStatus":                  "VolumeStatus contains the statuses of all the volumes\n+optional\n+listType=atomic",
-		"fsFreezeStatus":                "FSFreezeStatus is the state of the fs of the guest\nit can be either frozen or thawed\n+optional",
 	}
 }
 
@@ -69,6 +68,7 @@ func (VolumeStatus) SwaggerDoc() map[string]string {
 		"reason":        "Reason is a brief description of why we are in the current hotplug volume phase",
 		"message":       "Message is a detailed message about the current hotplug volume phase",
 		"hotplugVolume": "If the volume is hotplug, this will contain the hotplug status.",
+		"size":          "Represents the size of the volume",
 	}
 }
 
@@ -286,7 +286,6 @@ func (VirtualMachineStatus) SwaggerDoc() map[string]string {
 		"snapshotInProgress":     "SnapshotInProgress is the name of the VirtualMachineSnapshot currently executing",
 		"created":                "Created indicates if the virtual machine is created in the cluster",
 		"ready":                  "Ready indicates if the virtual machine is running and ready",
-		"printableStatus":        "PrintableStatus is a human readable, high-level representation of the status of the virtual machine",
 		"conditions":             "Hold the state information of the VirtualMachine and its VirtualMachineInstance",
 		"stateChangeRequests":    "StateChangeRequests indicates a list of actions that should be taken on a VMI\ne.g. stop a specific VMI then start a new one.",
 		"volumeRequests":         "VolumeRequests indicates a list of volumes add or remove from the VMI template and\nhotplug on an active running VMI.\n+listType=atomic",
@@ -331,7 +330,6 @@ func (VirtualMachineCondition) SwaggerDoc() map[string]string {
 func (Handler) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":          "Handler defines a specific action that should be taken",
-		"exec":      "One and only one of the following should be specified.\nExec specifies the action to take, it will be executed on the guest through the qemu-guest-agent.\nIf the guest agent is not available, this probe will fail.\n+optional",
 		"httpGet":   "HTTPGet specifies the http request to perform.\n+optional",
 		"tcpSocket": "TCPSocket specifies an action involving a TCP port.\nTCP hooks not yet supported\n+optional",
 	}
@@ -341,7 +339,7 @@ func (Probe) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":                    "Probe describes a health check to be performed against a VirtualMachineInstance to determine whether it is\nalive or ready to receive traffic.\n+k8s:openapi-gen=true",
 		"initialDelaySeconds": "Number of seconds after the VirtualMachineInstance has started before liveness probes are initiated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes\n+optional",
-		"timeoutSeconds":      "Number of seconds after which the probe times out.\nFor exec probes the timeout fails the probe but does not terminate the command running on the guest.\nThis means a blocking command can result in an increasing load on the guest.\nA small buffer will be added to the resulting workload exec probe to compensate for delays\ncaused by the qemu guest exec mechanism.\nDefaults to 1 second. Minimum value is 1.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes\n+optional",
+		"timeoutSeconds":      "Number of seconds after which the probe times out.\nDefaults to 1 second. Minimum value is 1.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes\n+optional",
 		"periodSeconds":       "How often (in seconds) to perform the probe.\nDefault to 10 seconds. Minimum value is 1.\n+optional",
 		"successThreshold":    "Minimum consecutive successes for the probe to be considered successful after having failed.\nDefaults to 1. Must be 1 for liveness. Minimum value is 1.\n+optional",
 		"failureThreshold":    "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1.\n+optional",
@@ -416,13 +414,6 @@ func (CustomizeComponents) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":        "+k8s:openapi-gen=true",
 		"patches": "+listType=atomic",
-		"flags":   "Configure the value used for deployment and daemonset resources",
-	}
-}
-
-func (Flags) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"": "Flags will create a patch that will replace all flags for the container's\ncommand field. The only flags that will be used are those define. There are no\nguarantees around forward/backward compatibility.  If set incorrectly this will\ncause the resource when rolled out to error until flags are updated.\n\n+k8s:openapi-gen=true",
 	}
 }
 
@@ -468,13 +459,6 @@ func (RestartOptions) SwaggerDoc() map[string]string {
 	}
 }
 
-func (StartOptions) SwaggerDoc() map[string]string {
-	return map[string]string{
-		"":       "StartOptions may be provided on start request.\n\n+k8s:openapi-gen=true",
-		"paused": "Indicates that VM will be started in paused state.\n+optional",
-	}
-}
-
 func (StopOptions) SwaggerDoc() map[string]string {
 	return map[string]string{
 		"":            "StopOptions may be provided when deleting an API object.\n\n+k8s:openapi-gen=true",
@@ -492,7 +476,6 @@ func (VirtualMachineInstanceGuestAgentInfo) SwaggerDoc() map[string]string {
 		"timezone":          "Timezone is guest os current timezone",
 		"userList":          "UserList is a list of active guest OS users",
 		"fsInfo":            "FSInfo is a guest os filesystem information containing the disk mapping and disk mounts with usage",
-		"fsFreezeStatus":    "FSFreezeStatus is the state of the fs of the guest\nit can be either frozen or thawed",
 	}
 }
 
