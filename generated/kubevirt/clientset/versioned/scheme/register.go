@@ -25,13 +25,15 @@ import (
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 
-	snapshotv1alpha1 "kubevirt.io/client-go/apis/snapshot/v1alpha1"
+	flavorv1alpha1 "kubevirt.io/api/flavor/v1alpha1"
+	snapshotv1alpha1 "kubevirt.io/api/snapshot/v1alpha1"
 )
 
 var Scheme = runtime.NewScheme()
 var Codecs = serializer.NewCodecFactory(Scheme)
 var ParameterCodec = runtime.NewParameterCodec(Scheme)
 var localSchemeBuilder = runtime.SchemeBuilder{
+	flavorv1alpha1.AddToScheme,
 	snapshotv1alpha1.AddToScheme,
 }
 
