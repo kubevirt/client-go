@@ -6,7 +6,7 @@ import (
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 
-	v1 "kubevirt.io/client-go/api/v1"
+	v1 "kubevirt.io/api/core/v1"
 )
 
 // GetMockKubevirtClientFromClientConfig, MockKubevirtClientInstance are used to create a mechanism

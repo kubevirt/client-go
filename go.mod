@@ -3,7 +3,7 @@ module kubevirt.io/client-go
 go 1.12
 
 require (
-	github.com/coreos/prometheus-operator v0.35.0
+	github.com/coreos/prometheus-operator v0.38.0
 	github.com/go-kit/kit v0.9.0
 	github.com/go-openapi/spec v0.19.3
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
@@ -12,27 +12,23 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20191119172530-79f836b90111
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.1.1
-	github.com/onsi/ginkgo v1.12.1
-	github.com/onsi/gomega v1.10.1
+	github.com/onsi/ginkgo v1.14.1
+	github.com/onsi/gomega v1.10.2
 	github.com/openshift/client-go v0.0.0
-	github.com/pborman/uuid v1.2.0
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.20.2
 	k8s.io/apiextensions-apiserver v0.20.2
 	k8s.io/apimachinery v0.20.2
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd
-	k8s.io/utils v0.0.0-20201110183641-67b214c5f920
-	kubevirt.io/containerized-data-importer v1.34.1
+	k8s.io/utils v0.0.0-20210111153108-fddb29f9d009
+	kubevirt.io/api v0.0.0-20215217075245-c94ce62baf5a
+	kubevirt.io/containerized-data-importer-api v1.41.0
 )
 
 replace (
-	github.com/go-kit/kit => github.com/go-kit/kit v0.3.0
-	//github.com/googleapis/gnostic => github.com/googleapis/gnostic v0.3.1
 	github.com/openshift/api => github.com/openshift/api v0.0.0-20210105115604-44119421ec6b
 	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20210112165513-ebc401615f47
-	github.com/operator-framework/operator-lifecycle-manager => github.com/operator-framework/operator-lifecycle-manager v0.0.0-20190128024246-5eb7ae5bdb7a
-	gopkg.in/yaml.v2 => gopkg.in/yaml.v2 v2.2.4
 
 	k8s.io/api => k8s.io/api v0.20.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.20.2
@@ -60,8 +56,4 @@ replace (
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.20.2
 	k8s.io/sample-cli-plugin => k8s.io/sample-cli-plugin v0.20.2
 	k8s.io/sample-controller => k8s.io/sample-controller v0.20.2
-
-	kubevirt.io/containerized-data-importer => kubevirt.io/containerized-data-importer v1.34.1
-	sigs.k8s.io/structured-merge-diff => sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2
-
 )
