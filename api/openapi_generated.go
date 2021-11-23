@@ -399,6 +399,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.NetworkSource":                                                      schema_kubevirtio_api_core_v1_NetworkSource(ref),
 		"kubevirt.io/api/core/v1.NodePlacement":                                                      schema_kubevirtio_api_core_v1_NodePlacement(ref),
 		"kubevirt.io/api/core/v1.PITTimer":                                                           schema_kubevirtio_api_core_v1_PITTimer(ref),
+		"kubevirt.io/api/core/v1.PauseOptions":                                                       schema_kubevirtio_api_core_v1_PauseOptions(ref),
 		"kubevirt.io/api/core/v1.PciHostDevice":                                                      schema_kubevirtio_api_core_v1_PciHostDevice(ref),
 		"kubevirt.io/api/core/v1.PermittedHostDevices":                                               schema_kubevirtio_api_core_v1_PermittedHostDevices(ref),
 		"kubevirt.io/api/core/v1.PersistentVolumeClaimInfo":                                          schema_kubevirtio_api_core_v1_PersistentVolumeClaimInfo(ref),
@@ -424,6 +425,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.SSHPublicKeyAccessCredentialSource":                                 schema_kubevirtio_api_core_v1_SSHPublicKeyAccessCredentialSource(ref),
 		"kubevirt.io/api/core/v1.SecretVolumeSource":                                                 schema_kubevirtio_api_core_v1_SecretVolumeSource(ref),
 		"kubevirt.io/api/core/v1.ServiceAccountVolumeSource":                                         schema_kubevirtio_api_core_v1_ServiceAccountVolumeSource(ref),
+		"kubevirt.io/api/core/v1.SoundDevice":                                                        schema_kubevirtio_api_core_v1_SoundDevice(ref),
 		"kubevirt.io/api/core/v1.StartOptions":                                                       schema_kubevirtio_api_core_v1_StartOptions(ref),
 		"kubevirt.io/api/core/v1.StopOptions":                                                        schema_kubevirtio_api_core_v1_StopOptions(ref),
 		"kubevirt.io/api/core/v1.SyNICTimer":                                                         schema_kubevirtio_api_core_v1_SyNICTimer(ref),
@@ -431,6 +433,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.Timer":                                                              schema_kubevirtio_api_core_v1_Timer(ref),
 		"kubevirt.io/api/core/v1.TokenBucketRateLimiter":                                             schema_kubevirtio_api_core_v1_TokenBucketRateLimiter(ref),
 		"kubevirt.io/api/core/v1.TopologyHints":                                                      schema_kubevirtio_api_core_v1_TopologyHints(ref),
+		"kubevirt.io/api/core/v1.UnpauseOptions":                                                     schema_kubevirtio_api_core_v1_UnpauseOptions(ref),
 		"kubevirt.io/api/core/v1.UserPasswordAccessCredential":                                       schema_kubevirtio_api_core_v1_UserPasswordAccessCredential(ref),
 		"kubevirt.io/api/core/v1.UserPasswordAccessCredentialPropagationMethod":                      schema_kubevirtio_api_core_v1_UserPasswordAccessCredentialPropagationMethod(ref),
 		"kubevirt.io/api/core/v1.UserPasswordAccessCredentialSource":                                 schema_kubevirtio_api_core_v1_UserPasswordAccessCredentialSource(ref),
@@ -15264,11 +15267,17 @@ func schema_kubevirtio_api_core_v1_Devices(ref common.ReferenceCallback) common.
 							Ref:         ref("kubevirt.io/api/core/v1.ClientPassthroughDevices"),
 						},
 					},
+					"sound": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Whether to emulate a sound device.",
+							Ref:         ref("kubevirt.io/api/core/v1.SoundDevice"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.ClientPassthroughDevices", "kubevirt.io/api/core/v1.Disk", "kubevirt.io/api/core/v1.Filesystem", "kubevirt.io/api/core/v1.GPU", "kubevirt.io/api/core/v1.HostDevice", "kubevirt.io/api/core/v1.Input", "kubevirt.io/api/core/v1.Interface", "kubevirt.io/api/core/v1.Rng", "kubevirt.io/api/core/v1.Watchdog"},
+			"kubevirt.io/api/core/v1.ClientPassthroughDevices", "kubevirt.io/api/core/v1.Disk", "kubevirt.io/api/core/v1.Filesystem", "kubevirt.io/api/core/v1.GPU", "kubevirt.io/api/core/v1.HostDevice", "kubevirt.io/api/core/v1.Input", "kubevirt.io/api/core/v1.Interface", "kubevirt.io/api/core/v1.Rng", "kubevirt.io/api/core/v1.SoundDevice", "kubevirt.io/api/core/v1.Watchdog"},
 	}
 }
 
@@ -17261,6 +17270,13 @@ func schema_kubevirtio_api_core_v1_KubeVirtSpec(ref common.ReferenceCallback) co
 							Format:      "",
 						},
 					},
+					"productComponent": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Designate the apps.kubevirt.io/component label for KubeVirt components. Useful if KubeVirt is included as part of a product. If ProductComponent is not specified, the component label default value is kubevirt.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"configuration": {
 						SchemaProps: spec.SchemaProps{
 							Description: "holds kubevirt configurations. same as the virt-configMap",
@@ -17931,6 +17947,52 @@ func schema_kubevirtio_api_core_v1_PITTimer(ref common.ReferenceCallback) common
 							Description: "Enabled set to false makes sure that the machine type or a preset can't add the timer. Defaults to true.",
 							Type:        []string{"boolean"},
 							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_kubevirtio_api_core_v1_PauseOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "PauseOptions may be provided on pause request.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"dryRun": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "atomic",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Description: "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type:   []string{"string"},
+										Format: "",
+									},
+								},
+							},
 						},
 					},
 				},
@@ -18751,6 +18813,26 @@ func schema_kubevirtio_api_core_v1_ServiceAccountVolumeSource(ref common.Referen
 	}
 }
 
+func schema_kubevirtio_api_core_v1_SoundDevice(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "Represents the user's configuration to emulate sound cards in the VMI.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"model": {
+						SchemaProps: spec.SchemaProps{
+							Description: "We only support ich9 or ac97. If SoundDevice is not set: No sound card is emulated. If SoundDevice is set but Model is not: ich9",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func schema_kubevirtio_api_core_v1_StartOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -18991,6 +19073,52 @@ func schema_kubevirtio_api_core_v1_TopologyHints(ref common.ReferenceCallback) c
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"integer"},
 							Format: "int64",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func schema_kubevirtio_api_core_v1_UnpauseOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "UnpauseOptions may be provided on unpause request.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"apiVersion": {
+						SchemaProps: spec.SchemaProps{
+							Description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"dryRun": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "atomic",
+							},
+						},
+						SchemaProps: spec.SchemaProps{
+							Description: "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed",
+							Type:        []string{"array"},
+							Items: &spec.SchemaOrArray{
+								Schema: &spec.Schema{
+									SchemaProps: spec.SchemaProps{
+										Type:   []string{"string"},
+										Format: "",
+									},
+								},
+							},
 						},
 					},
 				},
