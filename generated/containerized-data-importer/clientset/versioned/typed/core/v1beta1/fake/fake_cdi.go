@@ -19,8 +19,6 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -28,7 +26,7 @@ import (
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
 
-	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+	v1beta1 "kubevirt.io/containerized-data-importer/pkg/apis/core/v1beta1"
 )
 
 // FakeCDIs implements CDIInterface
@@ -41,7 +39,7 @@ var cdisResource = schema.GroupVersionResource{Group: "cdi.kubevirt.io", Version
 var cdisKind = schema.GroupVersionKind{Group: "cdi.kubevirt.io", Version: "v1beta1", Kind: "CDI"}
 
 // Get takes name of the cDI, and returns the corresponding cDI object, and an error if there is any.
-func (c *FakeCDIs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1beta1.CDI, err error) {
+func (c *FakeCDIs) Get(name string, options v1.GetOptions) (result *v1beta1.CDI, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootGetAction(cdisResource, name), &v1beta1.CDI{})
 	if obj == nil {
@@ -51,7 +49,7 @@ func (c *FakeCDIs) Get(ctx context.Context, name string, options v1.GetOptions) 
 }
 
 // List takes label and field selectors, and returns the list of CDIs that match those selectors.
-func (c *FakeCDIs) List(ctx context.Context, opts v1.ListOptions) (result *v1beta1.CDIList, err error) {
+func (c *FakeCDIs) List(opts v1.ListOptions) (result *v1beta1.CDIList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootListAction(cdisResource, cdisKind, opts), &v1beta1.CDIList{})
 	if obj == nil {
@@ -72,13 +70,13 @@ func (c *FakeCDIs) List(ctx context.Context, opts v1.ListOptions) (result *v1bet
 }
 
 // Watch returns a watch.Interface that watches the requested cDIs.
-func (c *FakeCDIs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeCDIs) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewRootWatchAction(cdisResource, opts))
 }
 
 // Create takes the representation of a cDI and creates it.  Returns the server's representation of the cDI, and an error, if there is any.
-func (c *FakeCDIs) Create(ctx context.Context, cDI *v1beta1.CDI, opts v1.CreateOptions) (result *v1beta1.CDI, err error) {
+func (c *FakeCDIs) Create(cDI *v1beta1.CDI) (result *v1beta1.CDI, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootCreateAction(cdisResource, cDI), &v1beta1.CDI{})
 	if obj == nil {
@@ -88,7 +86,7 @@ func (c *FakeCDIs) Create(ctx context.Context, cDI *v1beta1.CDI, opts v1.CreateO
 }
 
 // Update takes the representation of a cDI and updates it. Returns the server's representation of the cDI, and an error, if there is any.
-func (c *FakeCDIs) Update(ctx context.Context, cDI *v1beta1.CDI, opts v1.UpdateOptions) (result *v1beta1.CDI, err error) {
+func (c *FakeCDIs) Update(cDI *v1beta1.CDI) (result *v1beta1.CDI, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateAction(cdisResource, cDI), &v1beta1.CDI{})
 	if obj == nil {
@@ -99,7 +97,7 @@ func (c *FakeCDIs) Update(ctx context.Context, cDI *v1beta1.CDI, opts v1.UpdateO
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeCDIs) UpdateStatus(ctx context.Context, cDI *v1beta1.CDI, opts v1.UpdateOptions) (*v1beta1.CDI, error) {
+func (c *FakeCDIs) UpdateStatus(cDI *v1beta1.CDI) (*v1beta1.CDI, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateSubresourceAction(cdisResource, "status", cDI), &v1beta1.CDI{})
 	if obj == nil {
@@ -109,22 +107,22 @@ func (c *FakeCDIs) UpdateStatus(ctx context.Context, cDI *v1beta1.CDI, opts v1.U
 }
 
 // Delete takes name of the cDI and deletes it. Returns an error if one occurs.
-func (c *FakeCDIs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeCDIs) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewRootDeleteAction(cdisResource, name), &v1beta1.CDI{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeCDIs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewRootDeleteCollectionAction(cdisResource, listOpts)
+func (c *FakeCDIs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+	action := testing.NewRootDeleteCollectionAction(cdisResource, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1beta1.CDIList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched cDI.
-func (c *FakeCDIs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.CDI, err error) {
+func (c *FakeCDIs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta1.CDI, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootPatchSubresourceAction(cdisResource, name, pt, data, subresources...), &v1beta1.CDI{})
 	if obj == nil {

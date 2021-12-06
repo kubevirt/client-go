@@ -9,7 +9,7 @@ manner to allow adequate time to respond.  If a security issue or
 vulnerability has been found, please disclose the details to our
 dedicated email address:
 
-cncf-kubevirt-security@lists.cncf.io [PGP](#PGP Encryption)
+kubevirt-security@redhat.com [PGP](#PGP Encryption)
 
 Please include as much information as possible with the report. The
 following details assist with analysis efforts:
@@ -40,4 +40,10 @@ mailing list and published to the
 page.
 
 ## Security Team
-The security team currently consists of the Maintainers of Kubevirt.
+The security team consists of key developers, vendor security contacts
+and project leadership.
+
+Membership of the security team is assessed on a case-by-case basis. If
+you have cause to join the team, please sent an email to the email address
+above. Members will need to demonstrate secure information handling
+practices and procedures before joining.

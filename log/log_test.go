@@ -30,7 +30,7 @@ import (
 	k8sv1 "k8s.io/api/core/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	v1 "kubevirt.io/api/core/v1"
+	v1 "kubevirt.io/client-go/api/v1"
 )
 
 var logCalled bool = false
@@ -111,26 +111,6 @@ func TestComponent(t *testing.T) {
 	assert(t, logEntry[2].(string) == "timestamp", "Logged line is not expected format")
 	assert(t, logEntry[6].(string) == "component", "Logged line is not expected format")
 	assert(t, logEntry[7].(string) == "test", "Component was not logged")
-	tearDown()
-}
-
-func TestWith(t *testing.T) {
-	setUp()
-	log := MakeLogger(MockLogger{})
-
-	log.With("arg1", "val1").Log("foo1", "bar1")
-	log.With("arg2", "val2").Log("foo2", "bar2")
-
-	assert(t, len(logParams) == 2, "Expected 2 log lines")
-
-	logEntry := logParams[0].([]interface{})
-	assert(t, logEntry[8].(string) == "arg1", "Custom With() field was not logged")
-	assert(t, logEntry[9].(string) == "val1", "Custom With() field was not logged")
-
-	logEntry = logParams[1].([]interface{})
-	assert(t, logEntry[8].(string) == "arg2", "Custom With() was not logged")
-	assert(t, logEntry[9].(string) == "val2", "Custom With() was not logged")
-
 	tearDown()
 }
 

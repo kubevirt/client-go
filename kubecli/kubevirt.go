@@ -27,26 +27,20 @@ package kubecli
 
 import (
 	"io"
-	"net"
-	"time"
 
 	secv1 "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	autov1 "k8s.io/api/autoscaling/v1"
 	extclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
-	v1 "kubevirt.io/api/core/v1"
+	v1 "kubevirt.io/client-go/api/v1"
 	cdiclient "kubevirt.io/client-go/generated/containerized-data-importer/clientset/versioned"
 	k8ssnapshotclient "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned"
 	generatedclient "kubevirt.io/client-go/generated/kubevirt/clientset/versioned"
-	flavorv1alpha1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/flavor/v1alpha1"
 	vmsnapshotv1alpha1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/snapshot/v1alpha1"
 	networkclient "kubevirt.io/client-go/generated/network-attachment-definition-client/clientset/versioned"
 	promclient "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned"
@@ -62,11 +56,7 @@ type KubevirtClient interface {
 	VirtualMachineSnapshot(namespace string) vmsnapshotv1alpha1.VirtualMachineSnapshotInterface
 	VirtualMachineSnapshotContent(namespace string) vmsnapshotv1alpha1.VirtualMachineSnapshotContentInterface
 	VirtualMachineRestore(namespace string) vmsnapshotv1alpha1.VirtualMachineRestoreInterface
-	VirtualMachineFlavor(namespace string) flavorv1alpha1.VirtualMachineFlavorInterface
-	VirtualMachineClusterFlavor() flavorv1alpha1.VirtualMachineClusterFlavorInterface
 	ServerVersion() *ServerVersion
-	ClusterProfiler() *ClusterProfiler
-	GuestfsVersion() *GuestfsVersion
 	RestClient() *rest.RESTClient
 	GeneratedKubeVirtClient() generatedclient.Interface
 	CdiClient() cdiclient.Interface
@@ -76,7 +66,6 @@ type KubevirtClient interface {
 	DiscoveryClient() discovery.DiscoveryInterface
 	PrometheusClient() promclient.Interface
 	KubernetesSnapshotClient() k8ssnapshotclient.Interface
-	DynamicClient() dynamic.Interface
 	kubernetes.Interface
 	Config() *rest.Config
 }
@@ -94,7 +83,6 @@ type kubevirt struct {
 	discoveryClient         *discovery.DiscoveryClient
 	prometheusClient        *promclient.Clientset
 	snapshotClient          *k8ssnapshotclient.Clientset
-	dynamicClient           dynamic.Interface
 	*kubernetes.Clientset
 }
 
@@ -146,20 +134,8 @@ func (k kubevirt) VirtualMachineRestore(namespace string) vmsnapshotv1alpha1.Vir
 	return k.generatedKubeVirtClient.SnapshotV1alpha1().VirtualMachineRestores(namespace)
 }
 
-func (k kubevirt) VirtualMachineFlavor(namespace string) flavorv1alpha1.VirtualMachineFlavorInterface {
-	return k.generatedKubeVirtClient.FlavorV1alpha1().VirtualMachineFlavors(namespace)
-}
-
-func (k kubevirt) VirtualMachineClusterFlavor() flavorv1alpha1.VirtualMachineClusterFlavorInterface {
-	return k.generatedKubeVirtClient.FlavorV1alpha1().VirtualMachineClusterFlavors()
-}
-
 func (k kubevirt) KubernetesSnapshotClient() k8ssnapshotclient.Interface {
 	return k.snapshotClient
-}
-
-func (k kubevirt) DynamicClient() dynamic.Interface {
-	return k.dynamicClient
 }
 
 type StreamOptions struct {
@@ -169,7 +145,6 @@ type StreamOptions struct {
 
 type StreamInterface interface {
 	Stream(options StreamOptions) error
-	AsConn() net.Conn
 }
 
 type VirtualMachineInstanceInterface interface {
@@ -178,17 +153,11 @@ type VirtualMachineInstanceInterface interface {
 	Create(instance *v1.VirtualMachineInstance) (*v1.VirtualMachineInstance, error)
 	Update(*v1.VirtualMachineInstance) (*v1.VirtualMachineInstance, error)
 	Delete(name string, options *k8smetav1.DeleteOptions) error
-	Patch(name string, pt types.PatchType, data []byte, patchOptions *k8smetav1.PatchOptions, subresources ...string) (result *v1.VirtualMachineInstance, err error)
-	Watch(opts metav1.ListOptions) (watch.Interface, error)
+	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.VirtualMachineInstance, err error)
 	SerialConsole(name string, options *SerialConsoleOptions) (StreamInterface, error)
-	USBRedir(vmiName string) (StreamInterface, error)
 	VNC(name string) (StreamInterface, error)
-	PortForward(name string, port int, protocol string) (StreamInterface, error)
-	Pause(name string, pauseOptions *v1.PauseOptions) error
-	Unpause(name string, unpauseOptions *v1.UnpauseOptions) error
-	Freeze(name string, unfreezeTimeout time.Duration) error
-	Unfreeze(name string) error
-	SoftReboot(name string) error
+	Pause(name string) error
+	Unpause(name string) error
 	GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo, error)
 	UserList(name string) (v1.VirtualMachineInstanceGuestOSUserList, error)
 	FilesystemList(name string) (v1.VirtualMachineInstanceFileSystemList, error)
@@ -226,24 +195,23 @@ type VirtualMachineInterface interface {
 	Create(*v1.VirtualMachine) (*v1.VirtualMachine, error)
 	Update(*v1.VirtualMachine) (*v1.VirtualMachine, error)
 	Delete(name string, options *k8smetav1.DeleteOptions) error
-	Patch(name string, pt types.PatchType, data []byte, patchOptions *metav1.PatchOptions, subresources ...string) (result *v1.VirtualMachine, err error)
+	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.VirtualMachine, err error)
 	UpdateStatus(*v1.VirtualMachine) (*v1.VirtualMachine, error)
-	PatchStatus(name string, pt types.PatchType, data []byte, patchOptions *metav1.PatchOptions) (result *v1.VirtualMachine, err error)
-	Restart(name string, restartOptions *v1.RestartOptions) error
-	ForceRestart(name string, restartOptions *v1.RestartOptions) error
-	Start(name string, startOptions *v1.StartOptions) error
-	Stop(name string, stopOptions *v1.StopOptions) error
-	ForceStop(name string, stopOptions *v1.StopOptions) error
-	Migrate(name string, migrateOptions *v1.MigrateOptions) error
+	PatchStatus(name string, pt types.PatchType, data []byte) (result *v1.VirtualMachine, err error)
+	Restart(name string) error
+	ForceRestart(name string, graceperiod int) error
+	Start(name string) error
+	Stop(name string) error
+	Migrate(name string) error
+	Rename(name string, options *v1.RenameOptions) error
 	AddVolume(name string, addVolumeOptions *v1.AddVolumeOptions) error
 	RemoveVolume(name string, removeVolumeOptions *v1.RemoveVolumeOptions) error
-	PortForward(name string, port int, protocol string) (StreamInterface, error)
 }
 
 type VirtualMachineInstanceMigrationInterface interface {
 	Get(name string, options *k8smetav1.GetOptions) (*v1.VirtualMachineInstanceMigration, error)
 	List(opts *k8smetav1.ListOptions) (*v1.VirtualMachineInstanceMigrationList, error)
-	Create(migration *v1.VirtualMachineInstanceMigration, options *k8smetav1.CreateOptions) (*v1.VirtualMachineInstanceMigration, error)
+	Create(*v1.VirtualMachineInstanceMigration) (*v1.VirtualMachineInstanceMigration, error)
 	Update(*v1.VirtualMachineInstanceMigration) (*v1.VirtualMachineInstanceMigration, error)
 	Delete(name string, options *k8smetav1.DeleteOptions) error
 	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.VirtualMachineInstanceMigration, err error)
@@ -257,7 +225,7 @@ type KubeVirtInterface interface {
 	Create(instance *v1.KubeVirt) (*v1.KubeVirt, error)
 	Update(*v1.KubeVirt) (*v1.KubeVirt, error)
 	Delete(name string, options *k8smetav1.DeleteOptions) error
-	Patch(name string, pt types.PatchType, data []byte, patchOptions *metav1.PatchOptions, subresources ...string) (result *v1.KubeVirt, err error)
+	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.KubeVirt, err error)
 	UpdateStatus(*v1.KubeVirt) (*v1.KubeVirt, error)
-	PatchStatus(name string, pt types.PatchType, data []byte, patchOptions *metav1.PatchOptions) (result *v1.KubeVirt, err error)
+	PatchStatus(name string, pt types.PatchType, data []byte) (result *v1.KubeVirt, err error)
 }

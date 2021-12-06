@@ -20,29 +20,22 @@
 package kubecli
 
 import (
-	"context"
-
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 
-	v1 "kubevirt.io/api/core/v1"
-
+	v1 "kubevirt.io/client-go/api/v1"
 	"kubevirt.io/client-go/log"
 	"kubevirt.io/client-go/subresources"
 )
@@ -131,7 +124,7 @@ func roundTripperFromConfig(config *rest.Config, callback RoundTripCallback) (ht
 	return rest.HTTPWrappersForConfig(config, rt)
 }
 
-func RequestFromConfig(config *rest.Config, resource, name, namespace, subresource string) (*http.Request, error) {
+func RequestFromConfig(config *rest.Config, vmi string, namespace string, resource string) (*http.Request, error) {
 
 	u, err := url.Parse(config.Host)
 	if err != nil {
@@ -147,39 +140,43 @@ func RequestFromConfig(config *rest.Config, resource, name, namespace, subresour
 		return nil, fmt.Errorf("Unsupported Protocol %s", u.Scheme)
 	}
 
-	u.Path = fmt.Sprintf("/apis/subresources.kubevirt.io/%s/namespaces/%s/%s/%s/%s", v1.ApiStorageVersion, namespace, resource, name, subresource)
+	u.Path = fmt.Sprintf("/apis/subresources.kubevirt.io/%s/namespaces/%s/virtualmachineinstances/%s/%s", v1.ApiStorageVersion, namespace, vmi, resource)
 	req := &http.Request{
 		Method: http.MethodGet,
 		URL:    u,
-		Header: map[string][]string{},
 	}
 
 	return req, nil
 }
 
-func (v *vmis) USBRedir(name string) (StreamInterface, error) {
-	return asyncSubresourceHelper(v.config, v.resource, v.namespace, name, "usbredir")
+type wsStreamer struct {
+	conn *websocket.Conn
+	done chan struct{}
+}
+
+func (ws *wsStreamer) streamDone() {
+	close(ws.done)
+}
+
+func (ws *wsStreamer) Stream(options StreamOptions) error {
+	copyErr := make(chan error, 1)
+
+	go func() {
+		_, err := CopyTo(ws.conn, options.In)
+		copyErr <- err
+	}()
+
+	go func() {
+		_, err := CopyFrom(options.Out, ws.conn)
+		copyErr <- err
+	}()
+
+	defer ws.streamDone()
+	return <-copyErr
 }
 
 func (v *vmis) VNC(name string) (StreamInterface, error) {
-	return asyncSubresourceHelper(v.config, v.resource, v.namespace, name, "vnc")
-}
-
-func (v *vmis) PortForward(name string, port int, protocol string) (StreamInterface, error) {
-	return asyncSubresourceHelper(v.config, v.resource, v.namespace, name, buildPortForwardResourcePath(port, protocol))
-}
-
-func buildPortForwardResourcePath(port int, protocol string) string {
-	resource := strings.Builder{}
-	resource.WriteString("portforward/")
-	resource.WriteString(strconv.Itoa(port))
-
-	if len(protocol) > 0 {
-		resource.WriteString("/")
-		resource.WriteString(protocol)
-	}
-
-	return resource.String()
+	return v.asyncSubresourceHelper(name, "vnc")
 }
 
 type connectionStruct struct {
@@ -210,7 +207,7 @@ func (v *vmis) SerialConsole(name string, options *SerialConsoleOptions) (Stream
 				default:
 				}
 
-				con, err := asyncSubresourceHelper(v.config, v.resource, v.namespace, name, "console")
+				con, err := v.asyncSubresourceHelper(name, "console")
 				if err != nil {
 					asyncSubresourceError, ok := err.(*AsyncSubresourceError)
 					// return if response status code does not equal to 400
@@ -230,56 +227,93 @@ func (v *vmis) SerialConsole(name string, options *SerialConsoleOptions) (Stream
 		conStruct := <-connectionChan
 		return conStruct.con, conStruct.err
 	} else {
-		return asyncSubresourceHelper(v.config, v.resource, v.namespace, name, "console")
+		return v.asyncSubresourceHelper(name, "console")
 	}
 }
 
-func (v *vmis) Freeze(name string, unfreezeTimeout time.Duration) error {
-	log.Log.Infof("Freeze VMI %s", name)
-	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "freeze")
+type AsyncSubresourceError struct {
+	err        string
+	StatusCode int
+}
 
-	freezeUnfreezeTimeout := &v1.FreezeUnfreezeTimeout{
-		UnfreezeTimeout: &metav1.Duration{
-			Duration: unfreezeTimeout,
-		},
+func (a *AsyncSubresourceError) Error() string {
+	return a.err
+}
+
+func (a *AsyncSubresourceError) GetStatusCode() int {
+	return a.StatusCode
+}
+
+func (v *vmis) asyncSubresourceHelper(name string, resource string) (StreamInterface, error) {
+
+	done := make(chan struct{})
+
+	aws := &asyncWSRoundTripper{
+		Connection: make(chan *websocket.Conn),
+		Done:       done,
 	}
-
-	JSON, err := json.Marshal(freezeUnfreezeTimeout)
+	// Create a round tripper with all necessary kubernetes security details
+	wrappedRoundTripper, err := roundTripperFromConfig(v.config, aws.WebsocketCallback)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("unable to create round tripper for remote execution: %v", err)
 	}
 
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
-}
-
-func (v *vmis) Unfreeze(name string) error {
-	log.Log.Infof("Unfreeze VMI %s", name)
-	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "unfreeze")
-	return v.restClient.Put().RequestURI(uri).Do(context.Background()).Error()
-}
-
-func (v *vmis) SoftReboot(name string) error {
-	log.Log.Infof("SoftReboot VMI")
-	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "softreboot")
-	return v.restClient.Put().RequestURI(uri).Do(context.Background()).Error()
-}
-
-func (v *vmis) Pause(name string, pauseOptions *v1.PauseOptions) error {
-	body, err := json.Marshal(pauseOptions)
+	// Create a request out of config and the query parameters
+	req, err := RequestFromConfig(v.config, name, v.namespace, resource)
 	if err != nil {
-		return fmt.Errorf("Cannot Marshal to json: %s", err)
+		return nil, fmt.Errorf("unable to create request for remote execution: %v", err)
 	}
+
+	errChan := make(chan error, 1)
+
+	go func() {
+		// Send the request and let the callback do its work
+		response, err := wrappedRoundTripper.RoundTrip(req)
+
+		if err != nil {
+			statusCode := 0
+			if response != nil {
+				statusCode = response.StatusCode
+			}
+			errChan <- &AsyncSubresourceError{err: err.Error(), StatusCode: statusCode}
+			return
+		}
+
+		if response != nil {
+			switch response.StatusCode {
+			case http.StatusOK:
+			case http.StatusNotFound:
+				err = &AsyncSubresourceError{err: "Virtual Machine not found.", StatusCode: response.StatusCode}
+			case http.StatusInternalServerError:
+				err = &AsyncSubresourceError{err: "Websocket failed due to internal server error.", StatusCode: response.StatusCode}
+			default:
+				err = &AsyncSubresourceError{err: fmt.Sprintf("Websocket failed with http status: %s", response.Status), StatusCode: response.StatusCode}
+			}
+		} else {
+			err = &AsyncSubresourceError{err: "no response received"}
+		}
+		errChan <- err
+	}()
+
+	select {
+	case err = <-errChan:
+		return nil, err
+	case ws := <-aws.Connection:
+		return &wsStreamer{
+			conn: ws,
+			done: done,
+		}, nil
+	}
+}
+
+func (v *vmis) Pause(name string) error {
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "pause")
-	return v.restClient.Put().RequestURI(uri).Body(body).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Do().Error()
 }
 
-func (v *vmis) Unpause(name string, unpauseOptions *v1.UnpauseOptions) error {
-	body, err := json.Marshal(unpauseOptions)
-	if err != nil {
-		return fmt.Errorf("Cannot Marshal to json: %s", err)
-	}
+func (v *vmis) Unpause(name string) error {
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "unpause")
-	return v.restClient.Put().RequestURI(uri).Body(body).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Do().Error()
 }
 
 func (v *vmis) Get(name string, options *k8smetav1.GetOptions) (vmi *v1.VirtualMachineInstance, err error) {
@@ -289,7 +323,7 @@ func (v *vmis) Get(name string, options *k8smetav1.GetOptions) (vmi *v1.VirtualM
 		Namespace(v.namespace).
 		Name(name).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(vmi)
 	vmi.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -301,7 +335,7 @@ func (v *vmis) List(options *k8smetav1.ListOptions) (vmiList *v1.VirtualMachineI
 		Resource(v.resource).
 		Namespace(v.namespace).
 		VersionedParams(options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(vmiList)
 	for _, vmi := range vmiList.Items {
 		vmi.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
@@ -316,7 +350,7 @@ func (v *vmis) Create(vmi *v1.VirtualMachineInstance) (result *v1.VirtualMachine
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -329,7 +363,7 @@ func (v *vmis) Update(vmi *v1.VirtualMachineInstance) (result *v1.VirtualMachine
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceGroupVersionKind)
 	return
@@ -341,31 +375,21 @@ func (v *vmis) Delete(name string, options *k8smetav1.DeleteOptions) error {
 		Resource(v.resource).
 		Name(name).
 		Body(options).
-		Do(context.Background()).
+		Do().
 		Error()
 }
 
-func (v *vmis) Patch(name string, pt types.PatchType, data []byte, patchOptions *k8smetav1.PatchOptions, subresources ...string) (result *v1.VirtualMachineInstance, err error) {
+func (v *vmis) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.VirtualMachineInstance, err error) {
 	result = &v1.VirtualMachineInstance{}
 	err = v.restClient.Patch(pt).
 		Namespace(v.namespace).
 		Resource(v.resource).
 		SubResource(subresources...).
 		Name(name).
-		VersionedParams(patchOptions, scheme.ParameterCodec).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
-}
-
-func (v *vmis) Watch(opts metav1.ListOptions) (watch.Interface, error) {
-	opts.Watch = true
-	return v.restClient.Get().
-		Resource(v.resource).
-		Namespace(v.namespace).
-		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch(context.Background())
 }
 
 // enrichError checks the response body for a k8s Status object and extracts the error from it.
@@ -405,7 +429,7 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "guestosinfo")
 
 	// WORKAROUND:
-	// When doing v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(guestInfo)
+	// When doing v.restClient.Get().RequestURI(uri).Do().Into(guestInfo)
 	// k8s client-go requires the object to have metav1.ObjectMeta inlined and deepcopy generated
 	// without deepcopy the Into does not work.
 	// With metav1.ObjectMeta added the openapi validation fails on pkg/virt-api/api.go:310
@@ -419,7 +443,7 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 	// this issue should be solved.
 	// This workaround can go away once the least supported k8s version is the working one.
 	// The issue has been described in: https://github.com/kubevirt/kubevirt/issues/3059
-	res := v.restClient.Get().RequestURI(uri).Do(context.Background())
+	res := v.restClient.Get().RequestURI(uri).Do()
 	rawInfo, err := res.Raw()
 	if err != nil {
 		log.Log.Errorf("Cannot retrieve GuestOSInfo: %s", err.Error())
@@ -437,14 +461,14 @@ func (v *vmis) GuestOsInfo(name string) (v1.VirtualMachineInstanceGuestAgentInfo
 func (v *vmis) UserList(name string) (v1.VirtualMachineInstanceGuestOSUserList, error) {
 	userList := v1.VirtualMachineInstanceGuestOSUserList{}
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "userlist")
-	err := v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(&userList)
+	err := v.restClient.Get().RequestURI(uri).Do().Into(&userList)
 	return userList, err
 }
 
 func (v *vmis) FilesystemList(name string) (v1.VirtualMachineInstanceFileSystemList, error) {
 	fsList := v1.VirtualMachineInstanceFileSystemList{}
 	uri := fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion, v.namespace, name, "filesystemlist")
-	err := v.restClient.Get().RequestURI(uri).Do(context.Background()).Into(&fsList)
+	err := v.restClient.Get().RequestURI(uri).Do().Into(&fsList)
 	return fsList, err
 }
 
@@ -457,7 +481,7 @@ func (v *vmis) AddVolume(name string, addVolumeOptions *v1.AddVolumeOptions) err
 		return err
 	}
 
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do().Error()
 }
 
 func (v *vmis) RemoveVolume(name string, removeVolumeOptions *v1.RemoveVolumeOptions) error {
@@ -469,5 +493,5 @@ func (v *vmis) RemoveVolume(name string, removeVolumeOptions *v1.RemoveVolumeOpt
 		return err
 	}
 
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
+	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do().Error()
 }

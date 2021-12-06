@@ -37,24 +37,8 @@ func (c *FakeCdiV1beta1) CDIConfigs() v1beta1.CDIConfigInterface {
 	return &FakeCDIConfigs{c}
 }
 
-func (c *FakeCdiV1beta1) DataImportCrons(namespace string) v1beta1.DataImportCronInterface {
-	return &FakeDataImportCrons{c, namespace}
-}
-
-func (c *FakeCdiV1beta1) DataSources(namespace string) v1beta1.DataSourceInterface {
-	return &FakeDataSources{c, namespace}
-}
-
 func (c *FakeCdiV1beta1) DataVolumes(namespace string) v1beta1.DataVolumeInterface {
 	return &FakeDataVolumes{c, namespace}
-}
-
-func (c *FakeCdiV1beta1) ObjectTransfers() v1beta1.ObjectTransferInterface {
-	return &FakeObjectTransfers{c}
-}
-
-func (c *FakeCdiV1beta1) StorageProfiles() v1beta1.StorageProfileInterface {
-	return &FakeStorageProfiles{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

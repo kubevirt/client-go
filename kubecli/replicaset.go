@@ -20,15 +20,13 @@
 package kubecli
 
 import (
-	"context"
-
 	autov1 "k8s.io/api/autoscaling/v1"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 
-	v1 "kubevirt.io/api/core/v1"
+	v1 "kubevirt.io/client-go/api/v1"
 )
 
 func (k *kubevirt) ReplicaSet(namespace string) ReplicaSetInterface {
@@ -48,7 +46,7 @@ func (v *rc) GetScale(replicaSetName string, options k8smetav1.GetOptions) (resu
 		Resource(v.resource).
 		Name(replicaSetName).
 		SubResource("scale").
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -61,7 +59,7 @@ func (v *rc) UpdateScale(replicaSetName string, scale *autov1.Scale) (result *au
 		Name(replicaSetName).
 		SubResource("scale").
 		Body(scale).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -73,7 +71,7 @@ func (v *rc) Get(name string, options k8smetav1.GetOptions) (replicaset *v1.Virt
 		Namespace(v.namespace).
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(replicaset)
 	replicaset.SetGroupVersionKind(v1.VirtualMachineInstanceReplicaSetGroupVersionKind)
 	return
@@ -85,7 +83,7 @@ func (v *rc) List(options k8smetav1.ListOptions) (replicasetList *v1.VirtualMach
 		Resource(v.resource).
 		Namespace(v.namespace).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do(context.Background()).
+		Do().
 		Into(replicasetList)
 	for _, replicaset := range replicasetList.Items {
 		replicaset.SetGroupVersionKind(v1.VirtualMachineInstanceReplicaSetGroupVersionKind)
@@ -100,7 +98,7 @@ func (v *rc) Create(replicaset *v1.VirtualMachineInstanceReplicaSet) (result *v1
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(replicaset).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceReplicaSetGroupVersionKind)
 	return
@@ -113,7 +111,7 @@ func (v *rc) Update(replicaset *v1.VirtualMachineInstanceReplicaSet) (result *v1
 		Namespace(v.namespace).
 		Resource(v.resource).
 		Body(replicaset).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceReplicaSetGroupVersionKind)
 	return
@@ -125,7 +123,7 @@ func (v *rc) Delete(name string, options *k8smetav1.DeleteOptions) error {
 		Resource(v.resource).
 		Name(name).
 		Body(options).
-		Do(context.Background()).
+		Do().
 		Error()
 }
 
@@ -137,7 +135,7 @@ func (v *rc) Patch(name string, pt types.PatchType, data []byte, subresources ..
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -150,7 +148,7 @@ func (v *rc) PatchStatus(name string, pt types.PatchType, data []byte) (result *
 		SubResource("status").
 		Name(name).
 		Body(data).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	return
 }
@@ -163,7 +161,7 @@ func (v *rc) UpdateStatus(vmi *v1.VirtualMachineInstanceReplicaSet) (result *v1.
 		Resource(v.resource).
 		SubResource("status").
 		Body(vmi).
-		Do(context.Background()).
+		Do().
 		Into(result)
 	result.SetGroupVersionKind(v1.VirtualMachineInstanceReplicaSetGroupVersionKind)
 	return

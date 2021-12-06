@@ -69,7 +69,7 @@ type LoggableObject interface {
 }
 
 type FilteredLogger struct {
-	logger                log.Logger
+	logContext            *log.Context
 	component             string
 	filterLevel           LogLevel
 	currentLogLevel       LogLevel
@@ -108,7 +108,7 @@ func MakeLogger(logger log.Logger) *FilteredLogger {
 	defaultCurrentVerbosity := 2
 
 	return &FilteredLogger{
-		logger:                logger,
+		logContext:            log.NewContext(logger),
 		component:             defaultComponent,
 		filterLevel:           defaultLogLevel,
 		currentLogLevel:       defaultLogLevel,
@@ -152,12 +152,12 @@ func DefaultLogger() *FilteredLogger {
 // SetIOWriter is meant to be used for testing. "log" and "glog" logs are sent to /dev/nil.
 // KubeVirt related log messages will be sent to this writer
 func (l *FilteredLogger) SetIOWriter(w io.Writer) {
-	l.logger = log.NewJSONLogger(w)
+	l.logContext = log.NewContext(log.NewJSONLogger(w))
 	goflag.CommandLine.Set("logtostderr", "false")
 }
 
 func (l *FilteredLogger) SetLogger(logger log.Logger) *FilteredLogger {
-	l.logger = logger
+	l.logContext = log.NewContext(logger)
 	return l
 }
 
@@ -199,11 +199,19 @@ func (l FilteredLogger) log(skipFrames int, params ...interface{}) error {
 			"component", l.component,
 		)
 		if l.err != nil {
-			l.logger = log.With(l.logger, "reason", l.err)
+			l.logContext = l.logContext.With("reason", l.err)
 		}
-		return log.WithPrefix(l.logger, logParams...).Log(params...)
+		return l.logContext.WithPrefix(logParams...).Log(params...)
 	}
 	return nil
+}
+
+func (l FilteredLogger) CustomField(key string, value string) *FilteredLogger {
+
+	logParams := make([]interface{}, 0)
+	logParams = append(logParams, key, value)
+	l.With(logParams...)
+	return &l
 }
 
 func (l FilteredLogger) Key(key string, kind string) *FilteredLogger {
@@ -221,7 +229,7 @@ func (l FilteredLogger) Key(key string, kind string) *FilteredLogger {
 	}
 	logParams = append(logParams, "name", name)
 	logParams = append(logParams, "kind", kind)
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
@@ -240,7 +248,7 @@ func (l FilteredLogger) Object(obj LoggableObject) *FilteredLogger {
 	logParams = append(logParams, "kind", kind)
 	logParams = append(logParams, "uid", uid)
 
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
@@ -258,17 +266,17 @@ func (l FilteredLogger) ObjectRef(obj *v1.ObjectReference) *FilteredLogger {
 	logParams = append(logParams, "kind", obj.Kind)
 	logParams = append(logParams, "uid", obj.UID)
 
-	l.with(logParams...)
+	l.With(logParams...)
 	return &l
 }
 
-func (l FilteredLogger) With(obj ...interface{}) *FilteredLogger {
-	l.logger = log.With(l.logger, obj...)
-	return &l
+func (l *FilteredLogger) With(obj ...interface{}) *FilteredLogger {
+	l.logContext = l.logContext.With(obj...)
+	return l
 }
 
-func (l *FilteredLogger) with(obj ...interface{}) *FilteredLogger {
-	l.logger = log.With(l.logger, obj...)
+func (l *FilteredLogger) WithPrefix(obj ...interface{}) *FilteredLogger {
+	l.logContext = l.logContext.WithPrefix(obj...)
 	return l
 }
 
@@ -350,7 +358,7 @@ func LogLibvirtLogLine(logger *FilteredLogger, line string) {
 	fragments := strings.SplitN(line, ": ", 5)
 	if len(fragments) < 4 {
 		now := time.Now()
-		logger.logger.Log(
+		logger.logContext.Log(
 			"level", "info",
 			"timestamp", now.Format("2006-01-02T15:04:05.000000Z"),
 			"component", logger.component,
@@ -395,7 +403,7 @@ func LogLibvirtLogLine(logger *FilteredLogger, line string) {
 
 	if !isPos {
 		msg = strings.TrimSpace(fragments[3] + ": " + fragments[4])
-		logger.logger.Log(
+		logger.logContext.Log(
 			"level", severity,
 			"timestamp", t.Format("2006-01-02T15:04:05.000000Z"),
 			"component", logger.component,
@@ -404,7 +412,7 @@ func LogLibvirtLogLine(logger *FilteredLogger, line string) {
 			"msg", msg,
 		)
 	} else {
-		logger.logger.Log(
+		logger.logContext.Log(
 			"level", severity,
 			"timestamp", t.Format("2006-01-02T15:04:05.000000Z"),
 			"pos", pos,
@@ -436,7 +444,7 @@ func LogQemuLogLine(logger *FilteredLogger, line string) {
 	}
 
 	now := time.Now()
-	logger.logger.Log(
+	logger.logContext.Log(
 		"level", "info",
 		"timestamp", now.Format("2006-01-02T15:04:05.000000Z"),
 		"component", logger.component,
