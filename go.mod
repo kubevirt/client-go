@@ -14,7 +14,7 @@ require (
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.1.1
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
-	github.com/openshift/client-go v0.0.0-20210112165513-ebc401615f47
+	github.com/openshift/client-go v0.0.0
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.23.1
 	k8s.io/apiextensions-apiserver v0.23.1
@@ -22,7 +22,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b
-	kubevirt.io/api v0.0.0-20220204223250-9689e71fe2be
+	kubevirt.io/api v0.0.0-20220210141352-d5bdb96c99b2
 	kubevirt.io/containerized-data-importer-api v1.42.0
 )
 
@@ -76,6 +76,7 @@ require (
 
 replace (
 	github.com/openshift/api => github.com/openshift/api v0.0.0-20210105115604-44119421ec6b
+	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20210112165513-ebc401615f47
 
 	k8s.io/api => k8s.io/api v0.23.1
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.23.1
