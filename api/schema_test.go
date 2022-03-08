@@ -231,8 +231,7 @@ var exampleJSONFmt = `{
     ]
   },
   "status": {
-    "guestOSInfo": {},
-    "runtimeUser": 0
+    "guestOSInfo": {}
   }
 }`
 
