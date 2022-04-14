@@ -11,7 +11,7 @@ require (
 	github.com/google/gofuzz v1.1.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20191119172530-79f836b90111
-	github.com/kubernetes-csi/external-snapshotter/v2 v2.1.1
+	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0
 	github.com/onsi/ginkgo/v2 v2.1.3
 	github.com/onsi/gomega v1.17.0
 	github.com/openshift/client-go v0.0.0-20210112165513-ebc401615f47
@@ -22,7 +22,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b
-	kubevirt.io/api v0.0.0-20220406204557-779bca6d2fba
+	kubevirt.io/api v0.0.0-20220414065722-e1c335ef0f73
 	kubevirt.io/containerized-data-importer-api v1.42.0
 )
 
