@@ -31,10 +31,9 @@ import (
 )
 
 type GuestfsInfo struct {
-	Registry    string `json:"registry"`
-	Tag         string `json:"tag"`
-	Digest      string `json:"digest"`
-	ImagePrefix string `json:"imagePrefix"`
+	Registry string `json:"registry"`
+	Tag      string `json:"tag"`
+	Digest   string `json:"digest"`
 }
 
 func (k *kubevirt) GuestfsVersion() *GuestfsVersion {
