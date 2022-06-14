@@ -20,8 +20,4 @@ package v1alpha1
 
 type VirtualMachineClusterFlavorExpansion interface{}
 
-type VirtualMachineClusterPreferenceExpansion interface{}
-
 type VirtualMachineFlavorExpansion interface{}
-
-type VirtualMachinePreferenceExpansion interface{}
