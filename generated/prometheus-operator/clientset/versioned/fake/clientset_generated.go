@@ -24,6 +24,7 @@ import (
 	"k8s.io/client-go/discovery"
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
+
 	clientset "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned"
 	monitoringv1 "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned/typed/monitoring/v1"
 	fakemonitoringv1 "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned/typed/monitoring/v1/fake"
