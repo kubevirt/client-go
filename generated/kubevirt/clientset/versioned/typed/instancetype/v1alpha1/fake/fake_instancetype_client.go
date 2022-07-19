@@ -21,32 +21,32 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/flavor/v1alpha1"
+	v1alpha1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/instancetype/v1alpha1"
 )
 
-type FakeFlavorV1alpha1 struct {
+type FakeInstancetypeV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeFlavorV1alpha1) VirtualMachineClusterFlavors() v1alpha1.VirtualMachineClusterFlavorInterface {
-	return &FakeVirtualMachineClusterFlavors{c}
+func (c *FakeInstancetypeV1alpha1) VirtualMachineClusterInstancetypes() v1alpha1.VirtualMachineClusterInstancetypeInterface {
+	return &FakeVirtualMachineClusterInstancetypes{c}
 }
 
-func (c *FakeFlavorV1alpha1) VirtualMachineClusterPreferences() v1alpha1.VirtualMachineClusterPreferenceInterface {
+func (c *FakeInstancetypeV1alpha1) VirtualMachineClusterPreferences() v1alpha1.VirtualMachineClusterPreferenceInterface {
 	return &FakeVirtualMachineClusterPreferences{c}
 }
 
-func (c *FakeFlavorV1alpha1) VirtualMachineFlavors(namespace string) v1alpha1.VirtualMachineFlavorInterface {
-	return &FakeVirtualMachineFlavors{c, namespace}
+func (c *FakeInstancetypeV1alpha1) VirtualMachineInstancetypes(namespace string) v1alpha1.VirtualMachineInstancetypeInterface {
+	return &FakeVirtualMachineInstancetypes{c, namespace}
 }
 
-func (c *FakeFlavorV1alpha1) VirtualMachinePreferences(namespace string) v1alpha1.VirtualMachinePreferenceInterface {
+func (c *FakeInstancetypeV1alpha1) VirtualMachinePreferences(namespace string) v1alpha1.VirtualMachinePreferenceInterface {
 	return &FakeVirtualMachinePreferences{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeFlavorV1alpha1) RESTClient() rest.Interface {
+func (c *FakeInstancetypeV1alpha1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

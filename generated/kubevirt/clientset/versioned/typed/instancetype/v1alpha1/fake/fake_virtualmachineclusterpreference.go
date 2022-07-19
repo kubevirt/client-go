@@ -27,17 +27,17 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "kubevirt.io/api/flavor/v1alpha1"
+	v1alpha1 "kubevirt.io/api/instancetype/v1alpha1"
 )
 
 // FakeVirtualMachineClusterPreferences implements VirtualMachineClusterPreferenceInterface
 type FakeVirtualMachineClusterPreferences struct {
-	Fake *FakeFlavorV1alpha1
+	Fake *FakeInstancetypeV1alpha1
 }
 
-var virtualmachineclusterpreferencesResource = schema.GroupVersionResource{Group: "flavor.kubevirt.io", Version: "v1alpha1", Resource: "virtualmachineclusterpreferences"}
+var virtualmachineclusterpreferencesResource = schema.GroupVersionResource{Group: "instancetype.kubevirt.io", Version: "v1alpha1", Resource: "virtualmachineclusterpreferences"}
 
-var virtualmachineclusterpreferencesKind = schema.GroupVersionKind{Group: "flavor.kubevirt.io", Version: "v1alpha1", Kind: "VirtualMachineClusterPreference"}
+var virtualmachineclusterpreferencesKind = schema.GroupVersionKind{Group: "instancetype.kubevirt.io", Version: "v1alpha1", Kind: "VirtualMachineClusterPreference"}
 
 // Get takes name of the virtualMachineClusterPreference, and returns the corresponding virtualMachineClusterPreference object, and an error if there is any.
 func (c *FakeVirtualMachineClusterPreferences) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.VirtualMachineClusterPreference, err error) {
