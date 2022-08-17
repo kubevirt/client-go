@@ -27,6 +27,7 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	rest "k8s.io/client-go/rest"
+
 	scheme "kubevirt.io/client-go/generated/prometheus-operator/clientset/versioned/scheme"
 )
 

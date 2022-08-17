@@ -63,13 +63,14 @@ import (
 	v1alpha14 "k8s.io/client-go/kubernetes/typed/storage/v1alpha1"
 	v1beta115 "k8s.io/client-go/kubernetes/typed/storage/v1beta1"
 	rest "k8s.io/client-go/rest"
+
 	v120 "kubevirt.io/api/core/v1"
 	versioned "kubevirt.io/client-go/generated/containerized-data-importer/clientset/versioned"
 	versioned0 "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned"
 	versioned1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned"
 	v1alpha15 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/clone/v1alpha1"
 	v1alpha16 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/export/v1alpha1"
-	v1alpha17 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/instancetype/v1alpha1"
+	v1alpha17 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/flavor/v1alpha1"
 	v1alpha18 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/migrations/v1alpha1"
 	v1alpha19 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/pool/v1alpha1"
 	v1alpha110 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/snapshot/v1alpha1"
@@ -209,24 +210,24 @@ func (_mr *_MockKubevirtClientRecorder) VirtualMachineExport(arg0 interface{}) *
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "VirtualMachineExport", arg0)
 }
 
-func (_m *MockKubevirtClient) VirtualMachineInstancetype(namespace string) v1alpha17.VirtualMachineInstancetypeInterface {
-	ret := _m.ctrl.Call(_m, "VirtualMachineInstancetype", namespace)
-	ret0, _ := ret[0].(v1alpha17.VirtualMachineInstancetypeInterface)
+func (_m *MockKubevirtClient) VirtualMachineFlavor(namespace string) v1alpha17.VirtualMachineFlavorInterface {
+	ret := _m.ctrl.Call(_m, "VirtualMachineFlavor", namespace)
+	ret0, _ := ret[0].(v1alpha17.VirtualMachineFlavorInterface)
 	return ret0
 }
 
-func (_mr *_MockKubevirtClientRecorder) VirtualMachineInstancetype(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "VirtualMachineInstancetype", arg0)
+func (_mr *_MockKubevirtClientRecorder) VirtualMachineFlavor(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "VirtualMachineFlavor", arg0)
 }
 
-func (_m *MockKubevirtClient) VirtualMachineClusterInstancetype() v1alpha17.VirtualMachineClusterInstancetypeInterface {
-	ret := _m.ctrl.Call(_m, "VirtualMachineClusterInstancetype")
-	ret0, _ := ret[0].(v1alpha17.VirtualMachineClusterInstancetypeInterface)
+func (_m *MockKubevirtClient) VirtualMachineClusterFlavor() v1alpha17.VirtualMachineClusterFlavorInterface {
+	ret := _m.ctrl.Call(_m, "VirtualMachineClusterFlavor")
+	ret0, _ := ret[0].(v1alpha17.VirtualMachineClusterFlavorInterface)
 	return ret0
 }
 
-func (_mr *_MockKubevirtClientRecorder) VirtualMachineClusterInstancetype() *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "VirtualMachineClusterInstancetype")
+func (_mr *_MockKubevirtClientRecorder) VirtualMachineClusterFlavor() *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "VirtualMachineClusterFlavor")
 }
 
 func (_m *MockKubevirtClient) VirtualMachinePreference(namespace string) v1alpha17.VirtualMachinePreferenceInterface {
@@ -257,16 +258,6 @@ func (_m *MockKubevirtClient) MigrationPolicy() v1alpha18.MigrationPolicyInterfa
 
 func (_mr *_MockKubevirtClientRecorder) MigrationPolicy() *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "MigrationPolicy")
-}
-
-func (_m *MockKubevirtClient) ExpandSpec() *ExpandSpec {
-	ret := _m.ctrl.Call(_m, "ExpandSpec")
-	ret0, _ := ret[0].(*ExpandSpec)
-	return ret0
-}
-
-func (_mr *_MockKubevirtClientRecorder) ExpandSpec() *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "ExpandSpec")
 }
 
 func (_m *MockKubevirtClient) ServerVersion() ServerVersionInterface {
@@ -1445,17 +1436,6 @@ func (_m *MockVirtualMachineInterface) Get(name string, options *v12.GetOptions)
 
 func (_mr *_MockVirtualMachineInterfaceRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Get", arg0, arg1)
-}
-
-func (_m *MockVirtualMachineInterface) GetWithExpandedSpec(name string) (*v120.VirtualMachine, error) {
-	ret := _m.ctrl.Call(_m, "GetWithExpandedSpec", name)
-	ret0, _ := ret[0].(*v120.VirtualMachine)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-func (_mr *_MockVirtualMachineInterfaceRecorder) GetWithExpandedSpec(arg0 interface{}) *gomock.Call {
-	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetWithExpandedSpec", arg0)
 }
 
 func (_m *MockVirtualMachineInterface) List(opts *v12.ListOptions) (*v120.VirtualMachineList, error) {

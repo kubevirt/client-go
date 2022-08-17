@@ -24,6 +24,7 @@ import (
 	"k8s.io/client-go/discovery"
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
+
 	clientset "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned"
 	snapshotv1 "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned/typed/volumesnapshot/v1"
 	fakesnapshotv1 "kubevirt.io/client-go/generated/external-snapshotter/clientset/versioned/typed/volumesnapshot/v1/fake"
