@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"text/template"
 
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
@@ -171,6 +171,13 @@ var exampleJSONFmt = `{
             }
           },
           {
+            "name": "floppy0",
+            "floppy": {
+              "readonly": true,
+              "tray": "open"
+            }
+          },
+          {
             "name": "lun0",
             "lun": {
               "bus": "virtio",
@@ -221,6 +228,12 @@ var exampleJSONFmt = `{
             "name": "testnetworksecret"
           }
         }
+      },
+      {
+        "name": "floppy0",
+        "persistentVolumeClaim": {
+          "claimName": "testclaim"
+        }
       }
     ],
     "networks": [
@@ -231,8 +244,7 @@ var exampleJSONFmt = `{
     ]
   },
   "status": {
-    "guestOSInfo": {},
-    "runtimeUser": 0
+    "guestOSInfo": {}
   }
 }`
 
@@ -263,6 +275,15 @@ var _ = Describe("Schema", func() {
 					CDRom: &v12.CDRomTarget{
 						Bus:      "virtio",
 						ReadOnly: pointer.BoolPtr(true),
+						Tray:     "open",
+					},
+				},
+			},
+			{
+				Name: "floppy0",
+				DiskDevice: v12.DiskDevice{
+					Floppy: &v12.FloppyTarget{
+						ReadOnly: true,
 						Tray:     "open",
 					},
 				},
@@ -317,6 +338,16 @@ var _ = Describe("Schema", func() {
 						},
 						NetworkDataSecretRef: &v1.LocalObjectReference{
 							Name: "testnetworksecret",
+						},
+					},
+				},
+			},
+			{
+				Name: "floppy0",
+				VolumeSource: v12.VolumeSource{
+					PersistentVolumeClaim: &v12.PersistentVolumeClaimVolumeSource{
+						PersistentVolumeClaimVolumeSource: v1.PersistentVolumeClaimVolumeSource{
+							ClaimName: "testclaim",
 						},
 					},
 				},
@@ -401,13 +432,13 @@ var _ = Describe("Schema", func() {
 			}
 			networkTemplateData := NetworkTemplateConfig{InterfaceConfig: `"bridge": {}`}
 			tmpl, err := template.New("vmexample").Parse(exampleJSON)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			var tpl bytes.Buffer
 			err = tmpl.Execute(&tpl, networkTemplateData)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			newVMI := &v12.VirtualMachineInstance{}
 			err = json.Unmarshal(tpl.Bytes(), newVMI)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			Expect(newVMI).To(Equal(exampleVMI))
 		})
 		It("Marshal struct into json", func() {
@@ -422,13 +453,13 @@ var _ = Describe("Schema", func() {
 
 			networkTemplateData := NetworkTemplateConfig{InterfaceConfig: `"bridge": {}`}
 			tmpl, err := template.New("vmexample").Parse(exampleJSON)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			var tpl bytes.Buffer
 			err = tmpl.Execute(&tpl, networkTemplateData)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			exampleJSONParsed := tpl.String()
 			buf, err := json.MarshalIndent(*exampleVMI, "", "  ")
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			Expect(string(buf)).To(Equal(exampleJSONParsed))
 		})
 	})
@@ -444,13 +475,13 @@ var _ = Describe("Schema", func() {
 			}
 			networkTemplateData := NetworkTemplateConfig{InterfaceConfig: `"slirp": {}`}
 			tmpl, err := template.New("vmexample").Parse(exampleJSON)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			var tpl bytes.Buffer
 			err = tmpl.Execute(&tpl, networkTemplateData)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			newVMI := &v12.VirtualMachineInstance{}
 			err = json.Unmarshal(tpl.Bytes(), newVMI)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			Expect(newVMI).To(Equal(exampleVMI))
 		})
 		It("Marshal struct into json", func() {
@@ -465,13 +496,13 @@ var _ = Describe("Schema", func() {
 
 			networkTemplateData := NetworkTemplateConfig{InterfaceConfig: `"slirp": {}`}
 			tmpl, err := template.New("vmexample").Parse(exampleJSON)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			var tpl bytes.Buffer
 			err = tmpl.Execute(&tpl, networkTemplateData)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			exampleJSONParsed := tpl.String()
 			buf, err := json.MarshalIndent(*exampleVMI, "", "  ")
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			Expect(string(buf)).To(Equal(exampleJSONParsed))
 		})
 		It("Marshal struct into json with port configure", func() {
@@ -491,13 +522,13 @@ var _ = Describe("Schema", func() {
             ]`}
 
 			tmpl, err := template.New("vmexample").Parse(exampleJSON)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			var tpl bytes.Buffer
 			err = tmpl.Execute(&tpl, networkTemplateData)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			exampleJSONParsed := tpl.String()
 			buf, err := json.MarshalIndent(*exampleVMI, "", "  ")
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).To(BeNil())
 			Expect(string(buf)).To(Equal(exampleJSONParsed))
 		})
 	})

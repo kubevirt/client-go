@@ -4,7 +4,8 @@ import (
 	"reflect"
 
 	fuzz "github.com/google/gofuzz"
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 
 	v1 "kubevirt.io/api/core/v1"
@@ -25,6 +26,7 @@ var _ = Describe("Generated deepcopy functions", func() {
 			&v1.DiskDevice{},
 			&v1.DiskTarget{},
 			&v1.LunTarget{},
+			&v1.FloppyTarget{},
 			&v1.CDRomTarget{},
 			&v1.Volume{},
 			&v1.VolumeSource{},
@@ -79,7 +81,7 @@ var _ = Describe("Generated deepcopy functions", func() {
 		}
 	})
 
-	DescribeTable("should work for fuzzed structs with a probability for nils of", func(nilProbability float64) {
+	table.DescribeTable("should work for fuzzed structs with a probability for nils of", func(nilProbability float64) {
 		for _, s := range structs {
 			fuzz.New().NilChance(nilProbability).Fuzz(s)
 			Expect(reflect.ValueOf(s).MethodByName("DeepCopy").Call(nil)[0].Interface()).To(Equal(s))
@@ -91,10 +93,10 @@ var _ = Describe("Generated deepcopy functions", func() {
 			Expect(new.Interface()).To(Equal(s))
 		}
 	},
-		Entry("0%", float64(0)),
-		Entry("10%", float64(0.1)),
-		Entry("50%", float64(0.5)),
-		Entry("70%", float64(0.7)),
-		Entry("100%", float64(1)),
+		table.Entry("0%", float64(0)),
+		table.Entry("10%", float64(0.1)),
+		table.Entry("50%", float64(0.5)),
+		table.Entry("70%", float64(0.7)),
+		table.Entry("100%", float64(1)),
 	)
 })

@@ -22,9 +22,8 @@ package kubecli
 import (
 	"context"
 	"net/http"
-	"path"
 
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 
@@ -48,7 +47,7 @@ var _ = Describe("Kubevirt MigrationPolicy Client", func() {
 	BeforeEach(func() {
 
 		basePath = "/apis/migrations.kubevirt.io/v1alpha1/migrationpolicies"
-		policyPath = path.Join(basePath, testPolicyName)
+		policyPath = basePath + "/" + testPolicyName
 
 		var err error
 		server = ghttp.NewServer()

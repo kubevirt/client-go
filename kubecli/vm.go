@@ -85,19 +85,6 @@ func (v *vm) Get(name string, options *k8smetav1.GetOptions) (*v1.VirtualMachine
 	return newVm, err
 }
 
-func (v *vm) GetWithExpandedSpec(name string) (*v1.VirtualMachine, error) {
-	uri := fmt.Sprintf(vmSubresourceURLFmt, v1.ApiStorageVersion, v.namespace, name, "expand-spec")
-	newVm := &v1.VirtualMachine{}
-	err := v.restClient.Get().
-		RequestURI(uri).
-		Do(context.Background()).
-		Into(newVm)
-
-	newVm.SetGroupVersionKind(v1.VirtualMachineGroupVersionKind)
-
-	return newVm, err
-}
-
 // Update the VirtualMachine instance in the cluster in given namespace
 func (v *vm) Update(vm *v1.VirtualMachine) (*v1.VirtualMachine, error) {
 	updatedVm := &v1.VirtualMachine{}
@@ -239,23 +226,6 @@ func (v *vm) Migrate(name string, migrateOptions *v1.MigrateOptions) error {
 		return err
 	}
 	return v.restClient.Put().RequestURI(uri).Body(optsJson).Do(context.Background()).Error()
-}
-
-func (v *vm) MemoryDump(name string, memoryDumpRequest *v1.VirtualMachineMemoryDumpRequest) error {
-	uri := fmt.Sprintf(vmSubresourceURLFmt, v1.ApiStorageVersion, v.namespace, name, "memorydump")
-
-	JSON, err := json.Marshal(memoryDumpRequest)
-	if err != nil {
-		return err
-	}
-
-	return v.restClient.Put().RequestURI(uri).Body([]byte(JSON)).Do(context.Background()).Error()
-}
-
-func (v *vm) RemoveMemoryDump(name string) error {
-	uri := fmt.Sprintf(vmSubresourceURLFmt, v1.ApiStorageVersion, v.namespace, name, "removememorydump")
-
-	return v.restClient.Put().RequestURI(uri).Do(context.Background()).Error()
 }
 
 func (v *vm) AddVolume(name string, addVolumeOptions *v1.AddVolumeOptions) error {

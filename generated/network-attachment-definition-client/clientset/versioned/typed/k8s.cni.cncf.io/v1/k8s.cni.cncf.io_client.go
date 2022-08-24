@@ -21,6 +21,7 @@ package v1
 import (
 	v1 "github.com/k8snetworkplumbingwg/network-attachment-definition-client/pkg/apis/k8s.cni.cncf.io/v1"
 	rest "k8s.io/client-go/rest"
+
 	"kubevirt.io/client-go/generated/network-attachment-definition-client/clientset/versioned/scheme"
 )
 

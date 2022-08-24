@@ -20,13 +20,18 @@
 package api
 
 import (
-	. "github.com/onsi/ginkgo/v2"
+	"testing"
+
+	. "github.com/onsi/ginkgo"
+	"github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 	k8sv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	v1 "kubevirt.io/api/core/v1"
+
+	"kubevirt.io/client-go/log"
 )
 
 var _ = Describe("PodSelectors", func() {
@@ -69,8 +74,8 @@ var _ = Describe("PodSelectors", func() {
 			affinity := v1.UpdateAntiAffinityFromVMINode(pod, vmi)
 			newSelector := affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[0]
 			Expect(newSelector).ToNot(BeNil())
-			Expect(newSelector.MatchExpressions).To(HaveLen(1))
-			Expect(newSelector.MatchExpressions[0].Values).To(HaveLen(1))
+			Expect(len(newSelector.MatchExpressions)).To(Equal(1))
+			Expect(len(newSelector.MatchExpressions[0].Values)).To(Equal(1))
 			Expect(newSelector.MatchExpressions[0].Values[0]).To(Equal("test-node"))
 		})
 
@@ -111,14 +116,14 @@ var _ = Describe("PodSelectors", func() {
 
 			selector := affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[0]
 			Expect(selector).ToNot(BeNil())
-			Expect(selector.MatchExpressions).To(HaveLen(1))
-			Expect(selector.MatchExpressions[0].Values).To(HaveLen(1))
+			Expect(len(selector.MatchExpressions)).To(Equal(1))
+			Expect(len(selector.MatchExpressions[0].Values)).To(Equal(1))
 			Expect(selector.MatchExpressions[0].Values[0]).To(Equal("test-node"))
 
 			selector = affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[1]
 			Expect(selector).ToNot(BeNil())
-			Expect(selector.MatchExpressions).To(HaveLen(2))
-			Expect(selector.MatchExpressions[1].Values).To(HaveLen(1))
+			Expect(len(selector.MatchExpressions)).To(Equal(2))
+			Expect(len(selector.MatchExpressions[1].Values)).To(Equal(1))
 			Expect(selector.MatchExpressions[1].Values[0]).To(Equal("test-node"))
 		})
 	})
@@ -161,7 +166,7 @@ var _ = Describe("PodSelectors", func() {
 			Expect(runStrategy).To(Equal(v1.RunStrategyAlways))
 		})
 
-		DescribeTable("should return RunStrategy", func(runStrategy v1.VirtualMachineRunStrategy) {
+		table.DescribeTable("should return RunStrategy", func(runStrategy v1.VirtualMachineRunStrategy) {
 			vm.Spec.Running = nil
 			vm.Spec.RunStrategy = &runStrategy
 
@@ -169,10 +174,10 @@ var _ = Describe("PodSelectors", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(newRunStrategy).To(Equal(runStrategy))
 		},
-			Entry(string(v1.RunStrategyAlways), v1.RunStrategyAlways),
-			Entry(string(v1.RunStrategyHalted), v1.RunStrategyHalted),
-			Entry(string(v1.RunStrategyManual), v1.RunStrategyManual),
-			Entry(string(v1.RunStrategyRerunOnFailure), v1.RunStrategyRerunOnFailure),
+			table.Entry(string(v1.RunStrategyAlways), v1.RunStrategyAlways),
+			table.Entry(string(v1.RunStrategyHalted), v1.RunStrategyHalted),
+			table.Entry(string(v1.RunStrategyManual), v1.RunStrategyManual),
+			table.Entry(string(v1.RunStrategyRerunOnFailure), v1.RunStrategyRerunOnFailure),
 		)
 
 		It("should default to RunStrategyHalted", func() {
@@ -185,3 +190,9 @@ var _ = Describe("PodSelectors", func() {
 		})
 	})
 })
+
+func TestSelectors(t *testing.T) {
+	log.Log.SetIOWriter(GinkgoWriter)
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "PodSelectors")
+}

@@ -22,9 +22,8 @@ package kubecli
 import (
 	"fmt"
 	"net/http"
-	"path"
 
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 	k8sv1 "k8s.io/api/core/v1"
@@ -42,9 +41,9 @@ var _ = Describe("Kubevirt VirtualMachine Client", func() {
 	var server *ghttp.Server
 	var client KubevirtClient
 	basePath := "/apis/kubevirt.io/v1alpha3/namespaces/default/virtualmachines"
-	vmiPath := path.Join(basePath, "testvm")
+	vmiPath := basePath + "/testvm"
 	subBasePath := fmt.Sprintf("/apis/subresources.kubevirt.io/%s/namespaces/default/virtualmachines", v1.SubresourceStorageGroupVersion.Version)
-	subVMIPath := path.Join(subBasePath, "testvm")
+	subVMIPath := subBasePath + "/testvm"
 
 	BeforeEach(func() {
 		var err error
@@ -169,7 +168,7 @@ var _ = Describe("Kubevirt VirtualMachine Client", func() {
 
 	It("should restart a VirtualMachine", func() {
 		server.AppendHandlers(ghttp.CombineHandlers(
-			ghttp.VerifyRequest("PUT", path.Join(subVMIPath, "restart")),
+			ghttp.VerifyRequest("PUT", subVMIPath+"/restart"),
 			ghttp.RespondWithJSONEncoded(http.StatusOK, nil),
 		))
 		err := client.VirtualMachine(k8sv1.NamespaceDefault).Restart("testvm", &v1.RestartOptions{})
@@ -180,7 +179,7 @@ var _ = Describe("Kubevirt VirtualMachine Client", func() {
 
 	It("should migrate a VirtualMachine", func() {
 		server.AppendHandlers(ghttp.CombineHandlers(
-			ghttp.VerifyRequest("PUT", path.Join(subVMIPath, "migrate")),
+			ghttp.VerifyRequest("PUT", subVMIPath+"/migrate"),
 			ghttp.RespondWithJSONEncoded(http.StatusOK, nil),
 		))
 		err := client.VirtualMachine(k8sv1.NamespaceDefault).Migrate("testvm", &virtv1.MigrateOptions{})

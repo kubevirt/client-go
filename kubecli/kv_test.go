@@ -21,9 +21,8 @@ package kubecli
 
 import (
 	"net/http"
-	"path"
 
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 	k8sv1 "k8s.io/api/core/v1"
@@ -38,7 +37,7 @@ var _ = Describe("Kubevirt Client", func() {
 	var server *ghttp.Server
 	var client KubevirtClient
 	basePath := "/apis/kubevirt.io/v1alpha3/namespaces/default/kubevirts"
-	kubevirtPath := path.Join(basePath, "testkubevirt")
+	kubevirtPath := basePath + "/testkubevirt"
 
 	BeforeEach(func() {
 		var err error

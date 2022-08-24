@@ -1,7 +1,7 @@
 package api
 
 import (
-	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"k8s.io/utils/pointer"
 
@@ -44,8 +44,8 @@ var _ = Describe("Defaults", func() {
 	It("should add interface and pod network by default", func() {
 		vmi := &v1.VirtualMachineInstance{}
 		v1.SetDefaults_NetworkInterface(vmi)
-		Expect(vmi.Spec.Domain.Devices.Interfaces).NotTo(BeEmpty())
-		Expect(vmi.Spec.Networks).NotTo(BeEmpty())
+		Expect(len(vmi.Spec.Domain.Devices.Interfaces)).NotTo(BeZero())
+		Expect(len(vmi.Spec.Networks)).NotTo(BeZero())
 	})
 
 	It("should default to true to all defined features", func() {
@@ -205,6 +205,21 @@ var _ = Describe("Defaults", func() {
 								},
 							},
 							{
+								Name: "floppy_tray_unspecified",
+								DiskDevice: v1.DiskDevice{
+									Floppy: &v1.FloppyTarget{},
+								},
+							},
+							{
+								Name: "floppy_tray_open",
+								DiskDevice: v1.DiskDevice{
+									Floppy: &v1.FloppyTarget{
+										Tray:     v1.TrayStateOpen,
+										ReadOnly: true,
+									},
+								},
+							},
+							{
 								Name: "should_default_to_disk",
 							},
 						},
@@ -221,8 +236,14 @@ var _ = Describe("Defaults", func() {
 		Expect(disks[1].CDRom.Tray).To(Equal(v1.TrayStateOpen), "Tray state was explicitly set to open")
 		Expect(*disks[1].CDRom.ReadOnly).To(BeFalse(), "ReadOnly state was explicitly set to true")
 		Expect(disks[1].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
-		Expect(disks[2].Disk).ToNot(BeNil(), "Default type should be Disk")
+		Expect(disks[2].Floppy.Tray).To(Equal(v1.TrayStateClosed), "Default tray state for Floppy should be closed")
+		Expect(disks[2].Floppy.ReadOnly).To(BeFalse(), "Default ReadOnly state for Floppy should be false")
 		Expect(disks[2].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
+		Expect(disks[3].Floppy.Tray).To(Equal(v1.TrayStateOpen), "TrayState was explicitly set to open")
+		Expect(disks[3].Floppy.ReadOnly).To(BeTrue(), "ReadOnly was explicitly set to true")
+		Expect(disks[3].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
+		Expect(disks[4].Disk).ToNot(BeNil(), "Default type should be Disk")
+		Expect(disks[4].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
 	})
 
 	It("should set the default watchdog and the default watchdog action", func() {
@@ -284,7 +305,7 @@ var _ = Describe("Function SetDefaults_NetworkInterface()", func() {
 	It("should append pod interface if interface is not defined", func() {
 		vmi := &v1.VirtualMachineInstance{}
 		v1.SetDefaults_NetworkInterface(vmi)
-		Expect(vmi.Spec.Domain.Devices.Interfaces).To(HaveLen(1))
+		Expect(len(vmi.Spec.Domain.Devices.Interfaces)).To(Equal(1))
 		Expect(vmi.Spec.Domain.Devices.Interfaces[0].Name).To(Equal("default"))
 		Expect(vmi.Spec.Networks[0].Name).To(Equal("default"))
 		Expect(vmi.Spec.Networks[0].Pod).ToNot(BeNil())
@@ -300,7 +321,7 @@ var _ = Describe("Function SetDefaults_NetworkInterface()", func() {
 		vmi.Spec.Domain.Devices.Interfaces = []v1.Interface{iface}
 
 		v1.SetDefaults_NetworkInterface(vmi)
-		Expect(vmi.Spec.Domain.Devices.Interfaces).To(HaveLen(1))
+		Expect(len(vmi.Spec.Domain.Devices.Interfaces)).To(Equal(1))
 		Expect(vmi.Spec.Domain.Devices.Interfaces[0].Name).To(Equal("testnet"))
 		Expect(vmi.Spec.Networks[0].Name).To(Equal("testnet"))
 		Expect(vmi.Spec.Networks[0].Pod).To(BeNil())
@@ -312,8 +333,8 @@ var _ = Describe("Function SetDefaults_NetworkInterface()", func() {
 		vmi.Spec.Domain.Devices.AutoattachPodInterface = &autoAttach
 
 		v1.SetDefaults_NetworkInterface(vmi)
-		Expect(vmi.Spec.Domain.Devices.Interfaces).To(BeEmpty())
-		Expect(vmi.Spec.Networks).To(BeEmpty())
+		Expect(len(vmi.Spec.Domain.Devices.Interfaces)).To(Equal(0))
+		Expect(len(vmi.Spec.Networks)).To(Equal(0))
 	})
 
 	It("should append pod interface if auto attach is true", func() {
@@ -321,7 +342,7 @@ var _ = Describe("Function SetDefaults_NetworkInterface()", func() {
 		vmi := &v1.VirtualMachineInstance{}
 		vmi.Spec.Domain.Devices.AutoattachPodInterface = &autoAttach
 		v1.SetDefaults_NetworkInterface(vmi)
-		Expect(vmi.Spec.Domain.Devices.Interfaces).To(HaveLen(1))
+		Expect(len(vmi.Spec.Domain.Devices.Interfaces)).To(Equal(1))
 		Expect(vmi.Spec.Domain.Devices.Interfaces[0].Name).To(Equal("default"))
 		Expect(vmi.Spec.Networks[0].Name).To(Equal("default"))
 		Expect(vmi.Spec.Networks[0].Pod).ToNot(BeNil())
