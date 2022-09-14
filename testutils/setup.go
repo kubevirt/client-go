@@ -8,8 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/onsi/gomega/format"
-
 	. "github.com/onsi/ginkgo/v2"
 	"github.com/onsi/ginkgo/v2/reporters"
 	"github.com/onsi/gomega"
@@ -40,8 +38,6 @@ func KubeVirtTestSuiteSetup(t *testing.T) {
 	outputFile := os.Getenv("XML_OUTPUT_FILE")
 
 	suiteConfig, _ := GinkgoConfiguration()
-	format.TruncatedDiff = false
-	format.MaxLength = 8192
 
 	// if run on bazel (XML_OUTPUT_FILE is not empty)
 	// and rules_go is configured to not produce the junit xml
