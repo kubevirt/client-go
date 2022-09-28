@@ -26,7 +26,8 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"
 	rest "k8s.io/client-go/rest"
-	v1alpha1 "kubevirt.io/api/instancetype/v1alpha1"
+
+	v1alpha1 "kubevirt.io/api/flavor/v1alpha1"
 	scheme "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/scheme"
 )
 
@@ -56,7 +57,7 @@ type virtualMachinePreferences struct {
 }
 
 // newVirtualMachinePreferences returns a VirtualMachinePreferences
-func newVirtualMachinePreferences(c *InstancetypeV1alpha1Client, namespace string) *virtualMachinePreferences {
+func newVirtualMachinePreferences(c *FlavorV1alpha1Client, namespace string) *virtualMachinePreferences {
 	return &virtualMachinePreferences{
 		client: c.RESTClient(),
 		ns:     namespace,

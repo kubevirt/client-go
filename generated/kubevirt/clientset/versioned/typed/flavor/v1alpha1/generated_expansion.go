@@ -18,10 +18,10 @@ limitations under the License.
 
 package v1alpha1
 
-type VirtualMachineClusterInstancetypeExpansion interface{}
+type VirtualMachineClusterFlavorExpansion interface{}
 
 type VirtualMachineClusterPreferenceExpansion interface{}
 
-type VirtualMachineInstancetypeExpansion interface{}
+type VirtualMachineFlavorExpansion interface{}
 
 type VirtualMachinePreferenceExpansion interface{}

@@ -357,6 +357,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.FilesystemVirtiofs":                                                 schema_kubevirtio_api_core_v1_FilesystemVirtiofs(ref),
 		"kubevirt.io/api/core/v1.Firmware":                                                           schema_kubevirtio_api_core_v1_Firmware(ref),
 		"kubevirt.io/api/core/v1.Flags":                                                              schema_kubevirtio_api_core_v1_Flags(ref),
+		"kubevirt.io/api/core/v1.FlavorMatcher":                                                      schema_kubevirtio_api_core_v1_FlavorMatcher(ref),
 		"kubevirt.io/api/core/v1.FreezeUnfreezeTimeout":                                              schema_kubevirtio_api_core_v1_FreezeUnfreezeTimeout(ref),
 		"kubevirt.io/api/core/v1.GPU":                                                                schema_kubevirtio_api_core_v1_GPU(ref),
 		"kubevirt.io/api/core/v1.GenerationStatus":                                                   schema_kubevirtio_api_core_v1_GenerationStatus(ref),
@@ -372,13 +373,11 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.HypervTimer":                                                        schema_kubevirtio_api_core_v1_HypervTimer(ref),
 		"kubevirt.io/api/core/v1.I6300ESBWatchdog":                                                   schema_kubevirtio_api_core_v1_I6300ESBWatchdog(ref),
 		"kubevirt.io/api/core/v1.Input":                                                              schema_kubevirtio_api_core_v1_Input(ref),
-		"kubevirt.io/api/core/v1.InstancetypeMatcher":                                                schema_kubevirtio_api_core_v1_InstancetypeMatcher(ref),
 		"kubevirt.io/api/core/v1.Interface":                                                          schema_kubevirtio_api_core_v1_Interface(ref),
 		"kubevirt.io/api/core/v1.InterfaceBindingMethod":                                             schema_kubevirtio_api_core_v1_InterfaceBindingMethod(ref),
 		"kubevirt.io/api/core/v1.InterfaceBridge":                                                    schema_kubevirtio_api_core_v1_InterfaceBridge(ref),
 		"kubevirt.io/api/core/v1.InterfaceMacvtap":                                                   schema_kubevirtio_api_core_v1_InterfaceMacvtap(ref),
 		"kubevirt.io/api/core/v1.InterfaceMasquerade":                                                schema_kubevirtio_api_core_v1_InterfaceMasquerade(ref),
-		"kubevirt.io/api/core/v1.InterfacePasst":                                                     schema_kubevirtio_api_core_v1_InterfacePasst(ref),
 		"kubevirt.io/api/core/v1.InterfaceSRIOV":                                                     schema_kubevirtio_api_core_v1_InterfaceSRIOV(ref),
 		"kubevirt.io/api/core/v1.InterfaceSlirp":                                                     schema_kubevirtio_api_core_v1_InterfaceSlirp(ref),
 		"kubevirt.io/api/core/v1.KVMTimer":                                                           schema_kubevirtio_api_core_v1_KVMTimer(ref),
@@ -438,7 +437,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.SSHPublicKeyAccessCredential":                                       schema_kubevirtio_api_core_v1_SSHPublicKeyAccessCredential(ref),
 		"kubevirt.io/api/core/v1.SSHPublicKeyAccessCredentialPropagationMethod":                      schema_kubevirtio_api_core_v1_SSHPublicKeyAccessCredentialPropagationMethod(ref),
 		"kubevirt.io/api/core/v1.SSHPublicKeyAccessCredentialSource":                                 schema_kubevirtio_api_core_v1_SSHPublicKeyAccessCredentialSource(ref),
-		"kubevirt.io/api/core/v1.ScreenshotOptions":                                                  schema_kubevirtio_api_core_v1_ScreenshotOptions(ref),
 		"kubevirt.io/api/core/v1.SecretVolumeSource":                                                 schema_kubevirtio_api_core_v1_SecretVolumeSource(ref),
 		"kubevirt.io/api/core/v1.ServiceAccountVolumeSource":                                         schema_kubevirtio_api_core_v1_ServiceAccountVolumeSource(ref),
 		"kubevirt.io/api/core/v1.SoundDevice":                                                        schema_kubevirtio_api_core_v1_SoundDevice(ref),
@@ -446,7 +444,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.StopOptions":                                                        schema_kubevirtio_api_core_v1_StopOptions(ref),
 		"kubevirt.io/api/core/v1.SyNICTimer":                                                         schema_kubevirtio_api_core_v1_SyNICTimer(ref),
 		"kubevirt.io/api/core/v1.SysprepSource":                                                      schema_kubevirtio_api_core_v1_SysprepSource(ref),
-		"kubevirt.io/api/core/v1.TLSConfiguration":                                                   schema_kubevirtio_api_core_v1_TLSConfiguration(ref),
 		"kubevirt.io/api/core/v1.TPMDevice":                                                          schema_kubevirtio_api_core_v1_TPMDevice(ref),
 		"kubevirt.io/api/core/v1.Timer":                                                              schema_kubevirtio_api_core_v1_Timer(ref),
 		"kubevirt.io/api/core/v1.TokenBucketRateLimiter":                                             schema_kubevirtio_api_core_v1_TokenBucketRateLimiter(ref),
@@ -512,26 +509,26 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/export/v1alpha1.VirtualMachineExportStatus":                                 schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportStatus(ref),
 		"kubevirt.io/api/export/v1alpha1.VirtualMachineExportVolume":                                 schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportVolume(ref),
 		"kubevirt.io/api/export/v1alpha1.VirtualMachineExportVolumeFormat":                           schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportVolumeFormat(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.CPUInstancetype":                                      schema_kubevirtio_api_instancetype_v1alpha1_CPUInstancetype(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.CPUPreferences":                                       schema_kubevirtio_api_instancetype_v1alpha1_CPUPreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.ClockPreferences":                                     schema_kubevirtio_api_instancetype_v1alpha1_ClockPreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.DevicePreferences":                                    schema_kubevirtio_api_instancetype_v1alpha1_DevicePreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.FeaturePreferences":                                   schema_kubevirtio_api_instancetype_v1alpha1_FeaturePreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.FirmwarePreferences":                                  schema_kubevirtio_api_instancetype_v1alpha1_FirmwarePreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.MachinePreferences":                                   schema_kubevirtio_api_instancetype_v1alpha1_MachinePreferences(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.MemoryInstancetype":                                   schema_kubevirtio_api_instancetype_v1alpha1_MemoryInstancetype(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterInstancetype":                    schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancetype(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterInstancetypeList":                schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancetypeList(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterPreference":                      schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterPreferenceList":                  schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreferenceList(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetype":                           schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetype(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeList":                       schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeList(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpec":                       schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpecRevision":               schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpecRevision(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreference":                             schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreference(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceList":                         schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceList(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpec":                         schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceSpec(ref),
-		"kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpecRevision":                 schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceSpecRevision(ref),
+		"kubevirt.io/api/flavor/v1alpha1.CPUFlavor":                                                  schema_kubevirtio_api_flavor_v1alpha1_CPUFlavor(ref),
+		"kubevirt.io/api/flavor/v1alpha1.CPUPreferences":                                             schema_kubevirtio_api_flavor_v1alpha1_CPUPreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.ClockPreferences":                                           schema_kubevirtio_api_flavor_v1alpha1_ClockPreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.DevicePreferences":                                          schema_kubevirtio_api_flavor_v1alpha1_DevicePreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.FeaturePreferences":                                         schema_kubevirtio_api_flavor_v1alpha1_FeaturePreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.FirmwarePreferences":                                        schema_kubevirtio_api_flavor_v1alpha1_FirmwarePreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.MachinePreferences":                                         schema_kubevirtio_api_flavor_v1alpha1_MachinePreferences(ref),
+		"kubevirt.io/api/flavor/v1alpha1.MemoryFlavor":                                               schema_kubevirtio_api_flavor_v1alpha1_MemoryFlavor(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterFlavor":                                schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterFlavor(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterFlavorList":                            schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterFlavorList(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterPreference":                            schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterPreference(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterPreferenceList":                        schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterPreferenceList(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavor":                                       schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavor(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorList":                                   schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorList(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpec":                                   schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorSpec(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpecRevision":                           schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorSpecRevision(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreference":                                   schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreference(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceList":                               schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceList(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpec":                               schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceSpec(ref),
+		"kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpecRevision":                       schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceSpecRevision(ref),
 		"kubevirt.io/api/migrations/v1alpha1.MigrationPolicy":                                        schema_kubevirtio_api_migrations_v1alpha1_MigrationPolicy(ref),
 		"kubevirt.io/api/migrations/v1alpha1.MigrationPolicyList":                                    schema_kubevirtio_api_migrations_v1alpha1_MigrationPolicyList(ref),
 		"kubevirt.io/api/migrations/v1alpha1.MigrationPolicySpec":                                    schema_kubevirtio_api_migrations_v1alpha1_MigrationPolicySpec(ref),
@@ -15702,13 +15699,6 @@ func schema_kubevirtio_api_core_v1_Devices(ref common.ReferenceCallback) common.
 							Format:      "",
 						},
 					},
-					"autoattachInputDevice": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Whether to attach an Input Device. Defaults to false.",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
 					"rng": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Whether to have random number generator from host",
@@ -15945,7 +15935,7 @@ func schema_kubevirtio_api_core_v1_DiskTarget(ref common.ReferenceCallback) comm
 				Properties: map[string]spec.Schema{
 					"bus": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Bus indicates the type of disk device to emulate. supported values: virtio, sata, scsi, usb.",
+							Description: "Bus indicates the type of disk device to emulate. supported values: virtio, sata, scsi.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -16621,6 +16611,41 @@ func schema_kubevirtio_api_core_v1_Flags(ref common.ReferenceCallback) common.Op
 	}
 }
 
+func schema_kubevirtio_api_core_v1_FlavorMatcher(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Description: "FlavorMatcher references a flavor that is used to fill fields in the VMI template.",
+				Type:        []string{"object"},
+				Properties: map[string]spec.Schema{
+					"name": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name is the name of the VirtualMachineFlavor or VirtualMachineClusterFlavor",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"kind": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Kind specifies which flavor resource is referenced. Allowed values are: \"VirtualMachineFlavor\" and \"VirtualMachineClusterFlavor\". If not specified, \"VirtualMachineClusterFlavor\" is used by default.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"revisionName": {
+						SchemaProps: spec.SchemaProps{
+							Description: "RevisionName specifies a ControllerRevision containing a specific copy of the VirtualMachineFlavor or VirtualMachineClusterFlavor to be used. This is initially captured the first time the flavor is applied to the VirtualMachineInstance.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+				},
+				Required: []string{"name"},
+			},
+		},
+	}
+}
+
 func schema_kubevirtio_api_core_v1_FreezeUnfreezeTimeout(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -17063,41 +17088,6 @@ func schema_kubevirtio_api_core_v1_Input(ref common.ReferenceCallback) common.Op
 	}
 }
 
-func schema_kubevirtio_api_core_v1_InstancetypeMatcher(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "InstancetypeMatcher references a instancetype that is used to fill fields in the VMI template.",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"name": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Name is the name of the VirtualMachineInstancetype or VirtualMachineClusterInstancetype",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind specifies which instancetype resource is referenced. Allowed values are: \"VirtualMachineInstancetype\" and \"VirtualMachineClusterInstancetype\". If not specified, \"VirtualMachineClusterInstancetype\" is used by default.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"revisionName": {
-						SchemaProps: spec.SchemaProps{
-							Description: "RevisionName specifies a ControllerRevision containing a specific copy of the VirtualMachineInstancetype or VirtualMachineClusterInstancetype to be used. This is initially captured the first time the instancetype is applied to the VirtualMachineInstance.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"name"},
-			},
-		},
-	}
-}
-
 func schema_kubevirtio_api_core_v1_Interface(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -17141,11 +17131,6 @@ func schema_kubevirtio_api_core_v1_Interface(ref common.ReferenceCallback) commo
 					"macvtap": {
 						SchemaProps: spec.SchemaProps{
 							Ref: ref("kubevirt.io/api/core/v1.InterfaceMacvtap"),
-						},
-					},
-					"passt": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.InterfacePasst"),
 						},
 					},
 					"ports": {
@@ -17200,7 +17185,7 @@ func schema_kubevirtio_api_core_v1_Interface(ref common.ReferenceCallback) commo
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.DHCPOptions", "kubevirt.io/api/core/v1.InterfaceBridge", "kubevirt.io/api/core/v1.InterfaceMacvtap", "kubevirt.io/api/core/v1.InterfaceMasquerade", "kubevirt.io/api/core/v1.InterfacePasst", "kubevirt.io/api/core/v1.InterfaceSRIOV", "kubevirt.io/api/core/v1.InterfaceSlirp", "kubevirt.io/api/core/v1.Port"},
+			"kubevirt.io/api/core/v1.DHCPOptions", "kubevirt.io/api/core/v1.InterfaceBridge", "kubevirt.io/api/core/v1.InterfaceMacvtap", "kubevirt.io/api/core/v1.InterfaceMasquerade", "kubevirt.io/api/core/v1.InterfaceSRIOV", "kubevirt.io/api/core/v1.InterfaceSlirp", "kubevirt.io/api/core/v1.Port"},
 	}
 }
 
@@ -17236,16 +17221,11 @@ func schema_kubevirtio_api_core_v1_InterfaceBindingMethod(ref common.ReferenceCa
 							Ref: ref("kubevirt.io/api/core/v1.InterfaceMacvtap"),
 						},
 					},
-					"passt": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.InterfacePasst"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.InterfaceBridge", "kubevirt.io/api/core/v1.InterfaceMacvtap", "kubevirt.io/api/core/v1.InterfaceMasquerade", "kubevirt.io/api/core/v1.InterfacePasst", "kubevirt.io/api/core/v1.InterfaceSRIOV", "kubevirt.io/api/core/v1.InterfaceSlirp"},
+			"kubevirt.io/api/core/v1.InterfaceBridge", "kubevirt.io/api/core/v1.InterfaceMacvtap", "kubevirt.io/api/core/v1.InterfaceMasquerade", "kubevirt.io/api/core/v1.InterfaceSRIOV", "kubevirt.io/api/core/v1.InterfaceSlirp"},
 	}
 }
 
@@ -17276,17 +17256,6 @@ func schema_kubevirtio_api_core_v1_InterfaceMasquerade(ref common.ReferenceCallb
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
 				Description: "InterfaceMasquerade connects to a given network using netfilter rules to nat the traffic.",
-				Type:        []string{"object"},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_InterfacePasst(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "InterfacePasst connects to a given network.",
 				Type:        []string{"object"},
 			},
 		},
@@ -17689,16 +17658,11 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 							Ref: ref("kubevirt.io/api/core/v1.ReloadableComponentConfiguration"),
 						},
 					},
-					"tlsConfiguration": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.TLSConfiguration"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/api/resource.Quantity", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration", "kubevirt.io/api/core/v1.TLSConfiguration"},
+			"k8s.io/apimachinery/pkg/api/resource.Quantity", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration"},
 	}
 }
 
@@ -19069,7 +19033,7 @@ func schema_kubevirtio_api_core_v1_PreferenceMatcher(ref common.ReferenceCallbac
 					},
 					"revisionName": {
 						SchemaProps: spec.SchemaProps{
-							Description: "RevisionName specifies a ControllerRevision containing a specific copy of the VirtualMachinePreference or VirtualMachineClusterPreference to be used. This is initially captured the first time the instancetype is applied to the VirtualMachineInstance.",
+							Description: "RevisionName specifies a ControllerRevision containing a specific copy of the VirtualMachinePreference or VirtualMachineClusterPreference to be used. This is initially captured the first time the flavor is applied to the VirtualMachineInstance.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -19618,25 +19582,6 @@ func schema_kubevirtio_api_core_v1_SSHPublicKeyAccessCredentialSource(ref common
 	}
 }
 
-func schema_kubevirtio_api_core_v1_ScreenshotOptions(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"moveCursor": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"boolean"},
-							Format: "",
-						},
-					},
-				},
-				Required: []string{"moveCursor"},
-			},
-		},
-	}
-}
-
 func schema_kubevirtio_api_core_v1_SecretVolumeSource(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -19874,44 +19819,6 @@ func schema_kubevirtio_api_core_v1_SysprepSource(ref common.ReferenceCallback) c
 		},
 		Dependencies: []string{
 			"k8s.io/api/core/v1.LocalObjectReference"},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_TLSConfiguration(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "TLSConfiguration holds TLS options",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"minTLSVersion": {
-						SchemaProps: spec.SchemaProps{
-							Description: "MinTLSVersion is a way to specify the minimum protocol version that is acceptable for TLS connections. Protocol versions are based on the following most common TLS configurations:\n\n  https://ssl-config.mozilla.org/\n\nNote that SSLv3.0 is not a supported protocol version due to well known vulnerabilities such as POODLE: https://en.wikipedia.org/wiki/POODLE",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"ciphers": {
-						VendorExtensible: spec.VendorExtensible{
-							Extensions: spec.Extensions{
-								"x-kubernetes-list-type": "set",
-							},
-						},
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Type:   []string{"string"},
-										Format: "",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
 	}
 }
 
@@ -21261,13 +21168,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceNetworkInterface(ref co
 							Format:      "",
 						},
 					},
-					"queueCount": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Specifies how many queues are allocated by MultiQueue",
-							Type:        []string{"integer"},
-							Format:      "int32",
-						},
-					},
 				},
 			},
 		},
@@ -21306,7 +21206,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstancePreset(ref common.Refer
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "Deprecated for removal in v2, please use VirtualMachineInstanceType and VirtualMachinePreference instead.\n\nVirtualMachineInstancePreset defines a VMI spec.domain to be applied to all VMIs that match the provided label selector More info: https://kubevirt.io/user-guide/virtual_machines/presets/#overrides",
+				Description: "VirtualMachineInstancePreset defines a VMI spec.domain to be applied to all VMIs that match the provided label selector More info: https://kubevirt.io/user-guide/virtual_machines/presets/#overrides",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -21708,30 +21608,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceSpec(ref common.Referen
 							},
 						},
 					},
-					"topologySpreadConstraints": {
-						VendorExtensible: spec.VendorExtensible{
-							Extensions: spec.Extensions{
-								"x-kubernetes-list-map-keys": []interface{}{
-									"topologyKey",
-									"whenUnsatisfiable",
-								},
-								"x-kubernetes-list-type":       "map",
-								"x-kubernetes-patch-merge-key": "topologyKey",
-								"x-kubernetes-patch-strategy":  "merge",
-							},
-						},
-						SchemaProps: spec.SchemaProps{
-							Description: "TopologySpreadConstraints describes how a group of VMIs will be spread across a given topology domains. K8s scheduler will schedule VMI pods in a way which abides by the constraints.",
-							Type:        []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Ref: ref("k8s.io/api/core/v1.TopologySpreadConstraint"),
-									},
-								},
-							},
-						},
-					},
 					"evictionStrategy": {
 						SchemaProps: spec.SchemaProps{
 							Description: "EvictionStrategy can be set to \"LiveMigrate\" if the VirtualMachineInstance should be migrated instead of shut-off in case of a node drain.",
@@ -21841,7 +21717,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceSpec(ref common.Referen
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.Affinity", "k8s.io/api/core/v1.PodDNSConfig", "k8s.io/api/core/v1.Toleration", "k8s.io/api/core/v1.TopologySpreadConstraint", "kubevirt.io/api/core/v1.AccessCredential", "kubevirt.io/api/core/v1.DomainSpec", "kubevirt.io/api/core/v1.Network", "kubevirt.io/api/core/v1.Probe", "kubevirt.io/api/core/v1.Volume"},
+			"k8s.io/api/core/v1.Affinity", "k8s.io/api/core/v1.PodDNSConfig", "k8s.io/api/core/v1.Toleration", "kubevirt.io/api/core/v1.AccessCredential", "kubevirt.io/api/core/v1.DomainSpec", "kubevirt.io/api/core/v1.Network", "kubevirt.io/api/core/v1.Probe", "kubevirt.io/api/core/v1.Volume"},
 	}
 }
 
@@ -22124,13 +22000,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineMemoryDumpRequest(ref common.Re
 							Format:      "",
 						},
 					},
-					"remove": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Remove represents request of dissociating the memory dump pvc",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
 					"startTimestamp": {
 						SchemaProps: spec.SchemaProps{
 							Description: "StartTimestamp represents the time the memory dump started",
@@ -22187,10 +22056,10 @@ func schema_kubevirtio_api_core_v1_VirtualMachineSpec(ref common.ReferenceCallba
 							Format:      "",
 						},
 					},
-					"instancetype": {
+					"flavor": {
 						SchemaProps: spec.SchemaProps{
-							Description: "InstancetypeMatcher references a instancetype that is used to fill fields in Template",
-							Ref:         ref("kubevirt.io/api/core/v1.InstancetypeMatcher"),
+							Description: "FlavorMatcher references a flavor that is used to fill fields in Template",
+							Ref:         ref("kubevirt.io/api/core/v1.FlavorMatcher"),
 						},
 					},
 					"preference": {
@@ -22223,7 +22092,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineSpec(ref common.ReferenceCallba
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.DataVolumeTemplateSpec", "kubevirt.io/api/core/v1.InstancetypeMatcher", "kubevirt.io/api/core/v1.PreferenceMatcher", "kubevirt.io/api/core/v1.VirtualMachineInstanceTemplateSpec"},
+			"kubevirt.io/api/core/v1.DataVolumeTemplateSpec", "kubevirt.io/api/core/v1.FlavorMatcher", "kubevirt.io/api/core/v1.PreferenceMatcher", "kubevirt.io/api/core/v1.VirtualMachineInstanceTemplateSpec"},
 	}
 }
 
@@ -23054,13 +22923,13 @@ func schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportSpec(ref common.R
 					},
 					"tokenSecretRef": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TokenSecretRef is the name of the custom-defined secret that contains the token used by the export server pod",
+							Description: "TokenSecretRef is the name of the secret that contains the token used by the export server pod",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 				},
-				Required: []string{"source"},
+				Required: []string{"source", "tokenSecretRef"},
 			},
 		},
 		Dependencies: []string{
@@ -23084,13 +22953,6 @@ func schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportStatus(ref common
 					"links": {
 						SchemaProps: spec.SchemaProps{
 							Ref: ref("kubevirt.io/api/export/v1alpha1.VirtualMachineExportLinks"),
-						},
-					},
-					"tokenSecretRef": {
-						SchemaProps: spec.SchemaProps{
-							Description: "TokenSecretRef is the name of the secret that contains the token used by the export server pod",
-							Type:        []string{"string"},
-							Format:      "",
 						},
 					},
 					"serviceName": {
@@ -23196,11 +23058,11 @@ func schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportVolumeFormat(ref 
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_CPUInstancetype(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_CPUFlavor(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "CPUInstancetype contains the CPU related configuration of a given VirtualMachineInstancetypeSpec.\n\nGuest is a required attribute and defines the number of vCPUs to be exposed to the guest by the instancetype.",
+				Description: "CPUFlavor contains the CPU related configuration of a given VirtualMachineFlavorSpec.\n\nGuest is a required attribute and defines the number of vCPUs to be exposed to the guest by the flavor.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"guest": {
@@ -23252,7 +23114,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_CPUInstancetype(ref common.Refe
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_CPUPreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_CPUPreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23272,7 +23134,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_CPUPreferences(ref common.Refer
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_ClockPreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_ClockPreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23299,7 +23161,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_ClockPreferences(ref common.Ref
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_DevicePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_DevicePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23330,13 +23192,6 @@ func schema_kubevirtio_api_instancetype_v1alpha1_DevicePreferences(ref common.Re
 					"preferredAutoattachSerialConsole": {
 						SchemaProps: spec.SchemaProps{
 							Description: "PreferredAutoattachSerialConsole optionally defines the preferred value of AutoattachSerialConsole",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"preferredAutoattachInputDevice": {
-						SchemaProps: spec.SchemaProps{
-							Description: "PreferredAutoattachInputDevice optionally defines the preferred value of AutoattachInputDevice",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -23471,7 +23326,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_DevicePreferences(ref common.Re
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_FeaturePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_FeaturePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23522,7 +23377,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_FeaturePreferences(ref common.R
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_FirmwarePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_FirmwarePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23563,7 +23418,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_FirmwarePreferences(ref common.
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_MachinePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_MachinePreferences(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23583,11 +23438,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_MachinePreferences(ref common.R
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_MemoryInstancetype(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_MemoryFlavor(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "MemoryInstancetype contains the Memory related configuration of a given VirtualMachineInstancetypeSpec.\n\nGuest is a required attribute and defines the amount of RAM to be exposed to the guest by the instancetype.",
+				Description: "MemoryFlavor contains the Memory related configuration of a given VirtualMachineFlavorSpec.\n\nGuest is a required attribute and defines the amount of RAM to be exposed to the guest by the flavor.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"guest": {
@@ -23603,7 +23458,6 @@ func schema_kubevirtio_api_instancetype_v1alpha1_MemoryInstancetype(ref common.R
 						},
 					},
 				},
-				Required: []string{"guest"},
 			},
 		},
 		Dependencies: []string{
@@ -23611,11 +23465,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_MemoryInstancetype(ref common.R
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancetype(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterFlavor(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineClusterInstancetype is a cluster scoped version of VirtualMachineInstancetype resource.",
+				Description: "VirtualMachineClusterFlavor is a cluster scoped version of VirtualMachineFlavor resource.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -23639,8 +23493,8 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancety
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Required spec describing the instancetype",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpec"),
+							Description: "Required spec describing the flavor",
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpec"),
 						},
 					},
 				},
@@ -23648,15 +23502,15 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancety
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpec"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpec"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancetypeList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterFlavorList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineClusterInstancetypeList is a list of VirtualMachineClusterInstancetype resources.",
+				Description: "VirtualMachineClusterFlavorList is a list of VirtualMachineClusterFlavor resources.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -23684,7 +23538,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancety
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterInstancetype"),
+										Ref: ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterFlavor"),
 									},
 								},
 							},
@@ -23695,11 +23549,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterInstancety
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterInstancetype"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterFlavor"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterPreference(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23728,7 +23582,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference
 					"spec": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Required spec describing the preferences",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpec"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpec"),
 						},
 					},
 				},
@@ -23736,11 +23590,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpec"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpec"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreferenceList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineClusterPreferenceList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -23777,7 +23631,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterPreference"),
+										Ref: ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterPreference"),
 									},
 								},
 							},
@@ -23788,15 +23642,15 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineClusterPreference
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachineClusterPreference"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachineClusterPreference"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetype(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavor(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstancetype resource contains quantitative and resource related VirtualMachine configuration that can be used by multiple VirtualMachine resources.",
+				Description: "VirtualMachineFlavor resource contains quantitative and resource related VirtualMachine configuration that can be used by multiple VirtualMachine resources.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -23820,8 +23674,8 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetype(ref 
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Required spec describing the instancetype",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpec"),
+							Description: "Required spec describing the flavor",
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpec"),
 						},
 					},
 				},
@@ -23829,15 +23683,15 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetype(ref 
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetypeSpec"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavorSpec"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstancetypeList is a list of VirtualMachineInstancetype resources.",
+				Description: "VirtualMachineFlavorList is a list of VirtualMachineFlavor resources.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"kind": {
@@ -23865,7 +23719,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeList(
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetype"),
+										Ref: ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavor"),
 									},
 								},
 							},
@@ -23876,27 +23730,27 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeList(
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachineInstancetype"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachineFlavor"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstancetypeSpec is a description of the VirtualMachineInstancetype or VirtualMachineClusterInstancetype.\n\nCPU and Memory are required attributes with both requiring that their Guest attribute is defined, ensuring a number of vCPUs and amount of RAM is always provided by each instancetype.",
+				Description: "VirtualMachineFlavorSpec is a description of the VirtualMachineFlavor or VirtualMachineClusterFlavor.\n\nCPU and Memory are required attributes with both requiring that their Guest attribute is defined, ensuring a number of vCPUs and amount of RAM is always provided by each flavor.",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"cpu": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Required CPU related attributes of the instancetype.",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.CPUInstancetype"),
+							Description: "Required CPU related attributes of the flavor.",
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.CPUFlavor"),
 						},
 					},
 					"memory": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Required Memory related attributes of the instancetype.",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.MemoryInstancetype"),
+							Description: "Required Memory related attributes of the flavor.",
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.MemoryFlavor"),
 						},
 					},
 					"gpus": {
@@ -23906,7 +23760,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(
 							},
 						},
 						SchemaProps: spec.SchemaProps{
-							Description: "Optionally defines any GPU devices associated with the instancetype.",
+							Description: "Optionally defines any GPU devices associated with the flavor.",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -23924,7 +23778,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(
 							},
 						},
 						SchemaProps: spec.SchemaProps{
-							Description: "Optionally defines any HostDevices associated with the instancetype.",
+							Description: "Optionally defines any HostDevices associated with the flavor.",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -23937,14 +23791,14 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(
 					},
 					"ioThreadsPolicy": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Optionally defines the IOThreadsPolicy to be used by the instancetype.",
+							Description: "Optionally defines the IOThreadsPolicy to be used by the flavor.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
 					},
 					"launchSecurity": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Optionally defines the LaunchSecurity to be used by the instancetype.",
+							Description: "Optionally defines the LaunchSecurity to be used by the flavor.",
 							Ref:         ref("kubevirt.io/api/core/v1.LaunchSecurity"),
 						},
 					},
@@ -23953,20 +23807,20 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpec(
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.GPU", "kubevirt.io/api/core/v1.HostDevice", "kubevirt.io/api/core/v1.LaunchSecurity", "kubevirt.io/api/instancetype/v1alpha1.CPUInstancetype", "kubevirt.io/api/instancetype/v1alpha1.MemoryInstancetype"},
+			"kubevirt.io/api/core/v1.GPU", "kubevirt.io/api/core/v1.HostDevice", "kubevirt.io/api/core/v1.LaunchSecurity", "kubevirt.io/api/flavor/v1alpha1.CPUFlavor", "kubevirt.io/api/flavor/v1alpha1.MemoryFlavor"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpecRevision(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachineFlavorSpecRevision(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstancetypeSpecRevision is used to capture a versioned copy of VirtualMachineInstancetypeSpec within a ControllerRevision\n\n**WARNING** This struct should never change ensuring it can always be unmarshaled from a ControllerRevision",
+				Description: "VirtualMachineFlavorSpecRevision is used to capture a versioned copy of VirtualMachineFlavorSpec within a ControllerRevision\n\n**WARNING** This struct should never change ensuring it can always be unmarshaled from a ControllerRevision",
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"apiVersion": {
 						SchemaProps: spec.SchemaProps{
-							Description: "The specific version of VirtualMachineInstancetypeSpec that is contained below",
+							Description: "The specific version of VirtualMachineFlavorSpec that is contained below",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -23978,7 +23832,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpecR
 							},
 						},
 						SchemaProps: spec.SchemaProps{
-							Description: "This is a marshaled version of the VirtualMachineInstancetypeSpec",
+							Description: "This is a marshaled version of the VirtualMachineFlavorSpec",
 							Type:        []string{"string"},
 							Format:      "byte",
 						},
@@ -23990,7 +23844,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachineInstancetypeSpecR
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreference(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreference(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -24019,7 +23873,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreference(ref co
 					"spec": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Required spec describing the preferences",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpec"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpec"),
 						},
 					},
 				},
@@ -24027,11 +23881,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreference(ref co
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreferenceSpec"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreferenceSpec"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceList(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceList(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -24068,7 +23922,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceList(re
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreference"),
+										Ref: ref("kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreference"),
 									},
 								},
 							},
@@ -24079,11 +23933,11 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceList(re
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/instancetype/v1alpha1.VirtualMachinePreference"},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta", "kubevirt.io/api/flavor/v1alpha1.VirtualMachinePreference"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceSpec(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{
@@ -24093,48 +23947,48 @@ func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceSpec(re
 					"clock": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Clock optionally defines preferences associated with the Clock attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.ClockPreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.ClockPreferences"),
 						},
 					},
 					"cpu": {
 						SchemaProps: spec.SchemaProps{
 							Description: "CPU optionally defines preferences associated with the CPU attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.CPUPreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.CPUPreferences"),
 						},
 					},
 					"devices": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Devices optionally defines preferences associated with the Devices attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.DevicePreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.DevicePreferences"),
 						},
 					},
 					"features": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Features optionally defines preferences associated with the Features attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.FeaturePreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.FeaturePreferences"),
 						},
 					},
 					"firmware": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Firmware optionally defines preferences associated with the Firmware attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.FirmwarePreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.FirmwarePreferences"),
 						},
 					},
 					"machine": {
 						SchemaProps: spec.SchemaProps{
 							Description: "Machine optionally defines preferences associated with the Machine attribute of a VirtualMachineInstance DomainSpec",
-							Ref:         ref("kubevirt.io/api/instancetype/v1alpha1.MachinePreferences"),
+							Ref:         ref("kubevirt.io/api/flavor/v1alpha1.MachinePreferences"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/instancetype/v1alpha1.CPUPreferences", "kubevirt.io/api/instancetype/v1alpha1.ClockPreferences", "kubevirt.io/api/instancetype/v1alpha1.DevicePreferences", "kubevirt.io/api/instancetype/v1alpha1.FeaturePreferences", "kubevirt.io/api/instancetype/v1alpha1.FirmwarePreferences", "kubevirt.io/api/instancetype/v1alpha1.MachinePreferences"},
+			"kubevirt.io/api/flavor/v1alpha1.CPUPreferences", "kubevirt.io/api/flavor/v1alpha1.ClockPreferences", "kubevirt.io/api/flavor/v1alpha1.DevicePreferences", "kubevirt.io/api/flavor/v1alpha1.FeaturePreferences", "kubevirt.io/api/flavor/v1alpha1.FirmwarePreferences", "kubevirt.io/api/flavor/v1alpha1.MachinePreferences"},
 	}
 }
 
-func schema_kubevirtio_api_instancetype_v1alpha1_VirtualMachinePreferenceSpecRevision(ref common.ReferenceCallback) common.OpenAPIDefinition {
+func schema_kubevirtio_api_flavor_v1alpha1_VirtualMachinePreferenceSpecRevision(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
 			SchemaProps: spec.SchemaProps{

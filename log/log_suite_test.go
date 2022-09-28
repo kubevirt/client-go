@@ -1,7 +1,6 @@
 package log
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -56,7 +55,7 @@ func findRoot() string {
 		}
 		if _, err := os.Stat(filepath.Join(current, "WORKSPACE")); err == nil {
 			return strings.TrimSuffix(current, "/") + "/"
-		} else if errors.Is(err, os.ErrNotExist) {
+		} else if os.IsNotExist(err) {
 			continue
 		} else if err != nil {
 			panic(err)

@@ -20,41 +20,42 @@ package v1alpha1
 
 import (
 	rest "k8s.io/client-go/rest"
-	v1alpha1 "kubevirt.io/api/instancetype/v1alpha1"
+
+	v1alpha1 "kubevirt.io/api/flavor/v1alpha1"
 	"kubevirt.io/client-go/generated/kubevirt/clientset/versioned/scheme"
 )
 
-type InstancetypeV1alpha1Interface interface {
+type FlavorV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	VirtualMachineClusterInstancetypesGetter
+	VirtualMachineClusterFlavorsGetter
 	VirtualMachineClusterPreferencesGetter
-	VirtualMachineInstancetypesGetter
+	VirtualMachineFlavorsGetter
 	VirtualMachinePreferencesGetter
 }
 
-// InstancetypeV1alpha1Client is used to interact with features provided by the instancetype.kubevirt.io group.
-type InstancetypeV1alpha1Client struct {
+// FlavorV1alpha1Client is used to interact with features provided by the flavor.kubevirt.io group.
+type FlavorV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *InstancetypeV1alpha1Client) VirtualMachineClusterInstancetypes() VirtualMachineClusterInstancetypeInterface {
-	return newVirtualMachineClusterInstancetypes(c)
+func (c *FlavorV1alpha1Client) VirtualMachineClusterFlavors() VirtualMachineClusterFlavorInterface {
+	return newVirtualMachineClusterFlavors(c)
 }
 
-func (c *InstancetypeV1alpha1Client) VirtualMachineClusterPreferences() VirtualMachineClusterPreferenceInterface {
+func (c *FlavorV1alpha1Client) VirtualMachineClusterPreferences() VirtualMachineClusterPreferenceInterface {
 	return newVirtualMachineClusterPreferences(c)
 }
 
-func (c *InstancetypeV1alpha1Client) VirtualMachineInstancetypes(namespace string) VirtualMachineInstancetypeInterface {
-	return newVirtualMachineInstancetypes(c, namespace)
+func (c *FlavorV1alpha1Client) VirtualMachineFlavors(namespace string) VirtualMachineFlavorInterface {
+	return newVirtualMachineFlavors(c, namespace)
 }
 
-func (c *InstancetypeV1alpha1Client) VirtualMachinePreferences(namespace string) VirtualMachinePreferenceInterface {
+func (c *FlavorV1alpha1Client) VirtualMachinePreferences(namespace string) VirtualMachinePreferenceInterface {
 	return newVirtualMachinePreferences(c, namespace)
 }
 
-// NewForConfig creates a new InstancetypeV1alpha1Client for the given config.
-func NewForConfig(c *rest.Config) (*InstancetypeV1alpha1Client, error) {
+// NewForConfig creates a new FlavorV1alpha1Client for the given config.
+func NewForConfig(c *rest.Config) (*FlavorV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -63,12 +64,12 @@ func NewForConfig(c *rest.Config) (*InstancetypeV1alpha1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &InstancetypeV1alpha1Client{client}, nil
+	return &FlavorV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new InstancetypeV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new FlavorV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *InstancetypeV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *FlavorV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -76,9 +77,9 @@ func NewForConfigOrDie(c *rest.Config) *InstancetypeV1alpha1Client {
 	return client
 }
 
-// New creates a new InstancetypeV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *InstancetypeV1alpha1Client {
-	return &InstancetypeV1alpha1Client{c}
+// New creates a new FlavorV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *FlavorV1alpha1Client {
+	return &FlavorV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -96,7 +97,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *InstancetypeV1alpha1Client) RESTClient() rest.Interface {
+func (c *FlavorV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

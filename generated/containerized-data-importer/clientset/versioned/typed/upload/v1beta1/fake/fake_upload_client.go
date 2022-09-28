@@ -21,6 +21,7 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
+
 	v1beta1 "kubevirt.io/client-go/generated/containerized-data-importer/clientset/versioned/typed/upload/v1beta1"
 )
 
