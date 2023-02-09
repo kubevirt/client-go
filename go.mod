@@ -22,7 +22,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20220124234850-424119656bbf
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed
-	kubevirt.io/api v0.0.0-20230209050453-7da3790c73fc
+	kubevirt.io/api v0.0.0-20230209151616-9c0d7d655ccd
 	kubevirt.io/containerized-data-importer-api v1.55.0
 )
 
