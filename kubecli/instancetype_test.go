@@ -22,7 +22,6 @@ package kubecli
 import (
 	"fmt"
 	"net/http"
-	"path"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -32,22 +31,21 @@ import (
 )
 
 var _ = Describe("Kubevirt ExpandSpec Client", func() {
-
 	var server *ghttp.Server
+	var client KubevirtClient
 	expandSpecPath := fmt.Sprintf("/apis/subresources.kubevirt.io/%s/namespaces/%s/expand-vm-spec", v1.SubresourceStorageGroupVersion.Version, k8sv1.NamespaceDefault)
-	proxyPath := "/proxy/path"
 
 	BeforeEach(func() {
+		var err error
 		server = ghttp.NewServer()
+		client, err = GetKubevirtClientFromFlags(server.URL(), "")
+		Expect(err).ToNot(HaveOccurred())
 	})
 
-	DescribeTable("should expand a VirtualMachine", func(proxyPath string) {
-		client, err := GetKubevirtClientFromFlags(server.URL()+proxyPath, "")
-		Expect(err).ToNot(HaveOccurred())
-
+	It("should expand a VirtualMachine", func() {
 		vm := NewMinimalVM("testvm")
 		server.AppendHandlers(ghttp.CombineHandlers(
-			ghttp.VerifyRequest("PUT", path.Join(proxyPath, expandSpecPath)),
+			ghttp.VerifyRequest("PUT", expandSpecPath),
 			ghttp.RespondWithJSONEncoded(http.StatusOK, vm),
 		))
 		expandedVM, err := client.ExpandSpec(k8sv1.NamespaceDefault).ForVirtualMachine(vm)
@@ -55,10 +53,7 @@ var _ = Describe("Kubevirt ExpandSpec Client", func() {
 		Expect(server.ReceivedRequests()).To(HaveLen(1))
 		Expect(err).ToNot(HaveOccurred())
 		Expect(expandedVM).To(Equal(vm))
-	},
-		Entry("with regular server URL", ""),
-		Entry("with proxied server URL", proxyPath),
-	)
+	})
 
 	AfterEach(func() {
 		server.Close()

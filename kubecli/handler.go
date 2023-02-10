@@ -21,7 +21,6 @@ const (
 	consoleTemplateURI        = "wss://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/console"
 	usbredirTemplateURI       = "wss://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/usbredir"
 	vncTemplateURI            = "wss://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/vnc"
-	vsockTemplateURI          = "wss://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/vsock"
 	pauseTemplateURI          = "https://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/pause"
 	unpauseTemplateURI        = "https://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/unpause"
 	freezeTemplateURI         = "https://%s:%v/v1/namespaces/%s/virtualmachineinstances/%s/freeze"
@@ -52,7 +51,6 @@ type VirtHandlerConn interface {
 	ConsoleURI(vmi *virtv1.VirtualMachineInstance) (string, error)
 	USBRedirURI(vmi *virtv1.VirtualMachineInstance) (string, error)
 	VNCURI(vmi *virtv1.VirtualMachineInstance) (string, error)
-	VSOCKURI(vmi *virtv1.VirtualMachineInstance, port string, tls string) (string, error)
 	PauseURI(vmi *virtv1.VirtualMachineInstance) (string, error)
 	UnpauseURI(vmi *virtv1.VirtualMachineInstance) (string, error)
 	FreezeURI(vmi *virtv1.VirtualMachineInstance) (string, error)
@@ -165,7 +163,7 @@ func (v *virtHandlerConn) formatURI(template string, vmi *virtv1.VirtualMachineI
 	return fmt.Sprintf(template, formatIpForUri(ip), port, vmi.ObjectMeta.Namespace, vmi.ObjectMeta.Name), nil
 }
 
-// TODO move the actual ws handling in here, and work with channels
+//TODO move the actual ws handling in here, and work with channels
 func (v *virtHandlerConn) ConsoleURI(vmi *virtv1.VirtualMachineInstance) (string, error) {
 	return v.formatURI(consoleTemplateURI, vmi)
 }
@@ -176,14 +174,6 @@ func (v *virtHandlerConn) USBRedirURI(vmi *virtv1.VirtualMachineInstance) (strin
 
 func (v *virtHandlerConn) VNCURI(vmi *virtv1.VirtualMachineInstance) (string, error) {
 	return v.formatURI(vncTemplateURI, vmi)
-}
-
-func (v *virtHandlerConn) VSOCKURI(vmi *virtv1.VirtualMachineInstance, port string, tls string) (string, error) {
-	baseURI, err := v.formatURI(vsockTemplateURI, vmi)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%s?port=%s&tls=%s", baseURI, port, tls), nil
 }
 
 func (v *virtHandlerConn) FreezeURI(vmi *virtv1.VirtualMachineInstance) (string, error) {
