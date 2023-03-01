@@ -23400,13 +23400,6 @@ func schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportStatus(ref common
 							Format:      "",
 						},
 					},
-					"virtualMachineName": {
-						SchemaProps: spec.SchemaProps{
-							Description: "VirtualMachineName shows the name of the source virtual machine if the source is either a VirtualMachine or a VirtualMachineSnapshot. This is mainly to easily identify the source VirtualMachine in case of a VirtualMachineSnapshot",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 					"conditions": {
 						VendorExtensible: spec.VendorExtensible{
 							Extensions: spec.Extensions{
@@ -23512,7 +23505,7 @@ func schema_kubevirtio_api_instancetype_v1alpha1_CPUInstancetype(ref common.Refe
 				Properties: map[string]spec.Schema{
 					"guest": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Required number of vCPUs to expose to the guest.\n\nThe resulting CPU topology being derived from the optional PreferredCPUTopology attribute of CPUPreferences that itself defaults to PreferSockets.",
+							Description: "Required number of vCPUs to expose to the guest.\n\nThe resulting CPU topology being derived from the optional PreferredCPUTopology attribute of CPUPreferences that itself defaults to PreferCores.",
 							Type:        []string{"integer"},
 							Format:      "int64",
 						},
