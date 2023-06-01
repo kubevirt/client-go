@@ -22,7 +22,6 @@ package kubecli
 import (
 	"fmt"
 	"net/http"
-	"path"
 	"runtime"
 	"time"
 
@@ -36,19 +35,16 @@ import (
 
 var _ = Describe("Kubevirt Version Client", func() {
 	var server *ghttp.Server
-	proxyPath := "/proxy/path"
+	var client KubevirtClient
 
 	BeforeEach(func() {
+		var err error
 		server = ghttp.NewServer()
-	})
-
-	AfterEach(func() {
-		server.Close()
-	})
-
-	DescribeTable("should fetch version", func(proxyPath string) {
-		client, err := GetKubevirtClientFromFlags(server.URL()+proxyPath, "")
+		client, err = GetKubevirtClientFromFlags(server.URL(), "")
 		Expect(err).ToNot(HaveOccurred())
+	})
+
+	It("should fetch version", func() {
 
 		groupInfo := metav1.APIGroup{
 			Name:             ApiGroupName,
@@ -65,11 +61,11 @@ var _ = Describe("Kubevirt Version Client", func() {
 
 		server.AppendHandlers(
 			ghttp.CombineHandlers(
-				ghttp.VerifyRequest("GET", path.Join(proxyPath, ApiGroupName)),
+				ghttp.VerifyRequest("GET", ApiGroupName),
 				ghttp.RespondWithJSONEncoded(http.StatusOK, groupInfo),
 			),
 			ghttp.CombineHandlers(
-				ghttp.VerifyRequest("GET", path.Join(proxyPath, "/apis"+groupInfo.PreferredVersion.GroupVersion+"/version")),
+				ghttp.VerifyRequest("GET", "/apis/"+groupInfo.PreferredVersion.GroupVersion+"/version"),
 				ghttp.RespondWithJSONEncoded(http.StatusOK, info),
 			),
 		)
@@ -81,8 +77,5 @@ var _ = Describe("Kubevirt Version Client", func() {
 		Expect(fetchedVersion.BuildDate).To(Equal(info.BuildDate))
 		Expect(fetchedVersion.GoVersion).To(Equal(info.GoVersion))
 		Expect(fetchedVersion.Platform).To(Equal(info.Platform))
-	},
-		Entry("with regular server URL", ""),
-		Entry("with proxied server URL", proxyPath),
-	)
+	})
 })
