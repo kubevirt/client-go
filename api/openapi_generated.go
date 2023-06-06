@@ -19834,6 +19834,13 @@ func schema_kubevirtio_api_core_v1_MigrationConfiguration(ref common.ReferenceCa
 							Format:      "",
 						},
 					},
+					"matchSELinuxLevelOnMigration": {
+						SchemaProps: spec.SchemaProps{
+							Description: "By default, the SELinux level of target virt-launcher pods is forced to the level of the source virt-launcher. When set to true, MatchSELinuxLevelOnMigration lets the CRI auto-assign a random level to the target. That will ensure the target virt-launcher doesn't share categories with another pod on the node. However, migrations will fail when using RWX volumes that don't automatically deal with SELinux levels.",
+							Type:        []string{"boolean"},
+							Format:      "",
+						},
+					},
 				},
 			},
 		},
@@ -27940,6 +27947,13 @@ func schema_kubevirtio_api_instancetype_v1beta1_VirtualMachinePreferenceSpec(ref
 						SchemaProps: spec.SchemaProps{
 							Description: "Volumes optionally defines preferences associated with the Volumes attribute of a VirtualMachineInstace DomainSpec",
 							Ref:         ref("kubevirt.io/api/instancetype/v1beta1.VolumePreferences"),
+						},
+					},
+					"preferredSubdomain": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Subdomain of the VirtualMachineInstance",
+							Type:        []string{"string"},
+							Format:      "",
 						},
 					},
 					"preferredTerminationGracePeriodSeconds": {
