@@ -27,6 +27,7 @@ import (
 	"strings"
 	"testing"
 
+	k8sv1 "k8s.io/api/core/v1"
 	v12 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	v1 "kubevirt.io/api/core/v1"
@@ -162,24 +163,24 @@ func TestVerbosity(t *testing.T) {
 	assert(t, logCalled, "Log entry (V=2) should have been recorded")
 
 	logCalled = false
-	vLog := log.V(4)
-	vLog.Log("This is a verbosity level 4 message")
+	log = log.V(4)
+	log.Log("This is a verbosity level 4 message")
 	assert(t, !logCalled, "Log entry (V=4) should not have been recorded")
 
 	// this call should be ignored. repeat last test to prove it
 	logCalled = false
-	vLog = vLog.V(-1)
-	vLog.Log("This is a verbosity level 4 message")
+	log = log.V(-1)
+	log.Log("This is a verbosity level 4 message")
 	assert(t, !logCalled, "Log entry (V=4) should not have been recorded")
 
 	logCalled = false
-	vLog.V(3).Log("This is a verbosity level 3 message")
+	log.V(3).Log("This is a verbosity level 3 message")
 	assert(t, logCalled, "Log entry (V=3) should have been recorded")
 
 	// once again, this call should do nothing.
 	logCalled = false
-	vLog = vLog.V(-1)
-	vLog.Log("This is a verbosity level 4 message")
+	log = log.V(-1)
+	log.Log("This is a verbosity level 4 message")
 	assert(t, !logCalled, "Log entry (V=4) should not have been recorded")
 	tearDown()
 }
@@ -307,6 +308,31 @@ func TestObject(t *testing.T) {
 	tearDown()
 }
 
+func TestObjectRef(t *testing.T) {
+	setUp()
+	log := MakeLogger(MockLogger{})
+	log.SetLogLevel(INFO)
+	vmRef := &k8sv1.ObjectReference{
+		Kind:      "test",
+		Name:      "test",
+		Namespace: "test",
+		UID:       "test",
+	}
+	log.ObjectRef(vmRef).Log("test", "message")
+	logEntry := logParams[0].([]interface{})
+	assert(t, logEntry[0].(string) == "level", "Logged line did not have level entry")
+	assert(t, logEntry[1].(string) == LogLevelNames[INFO], "Logged line was not of level infoLevel")
+	assert(t, logEntry[2].(string) == "timestamp", "Logged line is not expected format")
+	assert(t, logEntry[4].(string) == "pos", "Logged line was not pos")
+	assert(t, logEntry[6].(string) == "component", "Logged line is not expected format")
+	assert(t, logEntry[7].(string) == "test", "Component was not logged")
+	assert(t, logEntry[8].(string) == "namespace", "Logged line did not contain object namespace")
+	assert(t, logEntry[10].(string) == "name", "Logged line did not contain object name")
+	assert(t, logEntry[12].(string) == "kind", "Logged line did not contain object kind")
+	assert(t, logEntry[14].(string) == "uid", "Logged line did not contain UUID")
+	tearDown()
+}
+
 func TestError(t *testing.T) {
 	setUp()
 	log := MakeLogger(MockLogger{})
@@ -359,6 +385,30 @@ func TestLogVerbosity(t *testing.T) {
 	logEntry := logParams[0].([]interface{})
 	assert(t, logEntry[4].(string) == "pos", "Logged line did not contain pos")
 	assert(t, strings.HasPrefix(logEntry[5].(string), "log_test.go"), "Logged line referenced wrong module")
+	tearDown()
+}
+
+func TestMsgVerbosity(t *testing.T) {
+	setUp()
+	log := MakeLogger(MockLogger{})
+	log.SetLogLevel(INFO)
+	log.SetVerbosityLevel(2)
+	log.V(2).msg("test")
+
+	logEntry := logParams[0].([]interface{})
+	assert(t, logEntry[4].(string) == "pos", "Logged line did not contain pos")
+	tearDown()
+}
+
+func TestMsgfVerbosity(t *testing.T) {
+	setUp()
+	log := MakeLogger(MockLogger{})
+	log.SetLogLevel(INFO)
+	log.SetVerbosityLevel(2)
+	log.V(2).msgf("%s", "test")
+
+	logEntry := logParams[0].([]interface{})
+	assert(t, logEntry[4].(string) == "pos", "Logged line did not contain pos")
 	tearDown()
 }
 
