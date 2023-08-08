@@ -1,4 +1,4 @@
-module kubevirt.io/client-go
+module jeven2016/client-go
 
 go 1.17
 
