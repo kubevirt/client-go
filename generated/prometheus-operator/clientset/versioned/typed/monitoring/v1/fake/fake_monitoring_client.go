@@ -1,5 +1,5 @@
 /*
-Copyright The KubeVirt Authors.
+Copyright 2023 The KubeVirt Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,10 +34,6 @@ func (c *FakeMonitoringV1) Alertmanagers(namespace string) v1.AlertmanagerInterf
 
 func (c *FakeMonitoringV1) PodMonitors(namespace string) v1.PodMonitorInterface {
 	return &FakePodMonitors{c, namespace}
-}
-
-func (c *FakeMonitoringV1) Probes(namespace string) v1.ProbeInterface {
-	return &FakeProbes{c, namespace}
 }
 
 func (c *FakeMonitoringV1) Prometheuses(namespace string) v1.PrometheusInterface {
