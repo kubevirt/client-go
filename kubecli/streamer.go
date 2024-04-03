@@ -9,11 +9,16 @@ import (
 
 type wsStreamer struct {
 	conn *websocket.Conn
-	done chan struct{}
+
+	done   chan struct{}
+	isDone bool
 }
 
-func (ws *wsStreamer) streamDone() {
-	close(ws.done)
+func (ws *wsStreamer) Done() {
+	if !ws.isDone {
+		close(ws.done)
+		ws.isDone = true
+	}
 }
 
 func (ws *wsStreamer) Stream(options StreamOptions) error {
@@ -29,7 +34,7 @@ func (ws *wsStreamer) Stream(options StreamOptions) error {
 		copyErr <- err
 	}()
 
-	defer ws.streamDone()
+	defer ws.Done()
 	return <-copyErr
 }
 

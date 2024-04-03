@@ -241,6 +241,7 @@ type StreamOptions struct {
 type StreamInterface interface {
 	Stream(options StreamOptions) error
 	AsConn() net.Conn
+	Done()
 }
 
 type VirtualMachineInstanceInterface interface {
