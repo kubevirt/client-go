@@ -46,36 +46,41 @@ type vmiPresets struct {
 	resource   string
 }
 
-func (v *vmiPresets) Get(ctx context.Context, name string, options k8smetav1.GetOptions) (vmi *v1.VirtualMachineInstancePreset, err error) {
-	vmi, err = v.VirtualMachineInstancePresetInterface.Get(ctx, name, options)
+func (v *vmiPresets) Get(name string, options k8smetav1.GetOptions) (vmi *v1.VirtualMachineInstancePreset, err error) {
+	vmi, err = v.VirtualMachineInstancePresetInterface.Get(context.Background(), name, options)
 	vmi.SetGroupVersionKind(v1.VirtualMachineInstancePresetGroupVersionKind)
 	return
 }
 
-func (v *vmiPresets) List(ctx context.Context, options k8smetav1.ListOptions) (vmiPresetList *v1.VirtualMachineInstancePresetList, err error) {
-	vmiPresetList, err = v.VirtualMachineInstancePresetInterface.List(ctx, options)
+func (v *vmiPresets) List(options k8smetav1.ListOptions) (vmiPresetList *v1.VirtualMachineInstancePresetList, err error) {
+	vmiPresetList, err = v.VirtualMachineInstancePresetInterface.List(context.Background(), options)
 	for i := range vmiPresetList.Items {
 		vmiPresetList.Items[i].SetGroupVersionKind(v1.VirtualMachineInstancePresetGroupVersionKind)
 	}
+
 	return
 }
 
-func (v *vmiPresets) Create(ctx context.Context, virtualMachineInstancePreset *v1.VirtualMachineInstancePreset, opts k8smetav1.CreateOptions) (result *v1.VirtualMachineInstancePreset, err error) {
-	result, err = v.VirtualMachineInstancePresetInterface.Create(ctx, virtualMachineInstancePreset, opts)
+func (v *vmiPresets) Create(vmi *v1.VirtualMachineInstancePreset) (result *v1.VirtualMachineInstancePreset, err error) {
+	result, err = v.VirtualMachineInstancePresetInterface.Create(context.Background(), vmi, k8smetav1.CreateOptions{})
 	result.SetGroupVersionKind(v1.VirtualMachineInstancePresetGroupVersionKind)
 	return
 }
 
-func (v *vmiPresets) Update(ctx context.Context, virtualMachineInstancePreset *v1.VirtualMachineInstancePreset, opts k8smetav1.UpdateOptions) (result *v1.VirtualMachineInstancePreset, err error) {
-	result, err = v.VirtualMachineInstancePresetInterface.Update(ctx, virtualMachineInstancePreset, opts)
+func (v *vmiPresets) Update(vmi *v1.VirtualMachineInstancePreset) (result *v1.VirtualMachineInstancePreset, err error) {
+	result, err = v.VirtualMachineInstancePresetInterface.Update(context.Background(), vmi, k8smetav1.UpdateOptions{})
 	result.SetGroupVersionKind(v1.VirtualMachineInstancePresetGroupVersionKind)
 	return
 }
 
-func (v *vmiPresets) Delete(ctx context.Context, name string, options k8smetav1.DeleteOptions) error {
-	return v.VirtualMachineInstancePresetInterface.Delete(ctx, name, options)
+func (v *vmiPresets) Delete(name string, options *k8smetav1.DeleteOptions) error {
+	opts := k8smetav1.DeleteOptions{}
+	if options != nil {
+		opts = *options
+	}
+	return v.VirtualMachineInstancePresetInterface.Delete(context.Background(), name, opts)
 }
 
-func (v *vmiPresets) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts k8smetav1.PatchOptions, subresources ...string) (result *v1.VirtualMachineInstancePreset, err error) {
-	return v.VirtualMachineInstancePresetInterface.Patch(ctx, name, pt, data, opts, subresources...)
+func (v *vmiPresets) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1.VirtualMachineInstancePreset, err error) {
+	return v.VirtualMachineInstancePresetInterface.Patch(context.Background(), name, pt, data, k8smetav1.PatchOptions{}, subresources...)
 }
