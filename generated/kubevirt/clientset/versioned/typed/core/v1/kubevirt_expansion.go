@@ -33,5 +33,6 @@ type KubeVirtExpansion interface {
 }
 
 func (c *kubeVirts) PatchStatus(ctx context.Context, name string, pt types.PatchType, data []byte, patchOptions metav1.PatchOptions) (*v1.KubeVirt, error) {
-	return c.Patch(ctx, name, pt, data, patchOptions, "status")
+	// TODO not implemented yet
+	return nil, nil
 }

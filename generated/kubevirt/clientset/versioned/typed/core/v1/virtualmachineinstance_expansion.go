@@ -21,17 +21,10 @@ package v1
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"time"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	v1 "kubevirt.io/api/core/v1"
-	"kubevirt.io/client-go/log"
 )
-
-const vmiSubresourceURL = "/apis/subresources.kubevirt.io/%s"
 
 type SerialConsoleOptions struct {
 	ConnectionTimeout time.Duration
@@ -62,303 +55,100 @@ type VirtualMachineInstanceExpansion interface {
 
 func (c *virtualMachineInstances) SerialConsole(name string, options *SerialConsoleOptions) (StreamInterface, error) {
 	// TODO not implemented yet
-	//  requires clientConfig
-	return nil, fmt.Errorf("SerialConsole is not implemented yet in generated client")
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) USBRedir(vmiName string) (StreamInterface, error) {
 	// TODO not implemented yet
-	//  requires clientConfig
-	return nil, fmt.Errorf("USBRedir is not implemented yet in generated client")
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) VNC(name string) (StreamInterface, error) {
 	// TODO not implemented yet
-	//  requires clientConfig
-	return nil, fmt.Errorf("VNC is not implemented yet in generated client")
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) Screenshot(ctx context.Context, name string, options *v1.ScreenshotOptions) ([]byte, error) {
-	moveCursor := "false"
-	if options.MoveCursor == true {
-		moveCursor = "true"
-	}
-	res := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("vnc", "screenshot").
-		Param("moveCursor", moveCursor).
-		Do(ctx)
-
-	raw, err := res.Raw()
-	if err != nil {
-		return nil, res.Error()
-	}
-
-	return raw, nil
+	// TODO not implemented yet
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) PortForward(name string, port int, protocol string) (StreamInterface, error) {
 	// TODO not implemented yet
-	//  requires clientConfig
-	return nil, fmt.Errorf("PortForward is not implemented yet in generated client")
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) Pause(ctx context.Context, name string, pauseOptions *v1.PauseOptions) error {
-	body, err := json.Marshal(pauseOptions)
-	if err != nil {
-		return err
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("pause").
-		Body(body).
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) Unpause(ctx context.Context, name string, unpauseOptions *v1.UnpauseOptions) error {
-	body, err := json.Marshal(unpauseOptions)
-	if err != nil {
-		return err
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("unpause").
-		Body(body).
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) Freeze(ctx context.Context, name string, unfreezeTimeout time.Duration) error {
-	log.Log.Infof("Freeze VMI %s", name)
-	freezeUnfreezeTimeout := &v1.FreezeUnfreezeTimeout{
-		UnfreezeTimeout: &metav1.Duration{
-			Duration: unfreezeTimeout,
-		},
-	}
-
-	body, err := json.Marshal(freezeUnfreezeTimeout)
-	if err != nil {
-		return err
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("freeze").
-		Body(body).
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) Unfreeze(ctx context.Context, name string) error {
-	log.Log.Infof("Unfreeze VMI %s", name)
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("unfreeze").
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) SoftReboot(ctx context.Context, name string) error {
-	log.Log.Infof("SoftReboot VMI")
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("softreboot").
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) GuestOsInfo(ctx context.Context, name string) (v1.VirtualMachineInstanceGuestAgentInfo, error) {
-	guestInfo := v1.VirtualMachineInstanceGuestAgentInfo{}
-	// WORKAROUND:
-	// When doing c.client.Get().RequestURI(uri).Do(ctx).Into(guestInfo)
-	// k8s client-go requires the object to have metav1.ObjectMeta inlined and deepcopy generated
-	// without deepcopy the Into does not work.
-	// With metav1.ObjectMeta added the openapi validation fails on pkg/virt-api/api.go:310
-	// When returning object the openapi schema validation fails on invalid type field for
-	// metav1.ObjectMeta.CreationTimestamp of type time (the schema validation fails, not the object validation).
-	// In our schema we implemented workaround to have multiple types for this field (null, string), which is causing issues
-	// with deserialization.
-	// The issue popped up for this code since this is the first time anything is returned.
-	//
-	// The issue is present because KubeVirt have to support multiple k8s version. In newer k8s version (1.17+)
-	// this issue should be solved.
-	// This workaround can go away once the least supported k8s version is the working one.
-	// The issue has been described in: https://github.com/kubevirt/kubevirt/issues/3059
-	// Will be replaced by:
-	// 	err := c.client.Get().
-	//		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-	//		Namespace(c.ns).
-	//		Resource("virtualmachineinstances").
-	//		Name(name).
-	//		SubResource("guestosinfo").
-	//		Do(ctx).
-	//		Into(&guestInfo)
-	res := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("guestosinfo").
-		Do(ctx)
-	rawInfo, err := res.Raw()
-	if err != nil {
-		log.Log.Errorf("cannot retrieve GuestOSInfo: %s", err.Error())
-		return guestInfo, err
-	}
-
-	err = json.Unmarshal(rawInfo, &guestInfo)
-	if err != nil {
-		log.Log.Errorf("cannot unmarshal GuestOSInfo response: %s", err.Error())
-	}
-
-	return guestInfo, err
+	// TODO not implemented yet
+	return v1.VirtualMachineInstanceGuestAgentInfo{}, nil
 }
 
 func (c *virtualMachineInstances) UserList(ctx context.Context, name string) (v1.VirtualMachineInstanceGuestOSUserList, error) {
-	userList := v1.VirtualMachineInstanceGuestOSUserList{}
-	err := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("userlist").
-		Do(ctx).
-		Into(&userList)
-	return userList, err
+	// TODO not implemented yet
+	return v1.VirtualMachineInstanceGuestOSUserList{}, nil
 }
 
 func (c *virtualMachineInstances) FilesystemList(ctx context.Context, name string) (v1.VirtualMachineInstanceFileSystemList, error) {
-	fsList := v1.VirtualMachineInstanceFileSystemList{}
-	err := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("filesystemlist").
-		Do(ctx).
-		Into(&fsList)
-
-	return fsList, err
+	// TODO not implemented yet
+	return v1.VirtualMachineInstanceFileSystemList{}, nil
 }
 
 func (c *virtualMachineInstances) AddVolume(ctx context.Context, name string, addVolumeOptions *v1.AddVolumeOptions) error {
-	body, err := json.Marshal(addVolumeOptions)
-	if err != nil {
-		return err
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("addvolume").
-		Body(body).
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) RemoveVolume(ctx context.Context, name string, removeVolumeOptions *v1.RemoveVolumeOptions) error {
-	body, err := json.Marshal(removeVolumeOptions)
-	if err != nil {
-		return err
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("removevolume").
-		Body(body).
-		Do(ctx).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) VSOCK(name string, options *v1.VSOCKOptions) (StreamInterface, error) {
 	// TODO not implemented yet
-	//  requires clientConfig
-	return nil, fmt.Errorf("VSOCK is not implemented yet in generated client")
+	return nil, nil
 }
 
 func (c *virtualMachineInstances) SEVFetchCertChain(ctx context.Context, name string) (v1.SEVPlatformInfo, error) {
-	sevPlatformInfo := v1.SEVPlatformInfo{}
-	err := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("sev", "fetchcertchain").
-		Do(context.Background()).
-		Into(&sevPlatformInfo)
-
-	return sevPlatformInfo, err
+	// TODO not implemented yet
+	return v1.SEVPlatformInfo{}, nil
 }
 
 func (c *virtualMachineInstances) SEVQueryLaunchMeasurement(ctx context.Context, name string) (v1.SEVMeasurementInfo, error) {
-	sevMeasurementInfo := v1.SEVMeasurementInfo{}
-	err := c.client.Get().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("sev", "querylaunchmeasurement").
-		Do(context.Background()).
-		Into(&sevMeasurementInfo)
-
-	return sevMeasurementInfo, err
+	// TODO not implemented yet
+	return v1.SEVMeasurementInfo{}, nil
 }
 
 func (c *virtualMachineInstances) SEVSetupSession(ctx context.Context, name string, sevSessionOptions *v1.SEVSessionOptions) error {
-	body, err := json.Marshal(sevSessionOptions)
-	if err != nil {
-		return fmt.Errorf("cannot Marshal to json: %s", err)
-	}
-
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("sev", "setupsession").
-		Body(body).
-		Do(context.Background()).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
 
 func (c *virtualMachineInstances) SEVInjectLaunchSecret(ctx context.Context, name string, sevSecretOptions *v1.SEVSecretOptions) error {
-	body, err := json.Marshal(sevSecretOptions)
-	if err != nil {
-		return fmt.Errorf("cannot Marshal to json: %s", err)
-	}
-	return c.client.Put().
-		AbsPath(fmt.Sprintf(vmiSubresourceURL, v1.ApiStorageVersion)).
-		Namespace(c.ns).
-		Resource("virtualmachineinstances").
-		Name(name).
-		SubResource("sev", "injectlaunchsecret").
-		Body(body).
-		Do(context.Background()).
-		Error()
+	// TODO not implemented yet
+	return nil
 }
