@@ -17,7 +17,7 @@
  *
  */
 
-package testing
+package fake
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"

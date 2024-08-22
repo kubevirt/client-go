@@ -28,7 +28,7 @@ import (
 
 	v1 "kubevirt.io/api/core/v1"
 	kubevirtv1 "kubevirt.io/client-go/generated/kubevirt/clientset/versioned/typed/core/v1"
-	fake2 "kubevirt.io/client-go/testing"
+	fake2 "kubevirt.io/client-go/kubecli/fake"
 )
 
 func (c *FakeVirtualMachines) GetWithExpandedSpec(ctx context.Context, name string) (*v1.VirtualMachine, error) {
@@ -52,6 +52,13 @@ func (c *FakeVirtualMachines) Restart(ctx context.Context, name string, restartO
 	return err
 }
 
+func (c *FakeVirtualMachines) ForceRestart(ctx context.Context, name string, restartOptions *v1.RestartOptions) error {
+	_, err := c.Fake.
+		Invokes(fake2.NewPutSubresourceAction(virtualmachinesResource, c.ns, "restart", name, restartOptions), nil)
+
+	return err
+}
+
 func (c *FakeVirtualMachines) Start(ctx context.Context, name string, startOptions *v1.StartOptions) error {
 	_, err := c.Fake.
 		Invokes(fake2.NewPutSubresourceAction(virtualmachinesResource, c.ns, "start", name, startOptions), nil)
@@ -61,6 +68,13 @@ func (c *FakeVirtualMachines) Start(ctx context.Context, name string, startOptio
 
 func (c *FakeVirtualMachines) Stop(ctx context.Context, name string, stopOptions *v1.StopOptions) error {
 	_, err := c.Fake.
+		Invokes(fake2.NewPutSubresourceAction(virtualmachinesResource, c.ns, "stop", name, stopOptions), nil)
+
+	return err
+}
+
+func (c *FakeVirtualMachines) ForceStop(ctx context.Context, name string, stopOptions *v1.StopOptions) error {
+	_, err := c.Fake.Fake.
 		Invokes(fake2.NewPutSubresourceAction(virtualmachinesResource, c.ns, "stop", name, stopOptions), nil)
 
 	return err

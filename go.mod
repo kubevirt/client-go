@@ -20,11 +20,10 @@ require (
 	k8s.io/api v0.30.0
 	k8s.io/apiextensions-apiserver v0.30.0
 	k8s.io/apimachinery v0.30.0
-	k8s.io/apiserver v0.30.0
 	k8s.io/client-go v0.30.0
 	k8s.io/kube-openapi v0.30.0
 	k8s.io/utils v0.0.0-20240423183400-0849a56e8f22
-	kubevirt.io/api v0.0.0-20240821172627-9d6ee0e9614a
+	kubevirt.io/api v0.0.0-20240822102701-4eb2693acc78
 	kubevirt.io/containerized-data-importer-api v1.57.0-alpha1
 )
 
