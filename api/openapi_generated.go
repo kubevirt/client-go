@@ -358,7 +358,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.ConfigMapVolumeSource":                                              schema_kubevirtio_api_core_v1_ConfigMapVolumeSource(ref),
 		"kubevirt.io/api/core/v1.ContainerDiskInfo":                                                  schema_kubevirtio_api_core_v1_ContainerDiskInfo(ref),
 		"kubevirt.io/api/core/v1.ContainerDiskSource":                                                schema_kubevirtio_api_core_v1_ContainerDiskSource(ref),
-		"kubevirt.io/api/core/v1.ControllerRevisionRef":                                              schema_kubevirtio_api_core_v1_ControllerRevisionRef(ref),
 		"kubevirt.io/api/core/v1.CustomBlockSize":                                                    schema_kubevirtio_api_core_v1_CustomBlockSize(ref),
 		"kubevirt.io/api/core/v1.CustomProfile":                                                      schema_kubevirtio_api_core_v1_CustomProfile(ref),
 		"kubevirt.io/api/core/v1.CustomizeComponents":                                                schema_kubevirtio_api_core_v1_CustomizeComponents(ref),
@@ -418,7 +417,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.Input":                                                              schema_kubevirtio_api_core_v1_Input(ref),
 		"kubevirt.io/api/core/v1.InstancetypeConfiguration":                                          schema_kubevirtio_api_core_v1_InstancetypeConfiguration(ref),
 		"kubevirt.io/api/core/v1.InstancetypeMatcher":                                                schema_kubevirtio_api_core_v1_InstancetypeMatcher(ref),
-		"kubevirt.io/api/core/v1.InstancetypeStatusRef":                                              schema_kubevirtio_api_core_v1_InstancetypeStatusRef(ref),
 		"kubevirt.io/api/core/v1.Interface":                                                          schema_kubevirtio_api_core_v1_Interface(ref),
 		"kubevirt.io/api/core/v1.InterfaceBindingMethod":                                             schema_kubevirtio_api_core_v1_InterfaceBindingMethod(ref),
 		"kubevirt.io/api/core/v1.InterfaceBindingMigration":                                          schema_kubevirtio_api_core_v1_InterfaceBindingMigration(ref),
@@ -18470,25 +18468,6 @@ func schema_kubevirtio_api_core_v1_ContainerDiskSource(ref common.ReferenceCallb
 	}
 }
 
-func schema_kubevirtio_api_core_v1_ControllerRevisionRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"name": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Name of the ControllerRevision",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
 func schema_kubevirtio_api_core_v1_CustomBlockSize(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -18915,13 +18894,6 @@ func schema_kubevirtio_api_core_v1_DeveloperConfiguration(ref common.ReferenceCa
 					"logVerbosity": {
 						SchemaProps: spec.SchemaProps{
 							Ref: ref("kubevirt.io/api/core/v1.LogVerbosity"),
-						},
-					},
-					"clusterProfiler": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Enable the ability to pprof profile KubeVirt control plane",
-							Type:        []string{"boolean"},
-							Format:      "",
 						},
 					},
 				},
@@ -20620,54 +20592,6 @@ func schema_kubevirtio_api_core_v1_InstancetypeMatcher(ref common.ReferenceCallb
 	}
 }
 
-func schema_kubevirtio_api_core_v1_InstancetypeStatusRef(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"name": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Name is the name of resource",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"kind": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Kind specifies the kind of resource",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"controllerRevisionRef": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ControllerRef specifies the ControllerRevision storing a copy of the object captured when it is first seen by the VirtualMachine controller",
-							Ref:         ref("kubevirt.io/api/core/v1.ControllerRevisionRef"),
-						},
-					},
-					"inferFromVolume": {
-						SchemaProps: spec.SchemaProps{
-							Description: "InferFromVolume lists the name of a volume that should be used to infer or discover the resource",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"inferFromVolumeFailurePolicy": {
-						SchemaProps: spec.SchemaProps{
-							Description: "InferFromVolumeFailurePolicy controls what should happen on failure when inferring the resource",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"kubevirt.io/api/core/v1.ControllerRevisionRef"},
-	}
-}
-
 func schema_kubevirtio_api_core_v1_Interface(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -21456,7 +21380,7 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 					},
 					"vmStateStorageClass": {
 						SchemaProps: spec.SchemaProps{
-							Description: "VMStateStorageClass is the name of the storage class to use for the PVCs created to preserve VM state, like TPM.",
+							Description: "VMStateStorageClass is the name of the storage class to use for the PVCs created to preserve VM state, like TPM. The storage class must support RWX in filesystem mode.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -27315,23 +27239,11 @@ func schema_kubevirtio_api_core_v1_VirtualMachineStatus(ref common.ReferenceCall
 							Ref:         ref("kubevirt.io/api/core/v1.VolumeUpdateState"),
 						},
 					},
-					"instancetypeRef": {
-						SchemaProps: spec.SchemaProps{
-							Description: "InstancetypeRef captures the state of any referenced instance type from the VirtualMachine",
-							Ref:         ref("kubevirt.io/api/core/v1.InstancetypeStatusRef"),
-						},
-					},
-					"preferenceRef": {
-						SchemaProps: spec.SchemaProps{
-							Description: "PreferenceRef captures the state of any referenced preference from the VirtualMachine",
-							Ref:         ref("kubevirt.io/api/core/v1.InstancetypeStatusRef"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.InstancetypeStatusRef", "kubevirt.io/api/core/v1.VirtualMachineCondition", "kubevirt.io/api/core/v1.VirtualMachineMemoryDumpRequest", "kubevirt.io/api/core/v1.VirtualMachineStartFailure", "kubevirt.io/api/core/v1.VirtualMachineStateChangeRequest", "kubevirt.io/api/core/v1.VirtualMachineVolumeRequest", "kubevirt.io/api/core/v1.VolumeSnapshotStatus", "kubevirt.io/api/core/v1.VolumeUpdateState"},
+			"kubevirt.io/api/core/v1.VirtualMachineCondition", "kubevirt.io/api/core/v1.VirtualMachineMemoryDumpRequest", "kubevirt.io/api/core/v1.VirtualMachineStartFailure", "kubevirt.io/api/core/v1.VirtualMachineStateChangeRequest", "kubevirt.io/api/core/v1.VirtualMachineVolumeRequest", "kubevirt.io/api/core/v1.VolumeSnapshotStatus", "kubevirt.io/api/core/v1.VolumeUpdateState"},
 	}
 }
 
