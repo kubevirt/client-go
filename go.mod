@@ -6,7 +6,6 @@ toolchain go1.22.2
 
 require (
 	github.com/go-kit/kit v0.13.0
-	github.com/golang/glog v1.1.0
 	github.com/golang/mock v1.6.0
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/websocket v1.5.0
@@ -24,7 +23,7 @@ require (
 	k8s.io/client-go v0.31.0
 	k8s.io/kube-openapi v0.31.0
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
-	kubevirt.io/api v0.0.0-20250410191037-32fd44681ce7
+	kubevirt.io/api v0.0.0-20250411044712-97dc3233e74b
 	kubevirt.io/containerized-data-importer-api v1.60.3-0.20241105012228-50fbed985de9
 )
 
