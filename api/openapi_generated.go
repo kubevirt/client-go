@@ -18918,13 +18918,6 @@ func schema_kubevirtio_api_core_v1_DeveloperConfiguration(ref common.ReferenceCa
 							Ref: ref("kubevirt.io/api/core/v1.LogVerbosity"),
 						},
 					},
-					"clusterProfiler": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Enable the ability to pprof profile KubeVirt control plane",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
 				},
 			},
 		},
@@ -19254,7 +19247,7 @@ func schema_kubevirtio_api_core_v1_Disk(ref common.ReferenceCallback) common.Ope
 					},
 					"cache": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Cache specifies which kvm disk cache mode should be used. Supported values are: none: Guest I/O not cached on the host, but may be kept in a disk cache. writethrough: Guest I/O cached on the host but written through to the physical medium. Slowest but with most guarantees. writeback: Guest I/O cached on the host. Defaults to none if the storage supports O_DIRECT, otherwise writethrough.",
+							Description: "Cache specifies which kvm disk cache mode should be used. Supported values are: CacheNone, CacheWriteThrough.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -22352,22 +22345,6 @@ func schema_kubevirtio_api_core_v1_MigrateOptions(ref common.ReferenceCallback) 
 							},
 						},
 					},
-					"addedNodeSelector": {
-						SchemaProps: spec.SchemaProps{
-							Description: "AddedNodeSelector is an additional selector that can be used to complement a NodeSelector or NodeAffinity as set on the VM to restrict the set of allowed target nodes for a migration. In case of key collisions, values set on the VM objects are going to be preserved to ensure that addedNodeSelector can only restrict but not bypass constraints already set on the VM object.",
-							Type:        []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: "",
-										Type:    []string{"string"},
-										Format:  "",
-									},
-								},
-							},
-						},
-					},
 				},
 			},
 		},
@@ -24428,7 +24405,7 @@ func schema_kubevirtio_api_core_v1_TPMDevice(ref common.ReferenceCallback) commo
 				Properties: map[string]spec.Schema{
 					"enabled": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Enabled allows a user to explicitly disable the vTPM even when one is enabled by a preference referenced by the VirtualMachine Defaults to True",
+							Description: "Enabled allows a user to explictly disable the vTPM even when one is enabled by a preference referenced by the VirtualMachine Defaults to True",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -25287,7 +25264,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestAgentInfo(ref comm
 					},
 					"fsFreezeStatus": {
 						SchemaProps: spec.SchemaProps{
-							Description: "FSFreezeStatus indicates whether a freeze operation was requested for the guest filesystem. It will be set to \"frozen\" if the request was made, or unset otherwise. This does not reflect the actual state of the guest filesystem.",
+							Description: "FSFreezeStatus is the state of the fs of the guest it can be either frozen or thawed",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -25686,22 +25663,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceMigrationSpec(ref commo
 							Description: "The name of the VMI to perform the migration on. VMI must exist in the migration objects namespace",
 							Type:        []string{"string"},
 							Format:      "",
-						},
-					},
-					"addedNodeSelector": {
-						SchemaProps: spec.SchemaProps{
-							Description: "AddedNodeSelector is an additional selector that can be used to complement a NodeSelector or NodeAffinity as set on the VM to restrict the set of allowed target nodes for a migration. In case of key collisions, values set on the VM objects are going to be preserved to ensure that addedNodeSelector can only restrict but not bypass constraints already set on the VM object.",
-							Type:        []string{"object"},
-							AdditionalProperties: &spec.SchemaOrBool{
-								Allows: true,
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: "",
-										Type:    []string{"string"},
-										Format:  "",
-									},
-								},
-							},
 						},
 					},
 				},
@@ -26837,7 +26798,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceStatus(ref common.Refer
 					},
 					"fsFreezeStatus": {
 						SchemaProps: spec.SchemaProps{
-							Description: "FSFreezeStatus indicates whether a freeze operation was requested for the guest filesystem. It will be set to \"frozen\" if the request was made, or unset otherwise. This does not reflect the actual state of the guest filesystem.",
+							Description: "FSFreezeStatus is the state of the fs of the guest it can be either frozen or thawed",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -32752,7 +32713,7 @@ func schema_kubevirtio_api_snapshot_v1alpha1_VirtualMachineRestoreSpec(ref commo
 							},
 						},
 						SchemaProps: spec.SchemaProps{
-							Description: "If the target for the restore does not exist, it will be created. Patches holds JSON patches that would be applied to the target manifest before it's created. Patches should fit the target's Kind.\n\nExample for a patch: {\"op\": \"replace\", \"path\": \"/spec/template/spec/domain/devices/interfaces/0/macAddress\", \"value\": \"00:00:5e:00:53:01\"}",
+							Description: "If the target for the restore does not exist, it will be created. Patches holds JSON patches that would be applied to the target manifest before it's created. Patches should fit the target's Kind.\n\nExample for a patch: {\"op\": \"replace\", \"path\": \"/metadata/name\", \"value\": \"new-vm-name\"}",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
