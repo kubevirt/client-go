@@ -78,13 +78,6 @@ func (c *FakeVirtualMachineInstances) Unfreeze(ctx context.Context, name string)
 	return err
 }
 
-func (c *FakeVirtualMachineInstances) Reset(ctx context.Context, name string) error {
-	_, err := c.Fake.
-		Invokes(fake2.NewPutSubresourceAction(virtualmachineinstancesResource, c.ns, "reset", name, struct{}{}), nil)
-
-	return err
-}
-
 func (c *FakeVirtualMachineInstances) SoftReboot(ctx context.Context, name string) error {
 	_, err := c.Fake.
 		Invokes(fake2.NewPutSubresourceAction(virtualmachineinstancesResource, c.ns, "softreboot", name, struct{}{}), nil)

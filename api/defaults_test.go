@@ -95,6 +95,7 @@ var _ = Describe("Defaults", func() {
 				Domain: v1.DomainSpec{},
 			},
 		}
+		pointer.BoolPtr(true)
 		vmi.Spec.Domain.Features = &v1.Features{
 			ACPI: v1.FeatureState{Enabled: pointer.BoolPtr(true)},
 			APIC: &v1.FeatureAPIC{Enabled: pointer.BoolPtr(false)},
@@ -215,6 +216,28 @@ var _ = Describe("Defaults", func() {
 		Expect(disks[1].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
 		Expect(disks[2].Disk).ToNot(BeNil(), "Default type should be Disk")
 		Expect(disks[2].DedicatedIOThread).To(BeNil(), "Default DedicatedIOThread state should be nil")
+	})
+
+	It("should set the default watchdog and the default watchdog action", func() {
+		vmi := &v1.VirtualMachineInstance{
+			Spec: v1.VirtualMachineInstanceSpec{
+				Domain: v1.DomainSpec{
+					Devices: v1.Devices{
+						Watchdog: &v1.Watchdog{
+							WatchdogDevice: v1.WatchdogDevice{
+								I6300ESB: &v1.I6300ESBWatchdog{},
+							},
+						},
+					},
+				},
+			},
+		}
+		v1.SetObjectDefaults_VirtualMachineInstance(vmi)
+		Expect(vmi.Spec.Domain.Devices.Watchdog.I6300ESB.Action).To(Equal(v1.WatchdogActionReset))
+		vmi.Spec.Domain.Devices.Watchdog.I6300ESB = nil
+		v1.SetObjectDefaults_VirtualMachineInstance(vmi)
+		Expect(vmi.Spec.Domain.Devices.Watchdog.I6300ESB).ToNot(BeNil())
+		Expect(vmi.Spec.Domain.Devices.Watchdog.I6300ESB.Action).To(Equal(v1.WatchdogActionReset))
 	})
 
 	It("should set timer defaults", func() {
