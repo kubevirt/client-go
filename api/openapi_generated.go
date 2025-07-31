@@ -17723,11 +17723,6 @@ func schema_kubevirtio_api_core_v1_ArchConfiguration(ref common.ReferenceCallbac
 							Ref: ref("kubevirt.io/api/core/v1.ArchSpecificConfiguration"),
 						},
 					},
-					"s390x": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.ArchSpecificConfiguration"),
-						},
-					},
 					"defaultArchitecture": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
@@ -25944,9 +25939,8 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSUser(ref common.
 					},
 					"loginTime": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Time of login of this user on the computer. If multiple instances of the user are logged in, the earliest login time is reported. The value is in fractional seconds since epoch time.",
-							Type:        []string{"number"},
-							Format:      "double",
+							Type:   []string{"number"},
+							Format: "double",
 						},
 					},
 				},
