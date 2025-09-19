@@ -345,8 +345,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.CPUFeature":                                                         schema_kubevirtio_api_core_v1_CPUFeature(ref),
 		"kubevirt.io/api/core/v1.CPUTopology":                                                        schema_kubevirtio_api_core_v1_CPUTopology(ref),
 		"kubevirt.io/api/core/v1.CertConfig":                                                         schema_kubevirtio_api_core_v1_CertConfig(ref),
-		"kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors":                                      schema_kubevirtio_api_core_v1_ChangedBlockTrackingSelectors(ref),
-		"kubevirt.io/api/core/v1.ChangedBlockTrackingStatus":                                         schema_kubevirtio_api_core_v1_ChangedBlockTrackingStatus(ref),
 		"kubevirt.io/api/core/v1.Chassis":                                                            schema_kubevirtio_api_core_v1_Chassis(ref),
 		"kubevirt.io/api/core/v1.ClaimRequest":                                                       schema_kubevirtio_api_core_v1_ClaimRequest(ref),
 		"kubevirt.io/api/core/v1.ClientPassthroughDevices":                                           schema_kubevirtio_api_core_v1_ClientPassthroughDevices(ref),
@@ -548,7 +546,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceFileSystemList":                               schema_kubevirtio_api_core_v1_VirtualMachineInstanceFileSystemList(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceGuestAgentInfo":                               schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestAgentInfo(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSInfo":                                  schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSInfo(ref),
-		"kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSLoad":                                  schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSLoad(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSUser":                                  schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSUser(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSUserList":                              schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSUserList(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceList":                                         schema_kubevirtio_api_core_v1_VirtualMachineInstanceList(ref),
@@ -17723,12 +17720,6 @@ func schema_kubevirtio_api_core_v1_ArchConfiguration(ref common.ReferenceCallbac
 					},
 					"ppc64le": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Deprecated: ppc64le architecture is no longer supported.",
-							Ref:         ref("kubevirt.io/api/core/v1.ArchSpecificConfiguration"),
-						},
-					},
-					"s390x": {
-						SchemaProps: spec.SchemaProps{
 							Ref: ref("kubevirt.io/api/core/v1.ArchSpecificConfiguration"),
 						},
 					},
@@ -18093,54 +18084,6 @@ func schema_kubevirtio_api_core_v1_CertConfig(ref common.ReferenceCallback) comm
 		},
 		Dependencies: []string{
 			"k8s.io/apimachinery/pkg/apis/meta/v1.Duration"},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_ChangedBlockTrackingSelectors(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"namespaceLabelSelector": {
-						SchemaProps: spec.SchemaProps{
-							Description: "NamespaceSelector will enable changedBlockTracking on all VMs running inside namespaces that match the label selector.",
-							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
-						},
-					},
-					"virtualMachineLabelSelector": {
-						SchemaProps: spec.SchemaProps{
-							Description: "VirtualMachineSelector will enable changedBlockTracking on all VMs that match the label selector.",
-							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector"},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_ChangedBlockTrackingStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "ChangedBlockTrackingStatus represents the status of ChangedBlockTracking for a VM",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"state": {
-						SchemaProps: spec.SchemaProps{
-							Description: "State represents the current CBT state",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"state"},
-			},
-		},
 	}
 }
 
@@ -19621,13 +19564,6 @@ func schema_kubevirtio_api_core_v1_Disk(ref common.ReferenceCallback) common.Ope
 						SchemaProps: spec.SchemaProps{
 							Description: "If specified, it can change the default error policy (stop) for the disk",
 							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"changedBlockTracking": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ChangedBlockTracking indicates this disk should have CBT option Defaults to false.",
-							Type:        []string{"boolean"},
 							Format:      "",
 						},
 					},
@@ -21889,17 +21825,11 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 							Ref:         ref("kubevirt.io/api/core/v1.InstancetypeConfiguration"),
 						},
 					},
-					"changedBlockTrackingLabelSelectors": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ChangedBlockTrackingLabelSelectors defines label selectors. VMs matching these selectors will have changed block tracking enabled. Enabling changedBlockTracking is mandatory for performing storage-agnostic backups and incremental backups.",
-							Ref:         ref("kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/api/resource.Quantity", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector", "kubevirt.io/api/core/v1.ArchConfiguration", "kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors", "kubevirt.io/api/core/v1.CommonInstancetypesDeployment", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.InstancetypeConfiguration", "kubevirt.io/api/core/v1.KSMConfiguration", "kubevirt.io/api/core/v1.LiveUpdateConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration", "kubevirt.io/api/core/v1.SeccompConfiguration", "kubevirt.io/api/core/v1.SupportContainerResources", "kubevirt.io/api/core/v1.TLSConfiguration", "kubevirt.io/api/core/v1.VirtualMachineOptions"},
+			"k8s.io/apimachinery/pkg/api/resource.Quantity", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector", "kubevirt.io/api/core/v1.ArchConfiguration", "kubevirt.io/api/core/v1.CommonInstancetypesDeployment", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.InstancetypeConfiguration", "kubevirt.io/api/core/v1.KSMConfiguration", "kubevirt.io/api/core/v1.LiveUpdateConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration", "kubevirt.io/api/core/v1.SeccompConfiguration", "kubevirt.io/api/core/v1.SupportContainerResources", "kubevirt.io/api/core/v1.TLSConfiguration", "kubevirt.io/api/core/v1.VirtualMachineOptions"},
 	}
 }
 
@@ -25911,17 +25841,11 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestAgentInfo(ref comm
 							Format:      "",
 						},
 					},
-					"load": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load contains the system load averages (1M, 5M, 15M) from the guest agent",
-							Ref:         ref("kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSLoad"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.GuestAgentCommandInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceFileSystemInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSLoad", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSUser"},
+			"kubevirt.io/api/core/v1.GuestAgentCommandInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceFileSystemInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSUser"},
 	}
 }
 
@@ -25985,61 +25909,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSInfo(ref common.
 							Description: "Guest OS Id",
 							Type:        []string{"string"},
 							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_VirtualMachineInstanceGuestOSLoad(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstanceGuestOSLoad represents the system load averages from the guest agent",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"load1mSet": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load1mSet indicates whether the 1 minute load average is set",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"load1m": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load average over 1 minute",
-							Type:        []string{"number"},
-							Format:      "double",
-						},
-					},
-					"load5mSet": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load5mSet indicates whether the 5 minute load average is set",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"load5m": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load average over 5 minutes",
-							Type:        []string{"number"},
-							Format:      "double",
-						},
-					},
-					"load15mSet": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load15mSet indicates whether the 15 minute load average is set",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"load15m": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Load average over 15 minutes",
-							Type:        []string{"number"},
-							Format:      "double",
 						},
 					},
 				},
@@ -27963,17 +27832,11 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceStatus(ref common.Refer
 							Ref:         ref("kubevirt.io/api/core/v1.DeviceStatus"),
 						},
 					},
-					"changedBlockTracking": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ChangedBlockTracking represents the status of the changedBlockTracking",
-							Ref:         ref("kubevirt.io/api/core/v1.ChangedBlockTrackingStatus"),
-						},
-					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.CPUTopology", "kubevirt.io/api/core/v1.ChangedBlockTrackingStatus", "kubevirt.io/api/core/v1.DeviceStatus", "kubevirt.io/api/core/v1.KernelBootStatus", "kubevirt.io/api/core/v1.Machine", "kubevirt.io/api/core/v1.MemoryStatus", "kubevirt.io/api/core/v1.StorageMigratedVolumeInfo", "kubevirt.io/api/core/v1.TopologyHints", "kubevirt.io/api/core/v1.VirtualMachineInstanceCondition", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationState", "kubevirt.io/api/core/v1.VirtualMachineInstanceNetworkInterface", "kubevirt.io/api/core/v1.VirtualMachineInstancePhaseTransitionTimestamp", "kubevirt.io/api/core/v1.VolumeStatus"},
+			"kubevirt.io/api/core/v1.CPUTopology", "kubevirt.io/api/core/v1.DeviceStatus", "kubevirt.io/api/core/v1.KernelBootStatus", "kubevirt.io/api/core/v1.Machine", "kubevirt.io/api/core/v1.MemoryStatus", "kubevirt.io/api/core/v1.StorageMigratedVolumeInfo", "kubevirt.io/api/core/v1.TopologyHints", "kubevirt.io/api/core/v1.VirtualMachineInstanceCondition", "kubevirt.io/api/core/v1.VirtualMachineInstanceGuestOSInfo", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationState", "kubevirt.io/api/core/v1.VirtualMachineInstanceNetworkInterface", "kubevirt.io/api/core/v1.VirtualMachineInstancePhaseTransitionTimestamp", "kubevirt.io/api/core/v1.VolumeStatus"},
 	}
 }
 
@@ -28431,12 +28294,6 @@ func schema_kubevirtio_api_core_v1_VirtualMachineStatus(ref common.ReferenceCall
 							Ref:         ref("kubevirt.io/api/core/v1.VolumeUpdateState"),
 						},
 					},
-					"changedBlockTracking": {
-						SchemaProps: spec.SchemaProps{
-							Description: "ChangedBlockTracking represents the status of the changedBlockTracking",
-							Ref:         ref("kubevirt.io/api/core/v1.ChangedBlockTrackingStatus"),
-						},
-					},
 					"instancetypeRef": {
 						SchemaProps: spec.SchemaProps{
 							Description: "InstancetypeRef captures the state of any referenced instance type from the VirtualMachine",
@@ -28453,7 +28310,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineStatus(ref common.ReferenceCall
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/core/v1.ChangedBlockTrackingStatus", "kubevirt.io/api/core/v1.InstancetypeStatusRef", "kubevirt.io/api/core/v1.VirtualMachineCondition", "kubevirt.io/api/core/v1.VirtualMachineMemoryDumpRequest", "kubevirt.io/api/core/v1.VirtualMachineStartFailure", "kubevirt.io/api/core/v1.VirtualMachineStateChangeRequest", "kubevirt.io/api/core/v1.VirtualMachineVolumeRequest", "kubevirt.io/api/core/v1.VolumeSnapshotStatus", "kubevirt.io/api/core/v1.VolumeUpdateState"},
+			"kubevirt.io/api/core/v1.InstancetypeStatusRef", "kubevirt.io/api/core/v1.VirtualMachineCondition", "kubevirt.io/api/core/v1.VirtualMachineMemoryDumpRequest", "kubevirt.io/api/core/v1.VirtualMachineStartFailure", "kubevirt.io/api/core/v1.VirtualMachineStateChangeRequest", "kubevirt.io/api/core/v1.VirtualMachineVolumeRequest", "kubevirt.io/api/core/v1.VolumeSnapshotStatus", "kubevirt.io/api/core/v1.VolumeUpdateState"},
 	}
 }
 
@@ -34830,12 +34687,6 @@ func schema_kubevirtio_api_snapshot_v1beta1_VirtualMachineRestoreSpec(ref common
 						},
 					},
 					"volumeRestorePolicy": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
-					"volumeOwnershipPolicy": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
 							Format: "",

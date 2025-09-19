@@ -184,7 +184,7 @@ var _ = Describe("Kubevirt VirtualMachineInstance Client", func() {
 				}
 			},
 		))
-		_, err = client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm", false)
+		_, err = client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm")
 		Expect(err).ToNot(HaveOccurred())
 	},
 		Entry("with regular server URL", ""),
@@ -203,7 +203,7 @@ var _ = Describe("Kubevirt VirtualMachineInstance Client", func() {
 				return
 			},
 		))
-		_, err = client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm", false)
+		_, err = client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm")
 		Expect(err).To(HaveOccurred())
 	},
 		Entry("with regular server URL", ""),
@@ -243,7 +243,7 @@ var _ = Describe("Kubevirt VirtualMachineInstance Client", func() {
 
 		By("establishing connection")
 
-		vnc, err := client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm", false)
+		vnc, err := client.VirtualMachineInstance(k8sv1.NamespaceDefault).VNC("testvm")
 		Expect(err).ToNot(HaveOccurred())
 
 		By("wiring the pipes")
