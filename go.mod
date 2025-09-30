@@ -20,9 +20,9 @@ require (
 	k8s.io/apiserver v0.32.5
 	k8s.io/client-go v0.32.5
 	k8s.io/kube-openapi v0.31.0
-	k8s.io/utils v0.0.0-20241210054802-24370beab758
-	kubevirt.io/api v0.0.0-20250930081639-035f3d3b2597
-	kubevirt.io/containerized-data-importer-api v1.63.1
+	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
+	kubevirt.io/api v0.0.0-20250930144221-aaa67e9803df
+	kubevirt.io/containerized-data-importer-api v1.60.3-0.20241105012228-50fbed985de9
 )
 
 require (
@@ -65,8 +65,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
-	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.5.0 // indirect
+	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
+	sigs.k8s.io/structured-merge-diff/v4 v4.4.3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
