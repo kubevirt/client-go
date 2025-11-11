@@ -21,11 +21,11 @@ Copyright The KubeVirt Authors.
 package v1beta1
 
 import (
-	http "net/http"
+	"net/http"
 
 	rest "k8s.io/client-go/rest"
-	scheme "kubevirt.io/client-go/containerizeddataimporter/scheme"
-	corev1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+	"kubevirt.io/client-go/containerizeddataimporter/scheme"
+	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
 type CdiV1beta1Interface interface {
@@ -132,10 +132,10 @@ func New(c rest.Interface) *CdiV1beta1Client {
 }
 
 func setConfigDefaults(config *rest.Config) error {
-	gv := corev1beta1.SchemeGroupVersion
+	gv := v1beta1.SchemeGroupVersion
 	config.GroupVersion = &gv
 	config.APIPath = "/apis"
-	config.NegotiatedSerializer = rest.CodecFactoryForGeneratedClient(scheme.Scheme, scheme.Codecs).WithoutConversion()
+	config.NegotiatedSerializer = scheme.Codecs.WithoutConversion()
 
 	if config.UserAgent == "" {
 		config.UserAgent = rest.DefaultKubernetesUserAgent()

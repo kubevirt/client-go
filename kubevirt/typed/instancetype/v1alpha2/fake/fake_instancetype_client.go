@@ -23,20 +23,32 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
-	v1beta1 "kubevirt.io/client-go/kubevirt/typed/pool/v1beta1"
+	v1alpha2 "kubevirt.io/client-go/kubevirt/typed/instancetype/v1alpha2"
 )
 
-type FakePoolV1beta1 struct {
+type FakeInstancetypeV1alpha2 struct {
 	*testing.Fake
 }
 
-func (c *FakePoolV1beta1) VirtualMachinePools(namespace string) v1beta1.VirtualMachinePoolInterface {
-	return newFakeVirtualMachinePools(c, namespace)
+func (c *FakeInstancetypeV1alpha2) VirtualMachineClusterInstancetypes() v1alpha2.VirtualMachineClusterInstancetypeInterface {
+	return &FakeVirtualMachineClusterInstancetypes{c}
+}
+
+func (c *FakeInstancetypeV1alpha2) VirtualMachineClusterPreferences() v1alpha2.VirtualMachineClusterPreferenceInterface {
+	return &FakeVirtualMachineClusterPreferences{c}
+}
+
+func (c *FakeInstancetypeV1alpha2) VirtualMachineInstancetypes(namespace string) v1alpha2.VirtualMachineInstancetypeInterface {
+	return &FakeVirtualMachineInstancetypes{c, namespace}
+}
+
+func (c *FakeInstancetypeV1alpha2) VirtualMachinePreferences(namespace string) v1alpha2.VirtualMachinePreferenceInterface {
+	return &FakeVirtualMachinePreferences{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakePoolV1beta1) RESTClient() rest.Interface {
+func (c *FakeInstancetypeV1alpha2) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }
