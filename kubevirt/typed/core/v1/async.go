@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"strings"
 
 	"github.com/gorilla/websocket"
 
@@ -129,7 +128,7 @@ func (aws *AsyncWSRoundTripper) WebsocketCallback(ws *websocket.Conn, resp *http
 
 	if err != nil {
 		if resp != nil && resp.StatusCode != http.StatusOK {
-			return EnrichError(err, resp)
+			return enrichError(err, resp)
 		}
 		return fmt.Errorf("Can't connect to websocket: %s\n", err.Error())
 	}
@@ -203,32 +202,34 @@ func RequestFromConfig(config *rest.Config, resource, name, namespace, subresour
 	return req, nil
 }
 
-// EnrichError checks the response body for a k8s Status object and extracts the error from it.
-func EnrichError(httpErr error, resp *http.Response) error {
+// enrichError checks the response body for a k8s Status object and extracts the error from it.
+// TODO the k8s http REST client has very sophisticated handling, investigate on how we can reuse it
+func enrichError(httpErr error, resp *http.Response) error {
 	if resp == nil {
 		return httpErr
 	}
+	httpErr = fmt.Errorf("Can't connect to websocket (%d): %s\n", resp.StatusCode, httpErr)
+	status := &metav1.Status{}
 
-	httpErr = fmt.Errorf("Can't connect to websocket (%d): %w", resp.StatusCode, httpErr)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil || len(body) == 0 {
+	if resp.Header.Get("Content-Type") != "application/json" {
 		return httpErr
 	}
-
-	contentType := resp.Header.Get("Content-Type")
-	switch {
-	case strings.Contains(contentType, "application/json"):
-		status := &metav1.Status{}
-		if err = json.Unmarshal(body, status); err != nil {
-			return err
-		}
-		if status.Kind == "Status" && status.Status != metav1.StatusSuccess {
+	// decode, but if the result is Status return that as an error instead.
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if len(body) == 0 {
+		return httpErr
+	}
+	err = json.Unmarshal(body, status)
+	if err != nil {
+		return err
+	}
+	if status.Kind == "Status" && status.APIVersion == "v1" {
+		if status.Status != metav1.StatusSuccess {
 			return errors.FromObject(status)
 		}
-	case strings.Contains(contentType, "text/plain"):
-		return fmt.Errorf("%w: application info: %s", httpErr, string(body))
 	}
-
 	return httpErr
 }
