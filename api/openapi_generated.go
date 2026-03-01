@@ -23094,6 +23094,13 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 							Ref:         ref("kubevirt.io/api/core/v1.ConfidentialComputeConfiguration"),
 						},
 					},
+					"roleAggregationStrategy": {
+						SchemaProps: spec.SchemaProps{
+							Description: "RoleAggregationStrategy controls whether RBAC cluster roles should be aggregated to the default Kubernetes roles (admin, edit, view). When set to \"AggregateToDefault\" (default) or not specified, the aggregate-to-* labels are added to the cluster roles. When set to \"Manual\", the labels are not added, and roles will not be aggregated to the default roles. Setting this field to \"Manual\" requires the OptOutRoleAggregation feature gate to be enabled. This is an Alpha feature and subject to change.",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 				},
 			},
 		},
@@ -23927,6 +23934,12 @@ func schema_kubevirtio_api_core_v1_MemoryStatus(ref common.ReferenceCallback) co
 					"guestRequested": {
 						SchemaProps: spec.SchemaProps{
 							Description: "GuestRequested specifies how much memory was requested (hotplug) for the VirtualMachine.",
+							Ref:         ref("k8s.io/apimachinery/pkg/api/resource.Quantity"),
+						},
+					},
+					"memoryOverhead": {
+						SchemaProps: spec.SchemaProps{
+							Description: "MemoryOverhead specifies the memory overhead added by the virtualization infrastructure for the virt-launcher pod.",
 							Ref:         ref("k8s.io/apimachinery/pkg/api/resource.Quantity"),
 						},
 					},
@@ -28182,11 +28195,17 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceMigrationState(ref comm
 							Format:      "",
 						},
 					},
+					"targetMemoryOverhead": {
+						SchemaProps: spec.SchemaProps{
+							Description: "TargetMemoryOverhead is the memory overhead of the target virt-launcher pod",
+							Ref:         ref("k8s.io/apimachinery/pkg/api/resource.Quantity"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.Time", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationSourceState", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationTargetState"},
+			"k8s.io/apimachinery/pkg/api/resource.Quantity", "k8s.io/apimachinery/pkg/apis/meta/v1.Time", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationSourceState", "kubevirt.io/api/core/v1.VirtualMachineInstanceMigrationTargetState"},
 	}
 }
 
