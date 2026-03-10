@@ -378,7 +378,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.ClusterProfilerResults":                                                  schema_kubevirtio_api_core_v1_ClusterProfilerResults(ref),
 		"kubevirt.io/api/core/v1.CommonInstancetypesDeployment":                                           schema_kubevirtio_api_core_v1_CommonInstancetypesDeployment(ref),
 		"kubevirt.io/api/core/v1.ComponentConfig":                                                         schema_kubevirtio_api_core_v1_ComponentConfig(ref),
-		"kubevirt.io/api/core/v1.ConfidentialComputeConfiguration":                                        schema_kubevirtio_api_core_v1_ConfidentialComputeConfiguration(ref),
 		"kubevirt.io/api/core/v1.ConfigDriveSSHPublicKeyAccessCredentialPropagation":                      schema_kubevirtio_api_core_v1_ConfigDriveSSHPublicKeyAccessCredentialPropagation(ref),
 		"kubevirt.io/api/core/v1.ConfigMapVolumeSource":                                                   schema_kubevirtio_api_core_v1_ConfigMapVolumeSource(ref),
 		"kubevirt.io/api/core/v1.ContainerDiskInfo":                                                       schema_kubevirtio_api_core_v1_ContainerDiskInfo(ref),
@@ -544,8 +543,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.SyNICTimer":                                                              schema_kubevirtio_api_core_v1_SyNICTimer(ref),
 		"kubevirt.io/api/core/v1.SysprepSource":                                                           schema_kubevirtio_api_core_v1_SysprepSource(ref),
 		"kubevirt.io/api/core/v1.TDX":                                                                     schema_kubevirtio_api_core_v1_TDX(ref),
-		"kubevirt.io/api/core/v1.TDXAttestationConfiguration":                                             schema_kubevirtio_api_core_v1_TDXAttestationConfiguration(ref),
-		"kubevirt.io/api/core/v1.TDXConfiguration":                                                        schema_kubevirtio_api_core_v1_TDXConfiguration(ref),
 		"kubevirt.io/api/core/v1.TLBFlush":                                                                schema_kubevirtio_api_core_v1_TLBFlush(ref),
 		"kubevirt.io/api/core/v1.TLSConfiguration":                                                        schema_kubevirtio_api_core_v1_TLSConfiguration(ref),
 		"kubevirt.io/api/core/v1.TPMDevice":                                                               schema_kubevirtio_api_core_v1_TPMDevice(ref),
@@ -633,8 +630,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/export/v1alpha1.VirtualMachineExportVolumeFormat":                                schema_kubevirtio_api_export_v1alpha1_VirtualMachineExportVolumeFormat(ref),
 		"kubevirt.io/api/export/v1beta1.Condition":                                                        schema_kubevirtio_api_export_v1beta1_Condition(ref),
 		"kubevirt.io/api/export/v1beta1.VirtualMachineExport":                                             schema_kubevirtio_api_export_v1beta1_VirtualMachineExport(ref),
-		"kubevirt.io/api/export/v1beta1.VirtualMachineExportBackup":                                       schema_kubevirtio_api_export_v1beta1_VirtualMachineExportBackup(ref),
-		"kubevirt.io/api/export/v1beta1.VirtualMachineExportBackupEndpoint":                               schema_kubevirtio_api_export_v1beta1_VirtualMachineExportBackupEndpoint(ref),
 		"kubevirt.io/api/export/v1beta1.VirtualMachineExportLink":                                         schema_kubevirtio_api_export_v1beta1_VirtualMachineExportLink(ref),
 		"kubevirt.io/api/export/v1beta1.VirtualMachineExportLinks":                                        schema_kubevirtio_api_export_v1beta1_VirtualMachineExportLinks(ref),
 		"kubevirt.io/api/export/v1beta1.VirtualMachineExportList":                                         schema_kubevirtio_api_export_v1beta1_VirtualMachineExportList(ref),
@@ -17326,7 +17321,7 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupOptions(ref common.ReferenceCal
 							Format: "",
 						},
 					},
-					"targetPath": {
+					"pushPath": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
 							Format: "",
@@ -17335,36 +17330,6 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupOptions(ref common.ReferenceCal
 					"skipQuiesce": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"boolean"},
-							Format: "",
-						},
-					},
-					"exportServerAddr": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
-					"exportServerName": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
-					"backupKey": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
-					"backupCert": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
-							Format: "",
-						},
-					},
-					"caCert": {
-						SchemaProps: spec.SchemaProps{
-							Type:   []string{"string"},
 							Format: "",
 						},
 					},
@@ -17395,20 +17360,6 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupVolumeInfo(ref common.Reference
 						SchemaProps: spec.SchemaProps{
 							Description: "DiskTarget is the disk target device name at backup time",
 							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"dataEndpoint": {
-						SchemaProps: spec.SchemaProps{
-							Description: "DataEndpoint is the URL of the endpoint for read for pull mode",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"mapEndpoint": {
-						SchemaProps: spec.SchemaProps{
-							Description: "MapEndpoint is the URL of the endpoint for map for pull mode",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -17615,25 +17566,12 @@ func schema_kubevirtio_api_backup_v1alpha1_VirtualMachineBackupSpec(ref common.R
 							Format:      "",
 						},
 					},
-					"tokenSecretRef": {
-						SchemaProps: spec.SchemaProps{
-							Description: "TokenSecretRef is the name of the secret that will be used to pull the backup from an associated endpoint",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"ttlDuration": {
-						SchemaProps: spec.SchemaProps{
-							Description: "TtlDuration limits the lifetime of a pull mode backup and its export If this field is set, after this duration has passed from counting from CreationTimestamp, the backup is eligible to be automatically considered as complete. If this field is omitted, a reasonable default is applied.",
-							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.Duration"),
-						},
-					},
 				},
 				Required: []string{"source"},
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/api/core/v1.TypedLocalObjectReference", "k8s.io/apimachinery/pkg/apis/meta/v1.Duration"},
+			"k8s.io/api/core/v1.TypedLocalObjectReference"},
 	}
 }
 
@@ -17672,13 +17610,6 @@ func schema_kubevirtio_api_backup_v1alpha1_VirtualMachineBackupStatus(ref common
 					"checkpointName": {
 						SchemaProps: spec.SchemaProps{
 							Description: "CheckpointName the name of the checkpoint created for the current backup",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"endpointCert": {
-						SchemaProps: spec.SchemaProps{
-							Description: "EndpointCert is the raw CACert that is to be used when connecting to an exported backup endpoint in pull mode.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -19575,26 +19506,6 @@ func schema_kubevirtio_api_core_v1_ComponentConfig(ref common.ReferenceCallback)
 		},
 		Dependencies: []string{
 			"kubevirt.io/api/core/v1.NodePlacement"},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_ConfidentialComputeConfiguration(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"tdx": {
-						SchemaProps: spec.SchemaProps{
-							Description: "TDX configuration for attestation on the Intel TDX Platform",
-							Ref:         ref("kubevirt.io/api/core/v1.TDXConfiguration"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"kubevirt.io/api/core/v1.TDXConfiguration"},
 	}
 }
 
@@ -23006,12 +22917,6 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 							Ref:         ref("kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors"),
 						},
 					},
-					"confidentialCompute": {
-						SchemaProps: spec.SchemaProps{
-							Description: "QGS configuration for attestation on the Intel TDX Platform",
-							Ref:         ref("kubevirt.io/api/core/v1.ConfidentialComputeConfiguration"),
-						},
-					},
 					"roleAggregationStrategy": {
 						SchemaProps: spec.SchemaProps{
 							Description: "RoleAggregationStrategy controls whether RBAC cluster roles should be aggregated to the default Kubernetes roles (admin, edit, view). When set to \"AggregateToDefault\" (default) or not specified, the aggregate-to-* labels are added to the cluster roles. When set to \"Manual\", the labels are not added, and roles will not be aggregated to the default roles. Setting this field to \"Manual\" requires the OptOutRoleAggregation feature gate to be enabled. This is an Alpha feature and subject to change.",
@@ -23023,7 +22928,7 @@ func schema_kubevirtio_api_core_v1_KubeVirtConfiguration(ref common.ReferenceCal
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/api/resource.Quantity", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector", "kubevirt.io/api/core/v1.ArchConfiguration", "kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors", "kubevirt.io/api/core/v1.CommonInstancetypesDeployment", "kubevirt.io/api/core/v1.ConfidentialComputeConfiguration", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.HypervisorConfiguration", "kubevirt.io/api/core/v1.InstancetypeConfiguration", "kubevirt.io/api/core/v1.KSMConfiguration", "kubevirt.io/api/core/v1.LiveUpdateConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration", "kubevirt.io/api/core/v1.SeccompConfiguration", "kubevirt.io/api/core/v1.SupportContainerResources", "kubevirt.io/api/core/v1.TLSConfiguration", "kubevirt.io/api/core/v1.VirtTemplateDeployment", "kubevirt.io/api/core/v1.VirtualMachineOptions"},
+			"k8s.io/apimachinery/pkg/api/resource.Quantity", "k8s.io/apimachinery/pkg/apis/meta/v1.LabelSelector", "kubevirt.io/api/core/v1.ArchConfiguration", "kubevirt.io/api/core/v1.ChangedBlockTrackingSelectors", "kubevirt.io/api/core/v1.CommonInstancetypesDeployment", "kubevirt.io/api/core/v1.DeveloperConfiguration", "kubevirt.io/api/core/v1.HypervisorConfiguration", "kubevirt.io/api/core/v1.InstancetypeConfiguration", "kubevirt.io/api/core/v1.KSMConfiguration", "kubevirt.io/api/core/v1.LiveUpdateConfiguration", "kubevirt.io/api/core/v1.MediatedDevicesConfiguration", "kubevirt.io/api/core/v1.MigrationConfiguration", "kubevirt.io/api/core/v1.NetworkConfiguration", "kubevirt.io/api/core/v1.PermittedHostDevices", "kubevirt.io/api/core/v1.ReloadableComponentConfiguration", "kubevirt.io/api/core/v1.SMBiosConfiguration", "kubevirt.io/api/core/v1.SeccompConfiguration", "kubevirt.io/api/core/v1.SupportContainerResources", "kubevirt.io/api/core/v1.TLSConfiguration", "kubevirt.io/api/core/v1.VirtTemplateDeployment", "kubevirt.io/api/core/v1.VirtualMachineOptions"},
 	}
 }
 
@@ -26113,52 +26018,6 @@ func schema_kubevirtio_api_core_v1_TDX(ref common.ReferenceCallback) common.Open
 				Type: []string{"object"},
 			},
 		},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_TDXAttestationConfiguration(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "QGSConfiguration holds QGS configuration",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"enforced": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Indicates whether TDX VM should enforce the existence of QGS (required for attestation) to be scheduled",
-							Type:        []string{"boolean"},
-							Format:      "",
-						},
-					},
-					"qgsSocketPath": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Socket path pointing to the Quote Generation Service",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_TDXConfiguration(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Type: []string{"object"},
-				Properties: map[string]spec.Schema{
-					"attestation": {
-						SchemaProps: spec.SchemaProps{
-							Ref: ref("kubevirt.io/api/core/v1.TDXAttestationConfiguration"),
-						},
-					},
-				},
-			},
-		},
-		Dependencies: []string{
-			"kubevirt.io/api/core/v1.TDXAttestationConfiguration"},
 	}
 }
 
@@ -30906,81 +30765,6 @@ func schema_kubevirtio_api_export_v1beta1_VirtualMachineExport(ref common.Refere
 	}
 }
 
-func schema_kubevirtio_api_export_v1beta1_VirtualMachineExportBackup(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineExportBackup contains the URL and available formats for the exported backup",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"name": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Name is the name of the exported volume",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"endpoints": {
-						VendorExtensible: spec.VendorExtensible{
-							Extensions: spec.Extensions{
-								"x-kubernetes-list-map-keys": []interface{}{
-									"endpoint",
-								},
-								"x-kubernetes-list-type": "map",
-							},
-						},
-						SchemaProps: spec.SchemaProps{
-							Type: []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: map[string]interface{}{},
-										Ref:     ref("kubevirt.io/api/export/v1beta1.VirtualMachineExportBackupEndpoint"),
-									},
-								},
-							},
-						},
-					},
-				},
-				Required: []string{"name"},
-			},
-		},
-		Dependencies: []string{
-			"kubevirt.io/api/export/v1beta1.VirtualMachineExportBackupEndpoint"},
-	}
-}
-
-func schema_kubevirtio_api_export_v1beta1_VirtualMachineExportBackupEndpoint(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineExportBackupEndpoint contains the endpoint type and URL to interact with a backup export",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"endpoint": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Endpoint is the endpoint of the backup export at the specified URL",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"url": {
-						SchemaProps: spec.SchemaProps{
-							Description: "Url is the url that contains the volume in the format specified",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"endpoint", "url"},
-			},
-		},
-	}
-}
-
 func schema_kubevirtio_api_export_v1beta1_VirtualMachineExportLink(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -31018,28 +30802,6 @@ func schema_kubevirtio_api_export_v1beta1_VirtualMachineExportLink(ref common.Re
 							},
 						},
 					},
-					"backups": {
-						VendorExtensible: spec.VendorExtensible{
-							Extensions: spec.Extensions{
-								"x-kubernetes-list-map-keys": []interface{}{
-									"name",
-								},
-								"x-kubernetes-list-type": "map",
-							},
-						},
-						SchemaProps: spec.SchemaProps{
-							Description: "Backups is a list of available backups for the export",
-							Type:        []string{"array"},
-							Items: &spec.SchemaOrArray{
-								Schema: &spec.Schema{
-									SchemaProps: spec.SchemaProps{
-										Default: map[string]interface{}{},
-										Ref:     ref("kubevirt.io/api/export/v1beta1.VirtualMachineExportBackup"),
-									},
-								},
-							},
-						},
-					},
 					"manifests": {
 						VendorExtensible: spec.VendorExtensible{
 							Extensions: spec.Extensions{
@@ -31067,7 +30829,7 @@ func schema_kubevirtio_api_export_v1beta1_VirtualMachineExportLink(ref common.Re
 			},
 		},
 		Dependencies: []string{
-			"kubevirt.io/api/export/v1beta1.VirtualMachineExportBackup", "kubevirt.io/api/export/v1beta1.VirtualMachineExportManifest", "kubevirt.io/api/export/v1beta1.VirtualMachineExportVolume"},
+			"kubevirt.io/api/export/v1beta1.VirtualMachineExportManifest", "kubevirt.io/api/export/v1beta1.VirtualMachineExportVolume"},
 	}
 }
 
@@ -31687,13 +31449,6 @@ func schema_kubevirtio_api_instancetype_v1beta1_DevicePreferences(ref common.Ref
 					"preferredPanicDeviceModel": {
 						SchemaProps: spec.SchemaProps{
 							Description: "PreferredPanicDeviceModel optionally defines the preferred panic device model to use with panic devices.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"preferredVideoType": {
-						SchemaProps: spec.SchemaProps{
-							Description: "PreferredVideoType optionally defines the preferred type for Video devices.",
 							Type:        []string{"string"},
 							Format:      "",
 						},
