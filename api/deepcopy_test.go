@@ -3,10 +3,9 @@ package api
 import (
 	"reflect"
 
+	fuzz "github.com/google/gofuzz"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	"sigs.k8s.io/randfill"
 
 	v1 "kubevirt.io/api/core/v1"
 )
@@ -82,7 +81,7 @@ var _ = Describe("Generated deepcopy functions", func() {
 
 	DescribeTable("should work for fuzzed structs with a probability for nils of", func(nilProbability float64) {
 		for _, s := range structs {
-			randfill.New().NilChance(nilProbability).Fill(s)
+			fuzz.New().NilChance(nilProbability).Fuzz(s)
 			Expect(reflect.ValueOf(s).MethodByName("DeepCopy").Call(nil)[0].Interface()).To(Equal(s))
 			if reflect.ValueOf(s).MethodByName("DeepCopyObject").IsValid() {
 				Expect(reflect.ValueOf(s).MethodByName("DeepCopyObject").Call(nil)[0].Interface()).To(Equal(s))

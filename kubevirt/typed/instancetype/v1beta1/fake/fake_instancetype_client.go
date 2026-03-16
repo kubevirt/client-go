@@ -31,19 +31,19 @@ type FakeInstancetypeV1beta1 struct {
 }
 
 func (c *FakeInstancetypeV1beta1) VirtualMachineClusterInstancetypes() v1beta1.VirtualMachineClusterInstancetypeInterface {
-	return newFakeVirtualMachineClusterInstancetypes(c)
+	return &FakeVirtualMachineClusterInstancetypes{c}
 }
 
 func (c *FakeInstancetypeV1beta1) VirtualMachineClusterPreferences() v1beta1.VirtualMachineClusterPreferenceInterface {
-	return newFakeVirtualMachineClusterPreferences(c)
+	return &FakeVirtualMachineClusterPreferences{c}
 }
 
 func (c *FakeInstancetypeV1beta1) VirtualMachineInstancetypes(namespace string) v1beta1.VirtualMachineInstancetypeInterface {
-	return newFakeVirtualMachineInstancetypes(c, namespace)
+	return &FakeVirtualMachineInstancetypes{c, namespace}
 }
 
 func (c *FakeInstancetypeV1beta1) VirtualMachinePreferences(namespace string) v1beta1.VirtualMachinePreferenceInterface {
-	return newFakeVirtualMachinePreferences(c, namespace)
+	return &FakeVirtualMachinePreferences{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

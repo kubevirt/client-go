@@ -31,15 +31,15 @@ type FakeSnapshotV1beta1 struct {
 }
 
 func (c *FakeSnapshotV1beta1) VirtualMachineRestores(namespace string) v1beta1.VirtualMachineRestoreInterface {
-	return newFakeVirtualMachineRestores(c, namespace)
+	return &FakeVirtualMachineRestores{c, namespace}
 }
 
 func (c *FakeSnapshotV1beta1) VirtualMachineSnapshots(namespace string) v1beta1.VirtualMachineSnapshotInterface {
-	return newFakeVirtualMachineSnapshots(c, namespace)
+	return &FakeVirtualMachineSnapshots{c, namespace}
 }
 
 func (c *FakeSnapshotV1beta1) VirtualMachineSnapshotContents(namespace string) v1beta1.VirtualMachineSnapshotContentInterface {
-	return newFakeVirtualMachineSnapshotContents(c, namespace)
+	return &FakeVirtualMachineSnapshotContents{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
