@@ -27,11 +27,10 @@ import (
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
-	backupv1alpha1 "kubevirt.io/client-go/kubevirt/typed/backup/v1alpha1"
 	clonev1alpha1 "kubevirt.io/client-go/kubevirt/typed/clone/v1alpha1"
 	clonev1beta1 "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1"
 	kubevirtv1 "kubevirt.io/client-go/kubevirt/typed/core/v1"
-	exportv1 "kubevirt.io/client-go/kubevirt/typed/export/v1"
+	exportv1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1"
 	exportv1beta1 "kubevirt.io/client-go/kubevirt/typed/export/v1beta1"
 	instancetypev1beta1 "kubevirt.io/client-go/kubevirt/typed/instancetype/v1beta1"
 	migrationsv1alpha1 "kubevirt.io/client-go/kubevirt/typed/migrations/v1alpha1"
@@ -43,12 +42,11 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	BackupV1alpha1() backupv1alpha1.BackupV1alpha1Interface
 	CloneV1alpha1() clonev1alpha1.CloneV1alpha1Interface
 	CloneV1beta1() clonev1beta1.CloneV1beta1Interface
 	KubevirtV1() kubevirtv1.KubevirtV1Interface
+	ExportV1alpha1() exportv1alpha1.ExportV1alpha1Interface
 	ExportV1beta1() exportv1beta1.ExportV1beta1Interface
-	ExportV1() exportv1.ExportV1Interface
 	InstancetypeV1beta1() instancetypev1beta1.InstancetypeV1beta1Interface
 	MigrationsV1alpha1() migrationsv1alpha1.MigrationsV1alpha1Interface
 	PoolV1alpha1() poolv1alpha1.PoolV1alpha1Interface
@@ -60,23 +58,17 @@ type Interface interface {
 // Clientset contains the clients for groups.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	backupV1alpha1      *backupv1alpha1.BackupV1alpha1Client
 	cloneV1alpha1       *clonev1alpha1.CloneV1alpha1Client
 	cloneV1beta1        *clonev1beta1.CloneV1beta1Client
 	kubevirtV1          *kubevirtv1.KubevirtV1Client
+	exportV1alpha1      *exportv1alpha1.ExportV1alpha1Client
 	exportV1beta1       *exportv1beta1.ExportV1beta1Client
-	exportV1            *exportv1.ExportV1Client
 	instancetypeV1beta1 *instancetypev1beta1.InstancetypeV1beta1Client
 	migrationsV1alpha1  *migrationsv1alpha1.MigrationsV1alpha1Client
 	poolV1alpha1        *poolv1alpha1.PoolV1alpha1Client
 	poolV1beta1         *poolv1beta1.PoolV1beta1Client
 	snapshotV1alpha1    *snapshotv1alpha1.SnapshotV1alpha1Client
 	snapshotV1beta1     *snapshotv1beta1.SnapshotV1beta1Client
-}
-
-// BackupV1alpha1 retrieves the BackupV1alpha1Client
-func (c *Clientset) BackupV1alpha1() backupv1alpha1.BackupV1alpha1Interface {
-	return c.backupV1alpha1
 }
 
 // CloneV1alpha1 retrieves the CloneV1alpha1Client
@@ -94,14 +86,14 @@ func (c *Clientset) KubevirtV1() kubevirtv1.KubevirtV1Interface {
 	return c.kubevirtV1
 }
 
+// ExportV1alpha1 retrieves the ExportV1alpha1Client
+func (c *Clientset) ExportV1alpha1() exportv1alpha1.ExportV1alpha1Interface {
+	return c.exportV1alpha1
+}
+
 // ExportV1beta1 retrieves the ExportV1beta1Client
 func (c *Clientset) ExportV1beta1() exportv1beta1.ExportV1beta1Interface {
 	return c.exportV1beta1
-}
-
-// ExportV1 retrieves the ExportV1Client
-func (c *Clientset) ExportV1() exportv1.ExportV1Interface {
-	return c.exportV1
 }
 
 // InstancetypeV1beta1 retrieves the InstancetypeV1beta1Client
@@ -178,10 +170,6 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 
 	var cs Clientset
 	var err error
-	cs.backupV1alpha1, err = backupv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
-	if err != nil {
-		return nil, err
-	}
 	cs.cloneV1alpha1, err = clonev1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
@@ -194,11 +182,11 @@ func NewForConfigAndClient(c *rest.Config, httpClient *http.Client) (*Clientset,
 	if err != nil {
 		return nil, err
 	}
-	cs.exportV1beta1, err = exportv1beta1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	cs.exportV1alpha1, err = exportv1alpha1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
-	cs.exportV1, err = exportv1.NewForConfigAndClient(&configShallowCopy, httpClient)
+	cs.exportV1beta1, err = exportv1beta1.NewForConfigAndClient(&configShallowCopy, httpClient)
 	if err != nil {
 		return nil, err
 	}
@@ -247,12 +235,11 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.backupV1alpha1 = backupv1alpha1.New(c)
 	cs.cloneV1alpha1 = clonev1alpha1.New(c)
 	cs.cloneV1beta1 = clonev1beta1.New(c)
 	cs.kubevirtV1 = kubevirtv1.New(c)
+	cs.exportV1alpha1 = exportv1alpha1.New(c)
 	cs.exportV1beta1 = exportv1beta1.New(c)
-	cs.exportV1 = exportv1.New(c)
 	cs.instancetypeV1beta1 = instancetypev1beta1.New(c)
 	cs.migrationsV1alpha1 = migrationsv1alpha1.New(c)
 	cs.poolV1alpha1 = poolv1alpha1.New(c)

@@ -27,16 +27,14 @@ import (
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
 	clientset "kubevirt.io/client-go/kubevirt"
-	backupv1alpha1 "kubevirt.io/client-go/kubevirt/typed/backup/v1alpha1"
-	fakebackupv1alpha1 "kubevirt.io/client-go/kubevirt/typed/backup/v1alpha1/fake"
 	clonev1alpha1 "kubevirt.io/client-go/kubevirt/typed/clone/v1alpha1"
 	fakeclonev1alpha1 "kubevirt.io/client-go/kubevirt/typed/clone/v1alpha1/fake"
 	clonev1beta1 "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1"
 	fakeclonev1beta1 "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1/fake"
 	kubevirtv1 "kubevirt.io/client-go/kubevirt/typed/core/v1"
 	fakekubevirtv1 "kubevirt.io/client-go/kubevirt/typed/core/v1/fake"
-	exportv1 "kubevirt.io/client-go/kubevirt/typed/export/v1"
-	fakeexportv1 "kubevirt.io/client-go/kubevirt/typed/export/v1/fake"
+	exportv1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1"
+	fakeexportv1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1/fake"
 	exportv1beta1 "kubevirt.io/client-go/kubevirt/typed/export/v1beta1"
 	fakeexportv1beta1 "kubevirt.io/client-go/kubevirt/typed/export/v1beta1/fake"
 	instancetypev1beta1 "kubevirt.io/client-go/kubevirt/typed/instancetype/v1beta1"
@@ -107,11 +105,6 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// BackupV1alpha1 retrieves the BackupV1alpha1Client
-func (c *Clientset) BackupV1alpha1() backupv1alpha1.BackupV1alpha1Interface {
-	return &fakebackupv1alpha1.FakeBackupV1alpha1{Fake: &c.Fake}
-}
-
 // CloneV1alpha1 retrieves the CloneV1alpha1Client
 func (c *Clientset) CloneV1alpha1() clonev1alpha1.CloneV1alpha1Interface {
 	return &fakeclonev1alpha1.FakeCloneV1alpha1{Fake: &c.Fake}
@@ -127,14 +120,14 @@ func (c *Clientset) KubevirtV1() kubevirtv1.KubevirtV1Interface {
 	return &fakekubevirtv1.FakeKubevirtV1{Fake: &c.Fake}
 }
 
+// ExportV1alpha1 retrieves the ExportV1alpha1Client
+func (c *Clientset) ExportV1alpha1() exportv1alpha1.ExportV1alpha1Interface {
+	return &fakeexportv1alpha1.FakeExportV1alpha1{Fake: &c.Fake}
+}
+
 // ExportV1beta1 retrieves the ExportV1beta1Client
 func (c *Clientset) ExportV1beta1() exportv1beta1.ExportV1beta1Interface {
 	return &fakeexportv1beta1.FakeExportV1beta1{Fake: &c.Fake}
-}
-
-// ExportV1 retrieves the ExportV1Client
-func (c *Clientset) ExportV1() exportv1.ExportV1Interface {
-	return &fakeexportv1.FakeExportV1{Fake: &c.Fake}
 }
 
 // InstancetypeV1beta1 retrieves the InstancetypeV1beta1Client
