@@ -3,9 +3,11 @@ package v1_test
 import (
 	"testing"
 
-	"kubevirt.io/client-go/testutils"
+	ginkgo "github.com/onsi/ginkgo/v2"
+	gomega "github.com/onsi/gomega"
 )
 
 func TestV1(t *testing.T) {
-	testutils.KubeVirtTestSuiteSetup(t)
+	gomega.RegisterFailHandler(ginkgo.Fail)
+	ginkgo.RunSpecs(t, "V1 Suite")
 }
