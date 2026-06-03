@@ -24,33 +24,28 @@ import (
 	http "net/http"
 
 	rest "k8s.io/client-go/rest"
-	backupv1alpha1 "kubevirt.io/api/backup/v1alpha1"
+	exportv1alpha1 "kubevirt.io/api/export/v1alpha1"
 	scheme "kubevirt.io/client-go/kubevirt/scheme"
 )
 
-type BackupV1alpha1Interface interface {
+type ExportV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	VirtualMachineBackupsGetter
-	VirtualMachineBackupTrackersGetter
+	VirtualMachineExportsGetter
 }
 
-// BackupV1alpha1Client is used to interact with features provided by the backup.kubevirt.io group.
-type BackupV1alpha1Client struct {
+// ExportV1alpha1Client is used to interact with features provided by the export.kubevirt.io group.
+type ExportV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *BackupV1alpha1Client) VirtualMachineBackups(namespace string) VirtualMachineBackupInterface {
-	return newVirtualMachineBackups(c, namespace)
+func (c *ExportV1alpha1Client) VirtualMachineExports(namespace string) VirtualMachineExportInterface {
+	return newVirtualMachineExports(c, namespace)
 }
 
-func (c *BackupV1alpha1Client) VirtualMachineBackupTrackers(namespace string) VirtualMachineBackupTrackerInterface {
-	return newVirtualMachineBackupTrackers(c, namespace)
-}
-
-// NewForConfig creates a new BackupV1alpha1Client for the given config.
+// NewForConfig creates a new ExportV1alpha1Client for the given config.
 // NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
 // where httpClient was generated with rest.HTTPClientFor(c).
-func NewForConfig(c *rest.Config) (*BackupV1alpha1Client, error) {
+func NewForConfig(c *rest.Config) (*ExportV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -62,9 +57,9 @@ func NewForConfig(c *rest.Config) (*BackupV1alpha1Client, error) {
 	return NewForConfigAndClient(&config, httpClient)
 }
 
-// NewForConfigAndClient creates a new BackupV1alpha1Client for the given config and http client.
+// NewForConfigAndClient creates a new ExportV1alpha1Client for the given config and http client.
 // Note the http client provided takes precedence over the configured transport values.
-func NewForConfigAndClient(c *rest.Config, h *http.Client) (*BackupV1alpha1Client, error) {
+func NewForConfigAndClient(c *rest.Config, h *http.Client) (*ExportV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -73,12 +68,12 @@ func NewForConfigAndClient(c *rest.Config, h *http.Client) (*BackupV1alpha1Clien
 	if err != nil {
 		return nil, err
 	}
-	return &BackupV1alpha1Client{client}, nil
+	return &ExportV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new BackupV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new ExportV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *BackupV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *ExportV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -86,13 +81,13 @@ func NewForConfigOrDie(c *rest.Config) *BackupV1alpha1Client {
 	return client
 }
 
-// New creates a new BackupV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *BackupV1alpha1Client {
-	return &BackupV1alpha1Client{c}
+// New creates a new ExportV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *ExportV1alpha1Client {
+	return &ExportV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
-	gv := backupv1alpha1.SchemeGroupVersion
+	gv := exportv1alpha1.SchemeGroupVersion
 	config.GroupVersion = &gv
 	config.APIPath = "/apis"
 	config.NegotiatedSerializer = rest.CodecFactoryForGeneratedClient(scheme.Scheme, scheme.Codecs).WithoutConversion()
@@ -106,7 +101,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *BackupV1alpha1Client) RESTClient() rest.Interface {
+func (c *ExportV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}
