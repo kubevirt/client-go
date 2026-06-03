@@ -20,6 +20,10 @@ Copyright The KubeVirt Authors.
 
 package v1alpha1
 
-type VirtualMachineBackupExpansion interface{}
+type VirtualMachineClusterInstancetypeExpansion interface{}
 
-type VirtualMachineBackupTrackerExpansion interface{}
+type VirtualMachineClusterPreferenceExpansion interface{}
+
+type VirtualMachineInstancetypeExpansion interface{}
+
+type VirtualMachinePreferenceExpansion interface{}

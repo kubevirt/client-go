@@ -31,7 +31,7 @@ type FakeMigrationsV1alpha1 struct {
 }
 
 func (c *FakeMigrationsV1alpha1) MigrationPolicies() v1alpha1.MigrationPolicyInterface {
-	return newFakeMigrationPolicies(c)
+	return &FakeMigrationPolicies{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

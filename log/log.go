@@ -218,11 +218,11 @@ func (l FilteredVerbosityLogger) Info(msg string) {
 }
 
 func (l FilteredVerbosityLogger) Infof(msg string, args ...interface{}) {
-	l.filteredLogger.Level(INFO).log(2, "msg", fmt.Sprintf(msg, args...))
+	l.filteredLogger.log(2, "msg", fmt.Sprintf(msg, args...))
 }
 
 func (l FilteredVerbosityLogger) Object(obj LoggableObject) *FilteredVerbosityLogger {
-	l.filteredLogger = *l.filteredLogger.Object(obj)
+	l.filteredLogger.Object(obj)
 	return &l
 }
 
