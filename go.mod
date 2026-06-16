@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/go-kit/log v0.2.1
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674
-	github.com/k8snetworkplumbingwg/network-attachment-definition-client v1.7.7
+	github.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20191119172530-79f836b90111
 	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0
 	github.com/onsi/ginkgo/v2 v2.21.0
 	github.com/onsi/gomega v1.35.1
@@ -20,7 +20,7 @@ require (
 	k8s.io/client-go v0.34.3
 	k8s.io/kube-openapi v0.31.0
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
-	kubevirt.io/api v0.0.0-20260614062121-ec26de22bd7e
+	kubevirt.io/api v0.0.0-20260616160020-fc8ca82ca05e
 	kubevirt.io/containerized-data-importer-api v1.64.0
 	sigs.k8s.io/randfill v1.0.0
 )

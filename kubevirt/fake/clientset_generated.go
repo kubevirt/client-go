@@ -35,16 +35,14 @@ import (
 	fakeclonev1beta1 "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1/fake"
 	kubevirtv1 "kubevirt.io/client-go/kubevirt/typed/core/v1"
 	fakekubevirtv1 "kubevirt.io/client-go/kubevirt/typed/core/v1/fake"
-	exportv1 "kubevirt.io/client-go/kubevirt/typed/export/v1"
-	fakeexportv1 "kubevirt.io/client-go/kubevirt/typed/export/v1/fake"
+	exportv1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1"
+	fakeexportv1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1/fake"
 	exportv1beta1 "kubevirt.io/client-go/kubevirt/typed/export/v1beta1"
 	fakeexportv1beta1 "kubevirt.io/client-go/kubevirt/typed/export/v1beta1/fake"
 	instancetypev1beta1 "kubevirt.io/client-go/kubevirt/typed/instancetype/v1beta1"
 	fakeinstancetypev1beta1 "kubevirt.io/client-go/kubevirt/typed/instancetype/v1beta1/fake"
 	migrationsv1alpha1 "kubevirt.io/client-go/kubevirt/typed/migrations/v1alpha1"
 	fakemigrationsv1alpha1 "kubevirt.io/client-go/kubevirt/typed/migrations/v1alpha1/fake"
-	pluginv1alpha1 "kubevirt.io/client-go/kubevirt/typed/plugin/v1alpha1"
-	fakepluginv1alpha1 "kubevirt.io/client-go/kubevirt/typed/plugin/v1alpha1/fake"
 	poolv1alpha1 "kubevirt.io/client-go/kubevirt/typed/pool/v1alpha1"
 	fakepoolv1alpha1 "kubevirt.io/client-go/kubevirt/typed/pool/v1alpha1/fake"
 	poolv1beta1 "kubevirt.io/client-go/kubevirt/typed/pool/v1beta1"
@@ -129,14 +127,14 @@ func (c *Clientset) KubevirtV1() kubevirtv1.KubevirtV1Interface {
 	return &fakekubevirtv1.FakeKubevirtV1{Fake: &c.Fake}
 }
 
+// ExportV1alpha1 retrieves the ExportV1alpha1Client
+func (c *Clientset) ExportV1alpha1() exportv1alpha1.ExportV1alpha1Interface {
+	return &fakeexportv1alpha1.FakeExportV1alpha1{Fake: &c.Fake}
+}
+
 // ExportV1beta1 retrieves the ExportV1beta1Client
 func (c *Clientset) ExportV1beta1() exportv1beta1.ExportV1beta1Interface {
 	return &fakeexportv1beta1.FakeExportV1beta1{Fake: &c.Fake}
-}
-
-// ExportV1 retrieves the ExportV1Client
-func (c *Clientset) ExportV1() exportv1.ExportV1Interface {
-	return &fakeexportv1.FakeExportV1{Fake: &c.Fake}
 }
 
 // InstancetypeV1beta1 retrieves the InstancetypeV1beta1Client
@@ -147,11 +145,6 @@ func (c *Clientset) InstancetypeV1beta1() instancetypev1beta1.InstancetypeV1beta
 // MigrationsV1alpha1 retrieves the MigrationsV1alpha1Client
 func (c *Clientset) MigrationsV1alpha1() migrationsv1alpha1.MigrationsV1alpha1Interface {
 	return &fakemigrationsv1alpha1.FakeMigrationsV1alpha1{Fake: &c.Fake}
-}
-
-// PluginV1alpha1 retrieves the PluginV1alpha1Client
-func (c *Clientset) PluginV1alpha1() pluginv1alpha1.PluginV1alpha1Interface {
-	return &fakepluginv1alpha1.FakePluginV1alpha1{Fake: &c.Fake}
 }
 
 // PoolV1alpha1 retrieves the PoolV1alpha1Client

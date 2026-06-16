@@ -23,20 +23,20 @@ package fake
 import (
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
-	v1alpha1 "kubevirt.io/client-go/kubevirt/typed/plugin/v1alpha1"
+	v1alpha1 "kubevirt.io/client-go/kubevirt/typed/export/v1alpha1"
 )
 
-type FakePluginV1alpha1 struct {
+type FakeExportV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakePluginV1alpha1) Plugins() v1alpha1.PluginInterface {
-	return newFakePlugins(c)
+func (c *FakeExportV1alpha1) VirtualMachineExports(namespace string) v1alpha1.VirtualMachineExportInterface {
+	return newFakeVirtualMachineExports(c, namespace)
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakePluginV1alpha1) RESTClient() rest.Interface {
+func (c *FakeExportV1alpha1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

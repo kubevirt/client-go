@@ -27,6 +27,8 @@ import (
 
 	routev1 "github.com/openshift/client-go/route/clientset/versioned/typed/route/v1"
 
+	clone "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1"
+
 	secv1 "github.com/openshift/client-go/security/clientset/versioned/typed/security/v1"
 	"github.com/spf13/pflag"
 	extclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -46,7 +48,6 @@ import (
 	cdiclient "kubevirt.io/client-go/containerizeddataimporter"
 	k8ssnapshotclient "kubevirt.io/client-go/externalsnapshotter"
 	generatedclient "kubevirt.io/client-go/kubevirt"
-	clone "kubevirt.io/client-go/kubevirt/typed/clone/v1beta1"
 	migrationsv1 "kubevirt.io/client-go/kubevirt/typed/migrations/v1alpha1"
 	networkclient "kubevirt.io/client-go/networkattachmentdefinitionclient"
 	promclient "kubevirt.io/client-go/prometheusoperator"
@@ -92,9 +93,7 @@ var restConfigHooks []RestConfigHookFunc
 var restConfigHooksLock sync.Mutex
 
 var virtclient KubevirtClient
-var k8sclient kubernetes.Interface
-var virtOnce sync.Once
-var k8sOnce sync.Once
+var once sync.Once
 
 // Init adds the default `kubeconfig` and `master` flags. It is not added by default to allow integration into
 // the different controller generators which normally add these flags too.
@@ -438,7 +437,7 @@ func GetKubevirtClientFromFlags(master string, kubeconfig string) (KubevirtClien
 
 func GetKubevirtClient() (KubevirtClient, error) {
 	var err error
-	virtOnce.Do(func() {
+	once.Do(func() {
 		virtclient, err = GetKubevirtClientFromFlags(master, kubeconfig)
 	})
 	return virtclient, err
@@ -455,41 +454,4 @@ func GetConfig() (*restclient.Config, error) {
 
 func GetKubevirtClientConfig() (*rest.Config, error) {
 	return GetConfig()
-}
-
-var GetK8sClientFromClientConfig = func(cmdConfig clientcmd.ClientConfig) (kubernetes.Interface, error) {
-	config, err := cmdConfig.ClientConfig()
-	if err != nil {
-		return nil, err
-	}
-	return GetK8sClientFromRESTConfig(config)
-}
-
-func GetK8sClientFromRESTConfig(config *rest.Config) (kubernetes.Interface, error) {
-	shallowCopy := *config
-	shallowCopy.NegotiatedSerializer = serializer.WithoutConversionCodecFactory{CodecFactory: Codecs}
-	shallowCopy.ContentType = runtime.ContentTypeJSON
-
-	k8sClient, err := kubernetes.NewForConfig(&shallowCopy)
-	if err != nil {
-		return nil, err
-	}
-
-	return k8sClient, nil
-}
-
-func GetK8sClientFromFlags(master string, kubeconfig string) (kubernetes.Interface, error) {
-	config, err := clientcmd.BuildConfigFromFlags(master, kubeconfig)
-	if err != nil {
-		return nil, err
-	}
-	return GetK8sClientFromRESTConfig(config)
-}
-
-func GetK8sClient() (kubernetes.Interface, error) {
-	var err error
-	k8sOnce.Do(func() {
-		k8sclient, err = GetK8sClientFromFlags(master, kubeconfig)
-	})
-	return k8sclient, err
 }
