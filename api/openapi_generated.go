@@ -572,7 +572,6 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"kubevirt.io/api/core/v1.VirtualMachineCondition":                                                 schema_kubevirtio_api_core_v1_VirtualMachineCondition(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstance":                                                  schema_kubevirtio_api_core_v1_VirtualMachineInstance(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceBackupStatus":                                      schema_kubevirtio_api_core_v1_VirtualMachineInstanceBackupStatus(ref),
-		"kubevirt.io/api/core/v1.VirtualMachineInstanceBackupVolumeInfo":                                  schema_kubevirtio_api_core_v1_VirtualMachineInstanceBackupVolumeInfo(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceCommonMigrationState":                              schema_kubevirtio_api_core_v1_VirtualMachineInstanceCommonMigrationState(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceCondition":                                         schema_kubevirtio_api_core_v1_VirtualMachineInstanceCondition(ref),
 		"kubevirt.io/api/core/v1.VirtualMachineInstanceFileSystem":                                        schema_kubevirtio_api_core_v1_VirtualMachineInstanceFileSystem(ref),
@@ -17283,7 +17282,7 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupCheckpoint(ref common.Reference
 							},
 						},
 						SchemaProps: spec.SchemaProps{
-							Description: "Volumes lists volumes included in the backup",
+							Description: "Volumes lists volumes and their disk targets at backup time",
 							Type:        []string{"array"},
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
@@ -17404,6 +17403,14 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupVolumeInfo(ref common.Reference
 							Format:      "",
 						},
 					},
+					"diskTarget": {
+						SchemaProps: spec.SchemaProps{
+							Description: "DiskTarget is the disk target device name at backup time",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
 					"dataEndpoint": {
 						SchemaProps: spec.SchemaProps{
 							Description: "DataEndpoint is the URL of the endpoint for read for pull mode",
@@ -17419,7 +17426,7 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupVolumeInfo(ref common.Reference
 						},
 					},
 				},
-				Required: []string{"volumeName"},
+				Required: []string{"volumeName", "diskTarget"},
 			},
 		},
 	}
@@ -27222,7 +27229,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceBackupStatus(ref common
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
 										Default: map[string]interface{}{},
-										Ref:     ref("kubevirt.io/api/core/v1.VirtualMachineInstanceBackupVolumeInfo"),
+										Ref:     ref("kubevirt.io/api/backup/v1alpha1.BackupVolumeInfo"),
 									},
 								},
 							},
@@ -27239,29 +27246,7 @@ func schema_kubevirtio_api_core_v1_VirtualMachineInstanceBackupStatus(ref common
 			},
 		},
 		Dependencies: []string{
-			"k8s.io/apimachinery/pkg/apis/meta/v1.Time", "kubevirt.io/api/core/v1.VirtualMachineInstanceBackupVolumeInfo"},
-	}
-}
-
-func schema_kubevirtio_api_core_v1_VirtualMachineInstanceBackupVolumeInfo(ref common.ReferenceCallback) common.OpenAPIDefinition {
-	return common.OpenAPIDefinition{
-		Schema: spec.Schema{
-			SchemaProps: spec.SchemaProps{
-				Description: "VirtualMachineInstanceBackupVolumeInfo contains information about a volume included in a backup",
-				Type:        []string{"object"},
-				Properties: map[string]spec.Schema{
-					"volumeName": {
-						SchemaProps: spec.SchemaProps{
-							Description: "VolumeName is the volume name from VMI spec",
-							Default:     "",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-				},
-				Required: []string{"volumeName"},
-			},
-		},
+			"k8s.io/apimachinery/pkg/apis/meta/v1.Time", "kubevirt.io/api/backup/v1alpha1.BackupVolumeInfo"},
 	}
 }
 
