@@ -36,8 +36,7 @@ supported by security teams of involved vendors.
 
 List of involved vendor security teams:
 - Red Hat <secalert@redhat.com>
-- SUSE <psirt@suse.com>
-- Google <vulncc-ext-feed@google.com>
+- SUSE <security@suse.de>
 
 ## Alternate Reporting Mechanism
 

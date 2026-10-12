@@ -21,22 +21,18 @@ package v1
 
 import (
 	"net"
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
 type wsStreamer struct {
-	conn      *websocket.Conn
-	done      chan struct{}
-	closeOnce sync.Once
+	conn *websocket.Conn
+	done chan struct{}
 }
 
-// streamDone unblocks AsyncWSRoundTripper's round-trip goroutine. It is
-// called from both Stream() and wsConn.Close(), so it must be idempotent.
 func (ws *wsStreamer) streamDone() {
-	ws.closeOnce.Do(func() { close(ws.done) })
+	close(ws.done)
 }
 
 func (ws *wsStreamer) Stream(options StreamOptions) error {
@@ -61,7 +57,6 @@ func (ws *wsStreamer) AsConn() net.Conn {
 		Conn:         ws.conn,
 		binaryReader: &binaryReader{conn: ws.conn},
 		binaryWriter: &binaryWriter{conn: ws.conn},
-		streamDone:   ws.streamDone,
 	}
 }
 
@@ -69,16 +64,6 @@ type wsConn struct {
 	*websocket.Conn
 	*binaryReader
 	*binaryWriter
-	// streamDone is wsStreamer.streamDone, called from Close() so AsConn()
-	// callers also release the round-tripper goroutine.
-	streamDone func()
-}
-
-// Close closes the connection and releases the round-tripper goroutine
-// that dialed it.
-func (c *wsConn) Close() error {
-	defer c.streamDone()
-	return c.Conn.Close()
 }
 
 func (c *wsConn) SetDeadline(t time.Time) error {
