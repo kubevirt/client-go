@@ -17711,13 +17711,6 @@ func schema_kubevirtio_api_backup_v1alpha1_BackupOptions(ref common.ReferenceCal
 							Format: "",
 						},
 					},
-					"abortReason": {
-						SchemaProps: spec.SchemaProps{
-							Description: "AbortReason is set when Cmd is Abort. Cancel marks the backup Failed (TTL expiry, or deleting a push-mode backup). Finalize marks a pull-mode backup Complete after the client finished pulling.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 				},
 			},
 		},
@@ -17910,7 +17903,7 @@ func schema_kubevirtio_api_backup_v1alpha1_VirtualMachineBackupSpec(ref common.R
 					},
 					"mode": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Mode specifies the way the backup output will be received. Deleting an in-progress Pull backup finalizes it as Complete (client finished pulling). TTL expiry, or deleting an in-progress Push backup, cancels the job and marks the backup Failed.",
+							Description: "Mode specifies the way the backup output will be recieved",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -17945,7 +17938,7 @@ func schema_kubevirtio_api_backup_v1alpha1_VirtualMachineBackupSpec(ref common.R
 					},
 					"ttlDuration": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TTLDuration limits the lifetime of a pull mode backup and its export. When set, an in-progress backup past this duration (counting from CreationTimestamp) is cancelled and marked as Failed. Deleting the VirtualMachineBackup after a successful client pull still finalizes the backup as Complete. When omitted, a reasonable default is applied.",
+							Description: "TtlDuration limits the lifetime of a pull mode backup and its export If this field is set, after this duration has passed from counting from CreationTimestamp, the backup is eligible to be automatically considered as complete. If this field is omitted, a reasonable default is applied.",
 							Ref:         ref(metav1.Duration{}.OpenAPIModelName()),
 						},
 					},
@@ -18327,13 +18320,6 @@ func schema_kubevirtio_api_backup_v1beta1_BackupOptions(ref common.ReferenceCall
 							Format: "",
 						},
 					},
-					"abortReason": {
-						SchemaProps: spec.SchemaProps{
-							Description: "AbortReason is set when Cmd is Abort. Cancel marks the backup Failed (TTL expiry, or deleting a push-mode backup). Finalize marks a pull-mode backup Complete after the client finished pulling.",
-							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
 				},
 			},
 		},
@@ -18521,7 +18507,7 @@ func schema_kubevirtio_api_backup_v1beta1_VirtualMachineBackupSpec(ref common.Re
 					},
 					"mode": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Mode specifies the way the backup output will be received. Deleting an in-progress Pull backup finalizes it as Complete (client finished pulling). TTL expiry, or deleting an in-progress Push backup, cancels the job and marks the backup Failed.",
+							Description: "Mode specifies the way the backup output will be recieved",
 							Type:        []string{"string"},
 							Format:      "",
 						},
@@ -18556,7 +18542,7 @@ func schema_kubevirtio_api_backup_v1beta1_VirtualMachineBackupSpec(ref common.Re
 					},
 					"ttlDuration": {
 						SchemaProps: spec.SchemaProps{
-							Description: "TTLDuration limits the lifetime of a pull mode backup and its export. When set, an in-progress backup past this duration (counting from CreationTimestamp) is cancelled and marked as Failed. Deleting the VirtualMachineBackup after a successful client pull still finalizes the backup as Complete. When omitted, a reasonable default is applied.",
+							Description: "TtlDuration limits the lifetime of a pull mode backup and its export If this field is set, after this duration has passed from counting from CreationTimestamp, the backup is eligible to be automatically considered as complete. If this field is omitted, a reasonable default is applied.",
 							Ref:         ref(metav1.Duration{}.OpenAPIModelName()),
 						},
 					},
@@ -21272,7 +21258,7 @@ func schema_kubevirtio_api_core_v1_Devices(ref common.ReferenceCallback) common.
 					},
 					"blockMultiQueue": {
 						SchemaProps: spec.SchemaProps{
-							Description: "Whether or not to enable virtio multi-queue for block devices. Explicit false configures a single request queue. When omitted, the queue count depends on device and IOThread configuration, falling back to hypervisor defaults when unspecified.",
+							Description: "Whether or not to enable virtio multi-queue for block devices. Defaults to false.",
 							Type:        []string{"boolean"},
 							Format:      "",
 						},
@@ -25079,13 +25065,6 @@ func schema_kubevirtio_api_core_v1_MigrationConfiguration(ref common.ReferenceCa
 						SchemaProps: spec.SchemaProps{
 							Description: "Network is the name of the CNI network to use for live migrations. By default, migrations go through the pod network. When decentralizedLiveMigrationDatapath is Proxy, this network is also used for virt-handler ↔ synchronization-controller migration listeners (omit = pod IP). If set with Proxy, synchronization controllers require the migration0 interface at startup and will fail to start if it is missing.",
 							Type:        []string{"string"},
-							Format:      "",
-						},
-					},
-					"allowMigrationNetworkFallback": {
-						SchemaProps: spec.SchemaProps{
-							Description: "AllowMigrationNetworkFallback specifies whether to fall back to the pod network when the configured migration network (Network) does not provide a usable IP. When false or unset, virt-handler and the synchronization controllers fail to start in that case. When true, they use the pod network instead. The value is read once at startup, so changing it rolls the virt-handler and synchronization-controller pods. Defaults to false.",
-							Type:        []string{"boolean"},
 							Format:      "",
 						},
 					},
